@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Perfum.Domain/Perfum.Domain.csproj" />
+  <Project Path="Perfum.MVC/Perfum.MVC.csproj" />
+  <Project Path="Perfum.Repositories/Perfum.Repositories.csproj" />
+  <Project Path="Perfum.Services/Perfum.Services.csproj" />
+</Solution>
