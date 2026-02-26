@@ -4,7 +4,7 @@ namespace Perfum.Services.ViewModels.Paginations;
 
 public class PagedResult<T, TFilter, TDashboard>
 {
-    public List<T> Items { get; set; }
+    public List<T> Items { get; set; } // list of category
     public int TotalCount { get; set; }
     public TFilter? Filter { get; set; }
     public TDashboard? DashboardVM { get; set; }
@@ -16,7 +16,7 @@ public abstract class BasePaginationFilter
 
     public int PageNumber { get; set; } = 1;
 
-    private int _pageSize = 10;
+    private int _pageSize = 10; // 50 
     public int PageSize
     {
         get => _pageSize;
@@ -24,19 +24,20 @@ public abstract class BasePaginationFilter
     }
 
     public string? SearchByName { get; set; }
-    public Gender? Gender { get; set; }
-    public Status? Status { get; set; }
     public SortedBy? SortBy { get; set; }
 }
-public class TraineeFilter : BasePaginationFilter
+public class ProductFilter : BasePaginationFilter
 {
+    public Status? Status { get; set; }
+    public double? MinRating { get; set; }
+    public decimal? Price { get; set; }
 }
+
 public class AdminFilter : BasePaginationFilter
 {
 }
-public class TrainerFilter : BasePaginationFilter
+public class CustomerFilter : BasePaginationFilter
 {
-    public double? MinRating { get; set; }
-    public bool? HasSessionsToday { get; set; }
+    public Gender? Gender { get; set; }
 
 }

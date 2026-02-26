@@ -1,4 +1,4 @@
-﻿using Perfum.Services.ViewModels.CategoryVM;
+﻿using Perfum.Services.ViewModels.Paginations;
 
 namespace Perfum.Services.IServices;
 
@@ -8,7 +8,7 @@ public interface ICategoryService
     Task<string> AddAsync(AddCategoryVM model);
 
     // --------------------- Read ---------------------
-    Task<IEnumerable<CategoryVM>> GetAllAsync();
+    Task<PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>> GetAllAsync();
     Task<CategoryVM> GetByIdAsync(int id);
 
     // --------------------- Update ---------------------

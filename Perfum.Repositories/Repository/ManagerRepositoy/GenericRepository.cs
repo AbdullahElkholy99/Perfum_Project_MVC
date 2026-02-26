@@ -1,7 +1,6 @@
 ﻿
 namespace Perfum.Repositories.Repository.ManagerRepositoy;
 
-
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
 
@@ -50,19 +49,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         return _dbContext.Set<T>().AsNoTracking().AsQueryable();
     }
-    //public async Task<T> GetByIdAsync<T>( int id,params Expression<Func<T, object>>[] includes)  
-    //{
-    //    IQueryable<T> query = _dbContext.Set<T>();
-
-    //    foreach (var include in includes)
-    //        query = query.Include(include);
-
-    //    return await query.FirstOrDefaultAsync(e =>
-    //        EF.Property<int>(e, "Id") == id);
-    //}
-
-
-    // -------------------- Update
+    public IQueryable<T> GetTableAsTracking()
+    {
+        return _dbContext.Set<T>().AsQueryable();
+    }  // -------------------- Update
     public virtual async Task UpdateAsync(T entity)
     {
         _dbContext.Set<T>().Update(entity);
@@ -112,10 +102,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _dbContext.Database.RollbackTransaction();
     }
 
-    public IQueryable<T> GetTableAsTracking()
-    {
-        return _dbContext.Set<T>().AsQueryable();
-    }
+
 
 
     #endregion

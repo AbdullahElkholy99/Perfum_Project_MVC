@@ -1,7 +1,6 @@
 ﻿namespace Perfum.Repositories.IRepository;
 
-
-public interface ICategoryRepository : IGenericRepository<Category>
+public interface IProductRepository : IGenericRepository<Product>
 {
     // -------------------- Read
 

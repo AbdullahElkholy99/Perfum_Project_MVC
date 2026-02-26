@@ -1,4 +1,6 @@
 ﻿
+using Perfum.Services.ViewModels.Paginations;
+
 namespace Perfum.Services.Services;
 
 public class CategoryService : ICategoryService
@@ -6,7 +8,9 @@ public class CategoryService : ICategoryService
     #region Fields 
 
     private readonly IRepositoryManager _repositoryManager;
+
     private readonly IMapper _mapper;
+
     #endregion
 
     #region CTORs
@@ -29,8 +33,11 @@ public class CategoryService : ICategoryService
                 return "Fail";
 
             var category = _mapper.Map<Category>(model);
+
             if (category == null)
                 return "Fail";
+
+            // save image 
 
             await _repositoryManager.CategoryRepository.AddAsync(category);
 
@@ -43,30 +50,30 @@ public class CategoryService : ICategoryService
     }
 
     // --------------------- Read ---------------------
-    public async Task<IEnumerable<CategoryVM>> GetAllAsync()
+    public async Task<PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>> GetAllAsync()
     {
         try
         {
             // get all categories as no traking 
-            var categories = await _repositoryManager.CategoryRepository.GetTableNoTracking().ToListAsync();
+            List<Category>? categories = await _repositoryManager.CategoryRepository.GetTableNoTracking().ToListAsync();
 
             //check for categories
             if (categories == null)
-                return Enumerable.Empty<CategoryVM>();
+                return null;
 
             // map from category to categoryVM
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 
             //check 
             if (categoriesVM == null)
-                return Enumerable.Empty<CategoryVM>();
+                return null;
 
             //return
-            return categoriesVM;
+            return null;
         }
         catch (Exception ex)
         {
-            return Enumerable.Empty<CategoryVM>();
+            return null;
         }
     }
 

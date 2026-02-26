@@ -2,7 +2,6 @@
 
 public sealed class RepositoryManager : IRepositoryManager
 {
-
     private readonly AppDbContext _context;
 
     private readonly ICategoryRepository _categoryRepository;

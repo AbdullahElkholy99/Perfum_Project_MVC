@@ -23,11 +23,10 @@ public interface IGenericRepository<T> where T : class
     Task DeleteAsync(T entity);
 
     // -------------------- Save Changes 
-    Task SaveChangesAsync();
+    Task SaveChangesAsync(); // .savechanges()
 
     // -------------------- Transaction
     IDbContextTransaction BeginTransaction();
     void Commit();
     void RollBack();
-
 }

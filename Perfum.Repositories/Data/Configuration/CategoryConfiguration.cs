@@ -12,7 +12,7 @@ partial class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .HasForeignKey(p => p.CategoryId)
             .OnDelete(DeleteBehavior.Cascade);
 
-
+        builder.HasKey("Id");
 
     }
 }
