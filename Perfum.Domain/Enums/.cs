@@ -1,6 +1,5 @@
-﻿namespace Perfum.Domain.Enums
+﻿namespace Perfum.Domain.Enums;
+
+internal class _
 {
-    internal class _
-    {
-    }
 }

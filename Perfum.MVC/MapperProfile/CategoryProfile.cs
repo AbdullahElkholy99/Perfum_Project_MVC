@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Perfum.Domain.Models;
-using Perfum.Services.ViewModels.CategoryVM;
-
+﻿
 namespace Perfum.MVC.MapperProfile;
 
 public class CategoryProfile : Profile
@@ -10,5 +7,8 @@ public class CategoryProfile : Profile
     {
         CreateMap<Category, CategoryVM>();
 
+        CreateMap<AddCategoryVM, Category>();
+
+        CreateMap<EditCategoryVM, Category>();
     }
 }

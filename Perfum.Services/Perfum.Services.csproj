@@ -8,10 +8,22 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
+
+
+	  <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.9" />
+	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.3" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
+
+
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Perfum.Repositories\Perfum.Repositories.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\UserVM\" />
   </ItemGroup>
 
 </Project>
