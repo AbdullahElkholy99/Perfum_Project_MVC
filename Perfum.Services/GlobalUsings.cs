@@ -15,3 +15,4 @@ global using Perfum.Services.ViewModels.Authentication;
 global using Perfum.Services.ViewModels.Authentication.Permissions;
 global using Perfum.Services.ViewModels.CategoryVM;
 global using System.Security.Claims;
+

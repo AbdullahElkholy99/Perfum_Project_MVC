@@ -15,7 +15,7 @@ builder.Services
     .AddServiceDependencies(builder.Configuration);
 
 // Add Scoped Service For File Service:
-builder.Services.AddScoped<IFileService, FileService>();
+//builder.Services.AddScoped<IFileService, FileService>();
 
 //Auto Mapper 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -49,7 +49,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Product}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 

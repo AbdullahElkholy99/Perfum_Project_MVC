@@ -1,0 +1,230 @@
+﻿@model PagedResult<ProductVM, ProductFilter, DashBoardProduct>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+}
+
+<h1>Products</h1>
+
+<link href="~/css/dashbord/product.css" rel="stylesheet" />
+
+<div class="layout">
+  <!-- ── Main ── -->
+
+    <div class="topbar">
+      <div>
+        <div class="page-title">Fragrance <span>Catalogue</span></div>
+        <div class="page-subtitle">148 products across 8 categories</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" onclick="showToast('Catalogue exported')">⬇ Export</button>
+        <button class="btn btn-ghost" onclick="showToast('Import ready')">⬆ Import</button>
+        <button class="btn btn-primary" onclick="openAddModal()">✦ Add Product</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-strip">
+      <div class="mini-stat"><div class="mini-icon ic-amber">✨</div><div><div class="mini-val">148</div><div class="mini-label">Total Products</div><div class="mini-change">↑ 4 this month</div></div></div>
+      <div class="mini-stat"><div class="mini-icon ic-sage">📦</div><div><div class="mini-val">124</div><div class="mini-label">In Stock</div><div class="mini-change">83% availability</div></div></div>
+      <div class="mini-stat"><div class="mini-icon ic-gold">⚠️</div><div><div class="mini-val">18</div><div class="mini-label">Low Stock</div><div class="mini-change down">Reorder needed</div></div></div>
+      <div class="mini-stat"><div class="mini-icon ic-rose">⊘</div><div><div class="mini-val">6</div><div class="mini-label">Out of Stock</div><div class="mini-change down">Action required</div></div></div>
+      <div class="mini-stat"><div class="mini-icon ic-blue">⭐</div><div><div class="mini-val">4.7</div><div class="mini-label">Avg. Rating</div><div class="mini-change">↑ 0.2 this month</div></div></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-bar">
+        <span style="color:var(--text3);font-size:16px">⌕</span>
+        <input id="searchInput" placeholder="Search fragrances, SKU, notes…" oninput="applyFilters()" />
+      </div>
+      <div class="filter-row" id="categoryChips"></div>
+      <select class="sort-select" onchange="applyFilters()" id="sortSel" style="appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path fill=%22%23a08060%22 d=%22M0 0l5 6 5-6z%22/></svg>');background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;">
+        <option value="name">Name A–Z</option>
+        <option value="price-asc">Price ↑</option>
+        <option value="price-desc">Price ↓</option>
+        <option value="stock">Stock</option>
+        <option value="rating">Rating</option>
+      </select>
+      <div class="view-toggle">
+        <div class="view-btn active" id="gridViewBtn" onclick="switchView('grid')" title="Grid">⊞</div>
+        <div class="view-btn" id="listViewBtn" onclick="switchView('list')" title="List">☰</div>
+      </div>
+    </div>
+
+    <!-- Bulk Bar -->
+    <div class="bulk-bar" id="bulkBar">
+      <div class="bulk-text">Selected: <strong id="bulkCount">0</strong></div>
+      <button class="btn btn-ghost btn-sm" onclick="clearSelection()">Clear</button>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Status updated')">Change Status</button>
+      <button class="btn btn-danger btn-sm" onclick="bulkDelete()">✕ Delete</button>
+    </div>
+
+    <!-- Grid View -->
+    <div class="prod-grid" id="prodGrid"></div>
+
+    <!-- Table View -->
+    <div class="table-wrap hidden" id="tableWrap">
+      <table class="prod-table">
+        <thead>
+          <tr>
+            <th style="width:32px"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)" style="accent-color:var(--accent);cursor:pointer;width:15px;height:15px;"></th>
+            <th onclick="setSortCol('name')">Product</th>
+            <th onclick="setSortCol('category')">Category</th>
+            <th onclick="setSortCol('price')">Price</th>
+            <th onclick="setSortCol('stock')">Stock</th>
+            <th onclick="setSortCol('status')">Status</th>
+            <th onclick="setSortCol('rating')">Rating</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="page-info" id="pageInfo">Showing 1–12</div>
+      <div class="page-btns">
+        <div class="page-btn">‹</div>
+        <div class="page-btn active">1</div>
+        <div class="page-btn">2</div>
+        <div class="page-btn">3</div>
+        <div class="page-btn">›</div>
+      </div>
+    </div>
+</div>
+
+<!-- ── Product Drawer ── -->
+<div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-hero" id="drawerHero">
+    <div id="drawerEmoji" style="font-size:80px;position:relative;z-index:1;filter:drop-shadow(0 8px 24px rgba(0,0,0,.12));transition:transform .3s;"></div>
+    <div class="drawer-close-btn" onclick="closeDrawer()">✕</div>
+  </div>
+  <div class="drawer-content">
+    <div class="d-cat" id="drawerCat"></div>
+    <div class="d-name" id="drawerName"></div>
+    <div class="d-tagline" id="drawerTagline"></div>
+    <div class="d-price-row">
+      <div class="d-price" id="drawerPrice"></div>
+      <div class="d-msrp" id="drawerMsrp"></div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-section-title">Product Details</div>
+      <div class="d-grid-2" id="drawerDetails"></div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-section-title">Fragrance Profile</div>
+      <div id="drawerNotes"></div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-section-title">Edit Product</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Price</label><input class="form-input" id="editPrice" /></div>
+        <div class="form-group"><label class="form-label">Stock</label><input class="form-input" id="editStock" /></div>
+      </div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="editDesc" rows="3"></textarea></div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <div class="toggle-group" id="editStatusGroup">
+          <div class="tg-btn" onclick="setEditStatus('active',this)">Active</div>
+          <div class="tg-btn" onclick="setEditStatus('draft',this)">Draft</div>
+          <div class="tg-btn" onclick="setEditStatus('archived',this)">Archived</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-danger" onclick="deleteProduct(currentProduct?.id)">✕ Delete</button>
+    <button class="btn btn-ghost" onclick="closeDrawer()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveProduct()">Save Changes</button>
+  </div>
+</div>
+
+<!-- ── Add Product Modal ── -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Fragrance</div>
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Product Name</label>
+          <input class="form-input" id="mName" placeholder="e.g. Ambre Nocturne" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">SKU</label>
+          <input class="form-input" id="mSku" placeholder="e.g. FLR-042" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-input" id="mCat" style="cursor:pointer">
+            <option>Floral</option><option>Oriental</option><option>Woody</option>
+            <option>Fresh</option><option>Fougère</option><option>Gourmand</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Size</label>
+          <select class="form-input" id="mSize" style="cursor:pointer">
+            <option>30ml</option><option>50ml</option><option>75ml</option>
+            <option>100ml</option><option>200ml</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Price ($)</label>
+          <input class="form-input" id="mPrice" placeholder="185" type="number" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial Stock</label>
+          <input class="form-input" id="mStock" placeholder="24" type="number" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tagline</label>
+        <input class="form-input" id="mTagline" placeholder="A brief evocative description…" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Top Notes</label>
+        <input class="form-input" id="mTopNotes" placeholder="Bergamot, Lemon, Neroli…" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Heart Notes</label>
+          <input class="form-input" id="mHeartNotes" placeholder="Rose, Jasmine…" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Base Notes</label>
+          <input class="form-input" id="mBaseNotes" placeholder="Sandalwood, Amber…" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <div class="toggle-group" id="mStatusGroup">
+          <div class="tg-btn on" onclick="setModalStatus('active',this)">Active</div>
+          <div class="tg-btn" onclick="setModalStatus('draft',this)">Draft</div>
+          <div class="tg-btn" onclick="setModalStatus('archived',this)">Archived</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="addProduct()">✦ Create Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg">Saved</span></div>
+
+
+

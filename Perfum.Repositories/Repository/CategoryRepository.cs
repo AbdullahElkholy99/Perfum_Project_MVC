@@ -9,14 +9,3 @@ public class CategoryRepository : GenericRepository<Category>, ICategoryReposito
     }
 }
 
-public class CatdryRepository : ICatdryRepository
-{
-    public CatdryRepository(AppDbContext dbContext)
-    {
-    }
-}
-
-public interface ICatdryRepository
-{
-
-}

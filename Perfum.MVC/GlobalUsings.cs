@@ -10,3 +10,4 @@ global using Perfum.Repositories.Data;
 global using Perfum.Services;
 global using Perfum.Services.ViewModels.Authentication.Permissions;
 global using Perfum.Services.ViewModels.CategoryVM;
+global using Perfum.Services.ViewModels.ProductVM;

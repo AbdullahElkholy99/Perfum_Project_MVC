@@ -26,12 +26,7 @@ public abstract class BasePaginationFilter
     public string? SearchByName { get; set; }
     public SortedBy? SortBy { get; set; }
 }
-public class ProductFilter : BasePaginationFilter
-{
-    public Status? Status { get; set; }
-    public double? MinRating { get; set; }
-    public decimal? Price { get; set; }
-}
+
 
 public class AdminFilter : BasePaginationFilter
 {
