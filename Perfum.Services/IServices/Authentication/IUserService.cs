@@ -4,6 +4,7 @@ public interface IUserService
 {
     // ------------------- Create
     Task<IdentityResult> CreateAsync(User User, string password);
+    Task<IdentityResult> RegisterAsync(RegisterVM model);
     Task<IdentityResult> AddClaimAsync(User User, List<Claim> claims);
     // ------------------- Read
     Task<User?> FindByIdAsync(int id);

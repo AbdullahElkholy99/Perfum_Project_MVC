@@ -1,4 +1,6 @@
 ﻿
+using Perfum.Domain.Models.Users;
+
 namespace Perfum.Domain.Models;
 
 public class Category
@@ -8,6 +10,5 @@ public class Category
     [Required]
     public string Name { get; set; }
 
-    public string? Descreption { get; set; }
-    public virtual ICollection<Product>? Products { get; set; }
+    public virtual ICollection<Product> Products { get; set; }
 }

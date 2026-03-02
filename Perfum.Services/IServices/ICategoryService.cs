@@ -8,7 +8,7 @@ public interface ICategoryService
     Task<string> AddAsync(AddCategoryVM model);
 
     // --------------------- Read ---------------------
-    Task<PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>> GetAllAsync();
+    Task<PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>> GetAllAsync(CategoryFilter? filter);
     Task<CategoryVM> GetByIdAsync(int id);
 
     // --------------------- Update ---------------------

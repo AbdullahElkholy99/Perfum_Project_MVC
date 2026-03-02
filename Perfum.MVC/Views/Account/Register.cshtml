@@ -1,0 +1,87 @@
+﻿@model RegisterVM
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Big Gym Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/css/auth/register.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="overlay"></div>
+
+    <div class="register-box">
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <form asp-action="Register" asp-controller="Account">
+            @Html.AntiForgeryToken()
+
+            <!-- STEP 1 -->
+            <div class="step active">
+                <h3>Basic Info</h3>
+
+                <label asp-for="UserName">اسم المستخدم</label>
+                <input type="text" asp-for="UserName" placeholder="اسمك كامل" dir="rtl">
+                <span asp-validation-for="UserName" class="text-danger"></span>
+
+                <label asp-for="Email">اسم المستخدم</label>
+                <input type="email" asp-for="Email" placeholder="البريد الالكتروني">
+                <span asp-validation-for="Email" class="text-danger"></span>
+
+                <label asp-for="Password">اسم المستخدم</label>
+                <input type="password" asp-for="Password" placeholder="كلمة المرور">
+                <span asp-validation-for="Password" class="text-danger"></span>
+
+                <label asp-for="ConfirmPassword">اسم المستخدم</label>
+                <input type="password" asp-for="ConfirmPassword" placeholder="تأكيد كلمة المرور">
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+                <button type="button" onclick="nextStep()">Next</button>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="step">
+                <h3>Contienue</h3>
+
+                <label asp-for="Address">العنوان</label>
+                <input type="text" asp-for="Address" placeholder="كفر-ميتسراج-قويسنا">
+                <span asp-validation-for="Address" class="text-danger"></span>
+
+                <label asp-for="PhoneNumber">رقم الموبايل</label>
+                <input type="tel" asp-for="PhoneNumber" placeholder="+201012613453">
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+                <button type="button" onclick="prevStep()">Back</button>
+                <button type="button" onclick="nextStep()">Next</button>
+            </div>
+            <!-- STEP 3 -->
+            <div class="step">
+                <h3>Body Info</h3>
+
+                <button type="button" onclick="prevStep()">Back</button>
+                <button type="submit">Register</button>
+            </div>
+        </form>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/js/Auth/register.js"></script>
+</body>
+</html>

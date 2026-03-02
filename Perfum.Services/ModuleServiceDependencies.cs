@@ -1,6 +1,7 @@
 ﻿
 using Perfum.MVC;
 using Perfum.MVC.Services;
+using Perfum.Services.Services.Authentication;
 
 namespace Perfum.Services;
 
@@ -16,6 +17,10 @@ public static class ModuleServiceDependencies
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IFileService, FileService>();
+
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IRoleService, RoleService>();
+
 
         return services;
     }

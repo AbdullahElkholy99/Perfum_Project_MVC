@@ -1,6 +1,9 @@
-﻿global using Microsoft.EntityFrameworkCore;
+﻿global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Storage;
 global using Perfum.Domain.Models;
+global using Perfum.Domain.Models.Users;
 global using Perfum.Repositories.Data;
 global using Perfum.Repositories.IRepository;
 global using Perfum.Repositories.IRepository.MangerRepository;

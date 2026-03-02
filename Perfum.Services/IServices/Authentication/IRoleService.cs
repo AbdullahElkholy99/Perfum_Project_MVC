@@ -15,6 +15,7 @@ public interface IRoleService
     Task<List<RoleWithClaimsVM>> GetAllRolesWithClaimsAsync();
     Task<List<User>> GetAllUsersForSpecificRoleAsync(List<string> roles);
     Task<IList<string>> GetRolesAsync(User user);
+    Task<AddClaimsToRoleVM> GetRoleWithClaimsAsync(int id);
 
     // ------------------- Update
 
