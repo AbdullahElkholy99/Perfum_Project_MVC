@@ -1,26 +1,24 @@
-using Microsoft.AspNetCore.Mvc;
 using Perfum.MVC.Models;
-using Perfum.Services.IServices.ManagerService;
 using Perfum.Services.ViewModels.Paginations;
 using System.Diagnostics;
 
 namespace Perfum.MVC.Controllers;
 
-public class HomeController : Controller
+public class CustomerController : Controller
 {
     private readonly IServiceManager _serviceManager;
 
-    public HomeController(IServiceManager serviceManager)
+    public CustomerController(IServiceManager serviceManager)
     {
         _serviceManager = serviceManager;
     }
 
-    public async Task<IActionResult> Index(CategoryFilter filter)
+    public async Task<IActionResult> Index(PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>? filter)
     {
         try
         {
 
-            PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>? categories = await _serviceManager.CategoryService.GetAllAsync(filter);
+            PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>? categories = await _serviceManager.CategoryService.GetAllAsync(filter?.Filter);
 
             return View(categories);
 

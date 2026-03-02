@@ -8,17 +8,51 @@ public class UserService : IUserService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-
-    public UserService(UserManager<User> userManager, SignInManager<User> signInManager)
+    public readonly IMapper _mapper;
+    public readonly IRoleService _roleService;
+    public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper, IRoleService roleService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _mapper = mapper;
+        this._roleService = roleService;
     }
 
     // ------------------- Create
     public async Task<IdentityResult> CreateAsync(User user, string password)
     {
         return await _userManager.CreateAsync(user, password);
+    }
+    public async Task<IdentityResult> RegisterAsync(RegisterVM model)
+    {
+        // begin transaction 
+        try
+        {
+            var user = _mapper.Map<Customer>(model);
+
+            var registerResult = await _userManager.CreateAsync(user, model.Password);
+
+            if (!registerResult.Succeeded)
+            {
+                return registerResult;
+            }
+
+            var roles = new List<string> { "Customer" };
+            var roleResult = await _roleService.AddToRolesAsync(user, roles);
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(user);
+                return roleResult;
+            }
+
+            return IdentityResult.Success;
+
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
     }
     public async Task<IdentityResult> AddClaimAsync(User User, List<Claim> claims)
     {
@@ -56,6 +90,7 @@ public class UserService : IUserService
         var result = new LoginResultVM
         {
             Result = false,
+            Email = model.Email,
             Roles = new List<string>()
         };
 
@@ -72,6 +107,9 @@ public class UserService : IUserService
             model.RememberMe);
 
         result.Result = checkPassword.Succeeded;
+        result.UserName = user.UserName ?? "unkown";
+        result.Id = user.Id;
+
         if (checkPassword.Succeeded)
         {
             var roles = await _userManager.GetRolesAsync(user);

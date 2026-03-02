@@ -6,7 +6,7 @@ public static class ServiceExtentions
     public static void IdentityService(this IServiceCollection services)
     {
         services
-          .AddIdentity<User, IdentityRole>(options =>
+          .AddIdentity<User, IdentityRole<int>>(options =>
           {
               options.Password.RequireDigit = false;
               options.Password.RequiredLength = 1;

@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Perfum.Domain.Models.Users;
-
+﻿
 namespace Perfum.Repositories.Data;
 
 //  Add-Migration init -o "Data/Migrations"
-public class AppDbContext : IdentityDbContext<User>
+public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     #region Ctors
     public AppDbContext() { }

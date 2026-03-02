@@ -37,7 +37,7 @@ public class CategoryService : ICategoryService
             if (category == null)
                 return "Fail";
 
-            // save image 
+            // save image by ezzat
 
             await _repositoryManager.CategoryRepository.AddAsync(category);
 
@@ -50,7 +50,7 @@ public class CategoryService : ICategoryService
     }
 
     // --------------------- Read ---------------------
-    public async Task<PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>> GetAllAsync()
+    public async Task<PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>> GetAllAsync(CategoryFilter? filter)
     {
         try
         {
@@ -61,6 +61,13 @@ public class CategoryService : ICategoryService
             if (categories == null)
                 return null;
 
+
+            // filter 
+            if (filter != null)
+            {
+
+
+            }
             // map from category to categoryVM
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
 

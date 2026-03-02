@@ -1,0 +1,61 @@
+﻿@model LoginVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gym Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/css/Auth/login.css" rel="stylesheet" />
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+<body>
+     <div class="overlay"></div>
+
+    <form class="login-box" asp-action="Login" id="loginBox">
+
+        <!-- Logo -->
+        <div class="logo hidden">
+            <i class="fa-solid fa-dumbbell"></i>
+            <h2>Big GYM</h2>
+        </div>
+
+        <p class="subtitle hidden">Train Hard. Stay Strong.</p>
+
+        <input type="text" asp-for="Email" placeholder="Email" class="hidden">
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+        <input type="password" asp-for="Password" placeholder="Password" class="hidden">
+        <span asp-validation-for="Password" class="text-danger"></span>
+
+        <!-- Remember -->
+        <div class="remember">
+            <input type="checkbox" id="remember" asp-for="RememberMe" />
+            <label for="remember">Remember Me</label>
+        </div>
+
+        <button class="hidden" type="submit">Login</button>
+
+    </form>
+    <link href="~/css/trainers.css" rel="stylesheet" />
+
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/js/Auth/login.js"></script>
+
+
+</body>
+</html>

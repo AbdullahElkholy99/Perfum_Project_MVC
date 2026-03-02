@@ -1,0 +1,203 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sillage — Customers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+ 
+    <link href="~/css/dashboards/customerdashboard.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <div class="layout">
+
+        <!-- ── Sidebar ── -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-text">Sillage</div>
+                <div class="logo-sub">Fragrance Studio</div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-label">Overview</div>
+                <div class="nav-item"><span class="nav-icon">◈</span> Dashboard</div>
+                <div class="nav-item"><span class="nav-icon">◇</span> Analytics</div>
+            </div>
+            <div class="nav-section" style="margin-top:12px">
+                <div class="nav-label">Catalogue</div>
+                <div class="nav-item"><span class="nav-icon">✦</span> Fragrances</div>
+                <div class="nav-item"><span class="nav-icon">⬡</span> Collections</div>
+                <div class="nav-item"><span class="nav-icon">◎</span> Ingredients</div>
+            </div>
+            <div class="nav-section" style="margin-top:12px">
+                <div class="nav-label">Commerce</div>
+                <div class="nav-item"><span class="nav-icon">▣</span> Orders</div>
+                <div class="nav-item active"><span class="nav-icon">◯</span> Customers</div>
+                <div class="nav-item"><span class="nav-icon">▷</span> Marketing</div>
+            </div>
+            <div class="sidebar-bottom">
+                <div class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+                    <span id="themeLabel">Dark Mode</span>
+                    <div class="toggle-pill" id="pill"><div class="toggle-dot"></div></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ── Main ── -->
+        <main class="main">
+
+            <div class="topbar">
+                <div>
+                    <div class="page-title">Our <span>Clientele</span></div>
+                    <div class="page-subtitle">3,620 registered customers</div>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn btn-ghost">⬇ Export CSV</button>
+                    <button class="btn btn-primary" onclick="openDrawer('new')">＋ Add Customer</button>
+                </div>
+            </div>
+
+            <!-- Stat Strip -->
+            <div class="stat-strip">
+                <div class="mini-stat">
+                    <div class="mini-icon amber">👥</div>
+                    <div class="mini-info">
+                        <div class="mini-val">3,620</div>
+                        <div class="mini-label">Total Customers</div>
+                        <div class="mini-change">↑ 8.4% this month</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-icon gold">💎</div>
+                    <div class="mini-info">
+                        <div class="mini-val">428</div>
+                        <div class="mini-label">VIP Members</div>
+                        <div class="mini-change">↑ 12 new VIPs</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-icon sage">🔁</div>
+                    <div class="mini-info">
+                        <div class="mini-val">68%</div>
+                        <div class="mini-label">Retention Rate</div>
+                        <div class="mini-change down">↓ 1.2% vs last q</div>
+                    </div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-icon rose">💰</div>
+                    <div class="mini-info">
+                        <div class="mini-val">$232</div>
+                        <div class="mini-label">Avg. Lifetime Value</div>
+                        <div class="mini-change">↑ $18 vs last month</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <div class="search-bar">
+                    <span style="color:var(--text3);font-size:15px">⌕</span>
+                    <input id="searchInput" placeholder="Search by name, email, scent…" oninput="filterTable()" />
+                </div>
+                <div class="filter-chips">
+                    <div class="chip active" onclick="setFilter('all',this)">All</div>
+                    <div class="chip" onclick="setFilter('vip',this)">VIP</div>
+                    <div class="chip" onclick="setFilter('loyal',this)">Loyal</div>
+                    <div class="chip" onclick="setFilter('new',this)">New</div>
+                    <div class="chip" onclick="setFilter('lapsed',this)">Lapsed</div>
+                </div>
+                <div class="view-toggle">
+                    <div class="view-btn active" id="listBtn" onclick="switchView('list')" title="Table view">☰</div>
+                    <div class="view-btn" id="gridBtn" onclick="switchView('grid')" title="Grid view">⊞</div>
+                </div>
+            </div>
+
+            <!-- ── Table View ── -->
+            <div class="table-wrap table-view" id="tableView">
+                <table class="customers-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Tier</th>
+                            <th>Total Spend</th>
+                            <th>Orders</th>
+                            <th>Favourite Scent</th>
+                            <th>Last Order</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ── Grid View ── -->
+            <div class="grid-view" id="gridView"></div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="page-info" id="pageInfo">Showing 1–10 of 24</div>
+                <div class="page-btns">
+                    <div class="page-btn">‹</div>
+                    <div class="page-btn active">1</div>
+                    <div class="page-btn">2</div>
+                    <div class="page-btn">3</div>
+                    <div class="page-btn">›</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ── Drawer Backdrop ── -->
+    <div class="drawer-backdrop" id="backdrop" onclick="closeDrawer()"></div>
+
+    <!-- ── Customer Profile Drawer ── -->
+    <div class="drawer" id="drawer">
+        <div class="drawer-header">
+            <div class="drawer-av" id="drawerAv"></div>
+            <div>
+                <div class="drawer-name" id="drawerName"></div>
+                <div class="drawer-email" id="drawerEmail"></div>
+                <div class="drawer-meta" id="drawerMeta"></div>
+            </div>
+            <div class="drawer-close" onclick="closeDrawer()">✕</div>
+        </div>
+        <div class="drawer-body">
+            <div class="drawer-section">
+                <div class="drawer-section-title">Overview</div>
+                <div class="drawer-stats" id="drawerStats"></div>
+            </div>
+            <div class="drawer-section">
+                <div class="drawer-section-title">Details</div>
+                <div id="drawerDetails"></div>
+            </div>
+            <div class="drawer-section">
+                <div class="drawer-section-title">Recent Orders</div>
+                <div id="drawerOrders"></div>
+            </div>
+            <div class="drawer-section">
+                <div class="drawer-section-title">Notes</div>
+                <div class="note-box" id="drawerNote"></div>
+            </div>
+        </div>
+        <div class="drawer-actions">
+            <button class="btn btn-ghost">✉ Message</button>
+            <button class="btn btn-primary">✏ Edit Profile</button>
+        </div>
+    </div>
+
+
+
+
+    <script src="~/js/dashboards/customerdashboard.js"></script>
+
+
+
+</body>
+</html>

@@ -31,6 +31,26 @@ public class RoleService : IRoleService
     {
         try
         {
+            if (model.Id > 0)
+            {
+                //edit
+                return await EditRoleWithClaimsAsync(model);
+            }
+            else
+            {
+                return await AddRoleWithClaimsAsync(model);
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+    public async Task<IdentityResult> AddRoleWithClaimsAsync(AddClaimsToRoleVM model)
+    {
+        try
+        {
             var resultRole = await CreateRoleAsync(model.Role);
 
             if (!resultRole.Succeeded)
@@ -55,6 +75,49 @@ public class RoleService : IRoleService
             throw;
         }
     }
+    public async Task<IdentityResult> EditRoleWithClaimsAsync(AddClaimsToRoleVM model)
+    {
+        try
+        {
+            //fetch role 
+            var role = await _roleManager.FindByNameAsync(model.Role);
+            if (role == null)
+            {
+                return IdentityResult.Failed();
+            }
+
+            //fetch all claims for this role and delete it
+            var existingClaims = await _roleManager.GetClaimsAsync(role);
+
+            foreach (var claim in existingClaims)
+            {
+                var result = await _roleManager.RemoveClaimAsync(role, claim);
+
+                if (!result.Succeeded)
+                    return IdentityResult.Failed();
+            }
+
+            //add new permissions 
+            foreach (var claim in model.Permissions)
+            {
+                var resultClaim =
+                    await _roleManager.AddClaimAsync(role,
+                    new Claim("Permission", claim));
+
+                if (!resultClaim.Succeeded)
+                {
+                    return resultClaim;
+                }
+            }
+            return IdentityResult.Success;
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
     // ------------------- Check
     public async Task<IdentityResult> AddClaimToRoleAsync(string role, List<Claim> claims)
     {
@@ -118,6 +181,41 @@ public class RoleService : IRoleService
         }
 
         return result;
+    }
+    public async Task<AddClaimsToRoleVM> GetRoleWithClaimsAsync(int id)
+    {
+        try
+        {
+
+
+            var role = await _roleManager.Roles
+                .FirstOrDefaultAsync(i => i.Id.Equals(id));
+
+            var result = new AddClaimsToRoleVM();
+
+            var totalPermissions = typeof(Permissions)
+                                            .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                                            .Length;
+
+            var claims = await _roleManager.GetClaimsAsync(role);
+
+            var permissionClaims = claims
+                .Where(c => c.Type == "Permission")
+                .Select(c => c.Value)
+                .ToList();
+
+            return new AddClaimsToRoleVM
+            {
+                Id = role.Id,
+                Permissions = permissionClaims,
+                Role = role.Name
+            };
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
     }
     // ------------------- Delete
     public async Task<IdentityResult> DeleteRoleAsync(int id)

@@ -1,0 +1,122 @@
+﻿* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background: url('/images/perfumcover.png') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+    font-size: 30px;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+}
+
+.login-box {
+    position: relative;
+    width: 0;
+    height: 0;
+    background: #111;
+    border-radius: 15px;
+    margin-top: -500px;
+    box-shadow: 0 20px 50px rgba(255,140,0,0.3);
+    padding: 0;
+    opacity: 0;
+    text-align: center;
+    color: white;
+    z-index: 2;
+    border: 2px solid #ff6a00;
+}
+
+    .login-box h2 {
+        margin-bottom: 5px;
+        color: #ff6a00;
+    }
+
+/* Logo */
+.logo i {
+    font-size: 35px;
+    color: #ff6a00;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 50px;
+}
+
+.login-box input {
+    width: 80%;
+    margin: 40px auto;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #1a1a1a;
+    color: white;
+    display: block;
+}
+
+    .login-box input:focus {
+        border-color: #ff6a00;
+        outline: none;
+    }
+
+.login-box button {
+    width: 80%;
+    padding: 12px;
+    background: #ff6a00;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    margin: 70px auto;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+    .login-box button:hover {
+        background: #ff8c1a;
+    }
+
+.hidden {
+    display: none;
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 0px; /* مسافة بين checkbox و label */
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+    .remember input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        margin: 0 10px;
+    }
+
+    .remember label {
+        cursor: pointer;
+        user-select: none;
+        font-size:25px;
+    }
+
+
+/* Responsive */
+@media (max-width: 500px) {
+    .login-box {
+        width: 90% !important;
+    }
+}

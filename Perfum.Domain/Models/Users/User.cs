@@ -1,16 +1,10 @@
 ﻿
 namespace Perfum.Domain.Models.Users;
 
-public class User : IdentityUser
+public class User : IdentityUser<int>
 {
     [MaxLength(500)]
     public string Address { get; set; }
-
-    [MaxLength(50)]
-    public string FirstName { get; set; }
-    [MaxLength(50)]
-
-    public string LastName { get; set; }
 
 
     [NotMapped]

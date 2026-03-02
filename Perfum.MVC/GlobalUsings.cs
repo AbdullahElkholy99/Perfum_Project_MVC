@@ -1,5 +1,6 @@
 ﻿global using AutoMapper;
 global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Mvc;
 global using Perfum.Domain.Models;
 global using Perfum.Domain.Models.Users;
 global using Perfum.MVC;
@@ -8,5 +9,7 @@ global using Perfum.MVC.Filters;
 global using Perfum.Repositories;
 global using Perfum.Repositories.Data;
 global using Perfum.Services;
+global using Perfum.Services.IServices.ManagerService;
+global using Perfum.Services.ViewModels.Authentication;
 global using Perfum.Services.ViewModels.Authentication.Permissions;
 global using Perfum.Services.ViewModels.CategoryVM;
