@@ -22,7 +22,7 @@
         <p><strong>Description:</strong> @(Model.Descreption ?? "—")</p>
         <p><strong>Concentration:</strong> @(Model.Concentration ?? "—")</p>
         <p><strong>Size (ml):</strong> @Model.Size_Ml</p>
-        <p><strong>Category Id:</strong> @Model.CategoryId</p>
+        <p><strong>Category: </strong> @Model.CategoryName</p>
         @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
             <p><img src="~/@Model.ImageUrl" alt="@Model.Name" style="max-width:200px;" /></p>

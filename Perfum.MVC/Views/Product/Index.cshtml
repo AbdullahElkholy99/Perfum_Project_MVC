@@ -65,7 +65,7 @@
     <div class="prod-grid" id="prodGrid">
         @foreach (var p in products)
         {
-            <div class="prod-card" data-id="@p.Id">
+            <div class="prod-card" data-id="@p.Id" data-search="@((p.Name + " " + (p.Descreption ?? "") + " " + (p.Concentration ?? "") + " " + (p.CategoryName ?? "")).ToLowerInvariant())" data-name="@p.Name" data-price="@p.Price" data-stock="@p.Stock">
                 <div class="stock-badge @(p.Stock == 0 ? "sb-out" : p.Stock <= 10 ? "sb-low" : "sb-in")">
                     @(p.Stock == 0 ? "Out of Stock" : p.Stock <= 10 ? "Low Stock" : "In Stock")
                 </div>
@@ -117,7 +117,7 @@
             <tbody id="tableBody">
                 @foreach (var p in products)
                 {
-                    <tr>
+                    <tr data-search="@((p.Name + " " + (p.Descreption ?? "") + " " + (p.Concentration ?? "") + " " + (p.CategoryName ?? "")).ToLowerInvariant())" data-name="@p.Name" data-price="@p.Price" data-stock="@p.Stock">
                         <td><input type="checkbox" style="accent-color:var(--accent);cursor:pointer;width:15px;height:15px;" /></td>
                         <td>
                             <div class="prod-identity">
@@ -167,3 +167,56 @@
 <script>
     window.productsFromServer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(products));
 </script>
+
+@section Scripts {
+    <script>
+        (function() {
+            function getSortFn(sortVal) {
+                switch (sortVal) {
+                    case 'name': return function(a, b) { return (a.getAttribute('data-name') || '').localeCompare(b.getAttribute('data-name') || ''); };
+                    case 'price-asc': return function(a, b) { return parseFloat(a.getAttribute('data-price') || 0) - parseFloat(b.getAttribute('data-price') || 0); };
+                    case 'price-desc': return function(a, b) { return parseFloat(b.getAttribute('data-price') || 0) - parseFloat(a.getAttribute('data-price') || 0); };
+                    case 'stock': return function(a, b) { return parseInt(a.getAttribute('data-stock') || 0, 10) - parseInt(b.getAttribute('data-stock') || 0, 10); };
+                    default: return function() { return 0; };
+                }
+            }
+            function applyFilters() {
+                var q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+                var sortVal = (document.getElementById('sortSel')?.value || 'name');
+                var sortFn = getSortFn(sortVal);
+
+                var grid = document.getElementById('prodGrid');
+                var cards = Array.prototype.slice.call(document.querySelectorAll('#prodGrid .prod-card'));
+                var matching = cards.filter(function(el) { var txt = el.getAttribute('data-search') || ''; return !q || txt.indexOf(q) !== -1; });
+                var notMatching = cards.filter(function(el) { var txt = el.getAttribute('data-search') || ''; return q && txt.indexOf(q) === -1; });
+                matching.sort(sortFn);
+                matching.forEach(function(el) { el.style.display = ''; });
+                notMatching.forEach(function(el) { el.style.display = 'none'; });
+                matching.forEach(function(el) { grid.appendChild(el); });
+                notMatching.forEach(function(el) { grid.appendChild(el); });
+
+                var tbody = document.getElementById('tableBody');
+                var rows = Array.prototype.slice.call(document.querySelectorAll('#tableBody tr[data-search]'));
+                var matchRows = rows.filter(function(el) { var txt = el.getAttribute('data-search') || ''; return !q || txt.indexOf(q) !== -1; });
+                var noMatchRows = rows.filter(function(el) { var txt = el.getAttribute('data-search') || ''; return q && txt.indexOf(q) === -1; });
+                matchRows.sort(sortFn);
+                matchRows.forEach(function(el) { el.style.display = ''; });
+                noMatchRows.forEach(function(el) { el.style.display = 'none'; });
+                matchRows.forEach(function(el) { tbody.appendChild(el); });
+                noMatchRows.forEach(function(el) { tbody.appendChild(el); });
+
+                var pageInfo = document.getElementById('pageInfo');
+                if (pageInfo) {
+                    var total = cards.length;
+                    var visible = matching.length;
+                    pageInfo.textContent = q ? 'Showing ' + visible + ' of ' + total + ' matching' : 'Showing 1–' + Math.min(12, total) + ' of ' + total;
+                }
+            }
+            window.applyFilters = applyFilters;
+            var inp = document.getElementById('searchInput');
+            var sel = document.getElementById('sortSel');
+            if (inp) inp.addEventListener('input', applyFilters);
+            if (sel) sel.addEventListener('change', applyFilters);
+        })();
+    </script>
+}

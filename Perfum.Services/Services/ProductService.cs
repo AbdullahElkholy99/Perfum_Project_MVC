@@ -113,7 +113,8 @@ public class ProductService : IProductService
 
             // map from Product to ProductVM
             var ProductVM = _mapper.Map<ProductVM>(Product);
-
+            var category = await _repositoryManager.CategoryRepository.GetByIdAsync(Product.CategoryId);
+            ProductVM.CategoryName = category?.Name;
             //check 
             if (ProductVM == null)
                 return new ProductVM();
@@ -170,7 +171,7 @@ public class ProductService : IProductService
 
             //save changes
             await _repositoryManager.ProductRepository.DeleteAsync(removeProduct);
-
+            _fileService.DeleteImage(removeProduct.ImageUrl);
             //return
             return "Success";
         }

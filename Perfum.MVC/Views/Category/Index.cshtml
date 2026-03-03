@@ -1,0 +1,53 @@
+﻿@using Perfum.Services.ViewModels.CategoryVM
+@using Perfum.Services.ViewModels.Paginations
+@model PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>
+
+@{
+    ViewData["Title"] = "Categories";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+    var categories = Model?.Items ?? new List<CategoryVM>();
+}
+
+<div class="product-page">
+    <div class="topbar">
+        <div>
+            <div class="page-title">Category <span>Catalogue</span></div>
+            <div class="page-subtitle">@categories.Count category@(categories.Count == 1 ? "" : "ies")</div>
+        </div>
+        <div class="topbar-actions">
+            <a asp-action="Create" class="btn btn-primary">+ Add Category</a>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th style="width:180px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in categories)
+                {
+                    <tr>
+                        <td>@c.Name</td>
+                        <td>@c.Description</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Details</a>
+                            <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                }
+                @if (!categories.Any())
+                {
+                    <tr>
+                        <td colspan="3" class="text-center">No categories found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+﻿@using Perfum.Services.ViewModels.CategoryVM
+@model CategoryVM
+
+@{
+    ViewData["Title"] = "Category Details";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+}
+
+<div class="product-page">
+    <div class="topbar">
+        <div>
+            <div class="page-title">@Model.Name</div>
+            <div class="page-subtitle">Category details</div>
+        </div>
+        <div class="topbar-actions">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+            <a asp-action="Index" class="btn btn-ghost">Back to list</a>
+        </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
+        <p><strong>Description:</strong> @(Model.Description ?? "—")</p>
+    </div>
+</div>

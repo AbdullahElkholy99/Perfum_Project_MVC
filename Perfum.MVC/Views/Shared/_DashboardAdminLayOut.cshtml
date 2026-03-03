@@ -16,10 +16,19 @@
                 <div class="logo-text">Sillage</div>
                 <div class="logo-sub">Fragrance Studio</div>
             </div>
+            
             <div class="nav-section">
                 <div class="nav-label">Overview</div>
                 <div class="nav-item"><span class="nav-icon">◈</span> Dashboard</div>
                 <div class="nav-item"><span class="nav-icon">◇</span> Analytics</div>
+
+                <li>
+                    <a asp-controller="Category" asp-action="Index">Categories</a>
+                </li>
+                <li>
+                    <a asp-controller="Product" asp-action="Index">Products</a>
+                </li>
+
             </div>
             <div class="nav-section" style="margin-top:12px">
                 <div class="nav-label">Catalogue</div>
@@ -116,6 +125,6 @@
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/dashboard/dashboard.js"></script>
-    @await RenderSectionAsync("Scripts",required:false);
+    @await RenderSectionAsync("Scripts",required:false)
 </body>
 </html>

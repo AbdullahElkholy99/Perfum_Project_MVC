@@ -1,5 +1,6 @@
 ﻿
 using Perfum.Services.ViewModels.Paginations;
+using static System.Net.WebRequestMethods;
 
 namespace Perfum.Services.Services;
 
@@ -73,9 +74,9 @@ public class CategoryService : ICategoryService
                 DashboardVM = null
             };
         }
-        catch
+        catch(Exception e)
         {
-            return null;
+            throw e;
         }
     }
 
@@ -156,5 +157,7 @@ public class CategoryService : ICategoryService
             return "Fail";
         }
     }
+
+  
     #endregion
 }
