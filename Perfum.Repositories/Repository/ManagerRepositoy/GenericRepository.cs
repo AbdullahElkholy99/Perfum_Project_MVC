@@ -52,7 +52,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public IQueryable<T> GetTableAsTracking()
     {
         return _dbContext.Set<T>().AsQueryable();
-    }  // -------------------- Update
+    }  
+    
+    // -------------------- Update
     public virtual async Task UpdateAsync(T entity)
     {
         _dbContext.Set<T>().Update(entity);
