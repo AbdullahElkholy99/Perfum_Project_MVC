@@ -1,5 +1,5 @@
 ﻿
-using Perfum.Domain.Models.Order;
+using Perfum.Domain.Models.Orders;
 
 namespace Perfum.Repositories.Data;
 
@@ -19,7 +19,17 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         base.OnModelCreating(modelBuilder);
 
+        
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        modelBuilder.Entity<OrderItem>()
+            .Property(o => o.UnitPrice)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Order>()
+            .Property(o => o.TotalPrice)
+            .HasColumnType("decimal(18,2)");
 
     }
     #endregion

@@ -8,3 +8,10 @@ global using Perfum.Repositories.Data;
 global using Perfum.Repositories.IRepository;
 global using Perfum.Repositories.IRepository.MangerRepository;
 global using Perfum.Repositories.Repository.ManagerRepositoy;
+global using Perfum.Repositories.IRepository.Orders;
+global using Perfum.Domain.Models.Orders;
+global using Perfum.Repositories.Repository.Orders;
+
+
+
+
