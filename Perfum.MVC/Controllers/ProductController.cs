@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Perfum.MVC.Models;
 using Perfum.Services.IServices.ManagerService;
+using Perfum.Services.ViewModels.Paginations;
 using System.Diagnostics;
 
 namespace Perfum.MVC.Controllers;
@@ -14,20 +15,24 @@ public class ProductController : Controller
         _serviceManager = serviceManager;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-
-        return View();
+        var result = await _serviceManager.ProductService.GetAllAsync();
+        if (result == null)
+            result = new PagedResult<ProductVM, ProductFilter, DashBoardProduct>
+            {
+                Items = new List<ProductVM>(),
+                TotalCount = 0,
+                Filter = null,
+                DashboardVM = null
+            };
+        return View(result);
     }
 
     public IActionResult Privacy()
     {
-
-
         return View();
         //save image first -> path image
-
-
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
