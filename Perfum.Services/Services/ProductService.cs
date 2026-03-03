@@ -164,7 +164,7 @@ public class ProductService : IProductService
 
             //save changes
             await _repositoryManager.ProductRepository.DeleteAsync(removeProduct);
-
+            _fileService.DeleteImage(removeProduct.ImageUrl);
             //return
             return "Success";
         }

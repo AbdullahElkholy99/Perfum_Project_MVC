@@ -1,5 +1,6 @@
 ﻿
 using Perfum.Services.ViewModels.Paginations;
+using static System.Net.WebRequestMethods;
 
 namespace Perfum.Services.Services;
 
@@ -156,5 +157,7 @@ public class CategoryService : ICategoryService
             return "Fail";
         }
     }
+
+  
     #endregion
 }

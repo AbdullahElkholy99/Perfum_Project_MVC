@@ -1,69 +1,75 @@
-﻿@model EditProductVM
+﻿@model Perfum.MVC.ViewModels.ProductEditPageVM
 @using Perfum.Services.ViewModels.ProductVM
 @{
     ViewData["Title"] = "Edit Product";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
-    var categories = ViewBag.Categories as List<CategoryVM> ?? new List<CategoryVM>();
+    SelectList CategoryItems = new SelectList(Model.Categories, "Id", "Name", Model.Product.CategoryId);
 }
 <link href="~/css/dashbord/product.css" rel="stylesheet" />
 <div class="product-page">
     <div class="topbar">
         <div>
             <div class="page-title">Edit <span>Product</span></div>
-            <div class="page-subtitle">@Model.Name</div>
         </div>
         <div class="topbar-actions">
             <a asp-action="Index" class="btn btn-ghost">Cancel</a>
         </div>
     </div>
-    <form asp-action="Edit" asp-route-id="@ViewContext.RouteData.Values["id"]" method="post" enctype="multipart/form-data" style="max-width:560px;">
+    <form asp-action="Edit" asp-route-id="@ViewContext.RouteData.Values["id"]"
+          method="post" enctype="multipart/form-data">
+
         @Html.AntiForgeryToken()
+
         <div class="form-group">
-            <label class="form-label">Name</label>
-            <input asp-for="Name" class="form-input" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <label>Name</label>
+            <input asp-for="Product.Name" class="form-input" />
+            <span asp-validation-for="Product.Name" class="text-danger"></span>
         </div>
+
         <div class="form-group">
-            <label class="form-label">Description</label>
-            <textarea asp-for="Descreption" class="form-input" rows="3"></textarea>
+            <label>Description</label>
+            <textarea asp-for="Product.Descreption" class="form-input"></textarea>
         </div>
+
         <div class="form-row">
             <div class="form-group">
-                <label class="form-label">Price</label>
-                <input asp-for="Price" class="form-input" type="number" step="0.01" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label>Price</label>
+                <input asp-for="Product.Price" type="number" step="0.01" class="form-input" />
             </div>
+
             <div class="form-group">
-                <label class="form-label">Size (ml)</label>
-                <input asp-for="Size_Ml" class="form-input" type="number" step="0.01" />
-                <span asp-validation-for="Size_Ml" class="text-danger"></span>
+                <label>Size (ml)</label>
+                <input asp-for="Product.Size_Ml" type="number" step="0.01" class="form-input" />
             </div>
         </div>
+
         <div class="form-group">
-            <label class="form-label">Concentration</label>
-            <input asp-for="Concentration" class="form-input" />
+            <label>Concentration</label>
+            <input asp-for="Product.Concentration" class="form-input" />
         </div>
+
         <div class="form-row">
             <div class="form-group">
-                <label class="form-label">Stock</label>
-                <input asp-for="Stock" class="form-input" type="number" />
-                <span asp-validation-for="Stock" class="text-danger"></span>
+                <label>Stock</label>
+                <input asp-for="Product.Stock" type="number" class="form-input" />
             </div>
+
             <div class="form-group">
-                <label class="form-label">Category</label>
-                <select asp-for="CategoryId" class="form-input" asp-items="@(new SelectList(categories, "Id", "Name"))">
+                <label>Category</label>
+                <select asp-for="Product.CategoryId"
+                        class="form-input"
+                        asp-items="@CategoryItems">
                     <option value="">-- Select --</option>
                 </select>
             </div>
         </div>
+
         <div class="form-group">
-            <label class="form-label">New image (optional)</label>
-            <input asp-for="ImageUrl" type="file" accept=".jpg,.jpeg,.png,.webp" class="form-input" />
+            <label>New Image</label>
+            <input asp-for="Product.ImageUrl" type="file" class="form-input" />
         </div>
-        <div style="display:flex;gap:10px;margin-top:20px;">
-            <button type="submit" class="btn btn-primary">Save changes</button>
-            <a asp-action="Index" class="btn btn-ghost">Cancel</a>
-        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>
 @section Scripts {

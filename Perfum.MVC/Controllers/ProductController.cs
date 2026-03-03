@@ -28,7 +28,7 @@ public class ProductController : Controller
         return View(result);
     }
 
-    public async Task<IActionResult> Deatails(int id)
+    public async Task<IActionResult> Details(int id)
     {
         var product = await _serviceManager.ProductService.GetByIdAsync(id);
         if (product == null || product.Id == 0)
@@ -77,37 +77,51 @@ public class ProductController : Controller
         var product = await _serviceManager.ProductService.GetByIdAsync(id);
         if (product == null || product.Id == 0)
             return NotFound();
+
         var categories = await _serviceManager.CategoryService.GetAllAsync(null);
-        ViewBag.Categories = categories?.Items ?? new List<CategoryVM>();
-        var editModel = new EditProductVM
+
+        var vm = new ProductEditPageVM
         {
-            Name = product.Name,
-            Descreption = product.Descreption,
-            Price = product.Price,
-            Size_Ml = product.Size_Ml,
-            Concentration = product.Concentration,
-            Stock = product.Stock,
-            CategoryId = product.CategoryId
+            Product = new EditProductVM
+            {
+                Name = product.Name,
+                Descreption = product.Descreption,
+                Price = product.Price,
+                Size_Ml = product.Size_Ml,
+                Concentration = product.Concentration,
+                Stock = product.Stock,
+                CategoryId = product.CategoryId
+            },
+            Categories = categories?.Items ?? new List<CategoryVM>()
         };
-        return View(editModel);
+
+        return View(vm);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, EditProductVM model)
+    public async Task<IActionResult> Edit(int id, ProductEditPageVM vm)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            var result = await _serviceManager.ProductService.UpdateAsync(id, model);
-            if (result == "Success")
-            {
-                TempData["Success"] = "Product updated successfully.";
-                return RedirectToAction(nameof(Index));
-            }
+            var categories = await _serviceManager.CategoryService.GetAllAsync(null);
+            vm.Categories = categories?.Items ?? new List<CategoryVM>();
+            return View(vm);
         }
-        var categories = await _serviceManager.CategoryService.GetAllAsync(null);
-        ViewBag.Categories = categories?.Items ?? new List<CategoryVM>();
-        return View(model);
+
+        var result = await _serviceManager.ProductService.UpdateAsync(id, vm.Product);
+
+        if (result == "Success")
+        {
+            TempData["Success"] = "Product updated successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var reload = await _serviceManager.CategoryService.GetAllAsync(null);
+        vm.Categories = reload?.Items ?? new List<CategoryVM>();
+
+        ModelState.AddModelError("", "Could not update product.");
+        return View(vm);
     }
 
     [HttpGet]
