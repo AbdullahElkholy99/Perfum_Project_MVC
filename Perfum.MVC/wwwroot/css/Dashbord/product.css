@@ -84,7 +84,18 @@ body {
     max-width: 100%;
     min-height: 0;
 }
+.text-danger {
+    color: var(--rose);
+    font-size: 12px;
+    display: block;
+    margin-top: 6px;
+}
 
+.form-group + .form-row,
+.form-row + .form-group,
+.form-group + .form-group {
+    margin-top: 12px;
+}
 /* ═══════════════════════════════════════════════════════════════
    SIDEBAR (defined here so product.css can be used standalone)
    ═══════════════════════════════════════════════════════════════ */

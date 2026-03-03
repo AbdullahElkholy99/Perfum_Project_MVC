@@ -124,26 +124,28 @@ public class ProductService : IProductService
     // --------------------- Update ---------------------
     public async Task<string> UpdateAsync(int id, EditProductVM model)
     {
+        using var transaction = _repositoryManager.ProductRepository.BeginTransaction();
         try
         {
-            // get Product as traking 
             var oldProduct = await _repositoryManager.ProductRepository.GetByIdAsync(id);
-
-            //check for Product
             if (oldProduct == null)
                 return "Fail";
 
-            // map from new Product (model) to  old Product
             _mapper.Map(model, oldProduct);
 
-            //save changes
-            await _repositoryManager.ProductRepository.SaveChangesAsync();
+            if (model.ImageUrl != null && model.ImageUrl.Length > 0)
+            {
+                string path = await _fileService.SaveImageAsync(model.ImageUrl, "Images/product");
+                oldProduct.ImageUrl = path;
+            }
 
-            //return
+            await _repositoryManager.ProductRepository.SaveChangesAsync();
+            transaction.Commit();
             return "Success";
         }
-        catch (Exception ex)
+        catch
         {
+            transaction.Rollback();
             return "Fail";
         }
     }
