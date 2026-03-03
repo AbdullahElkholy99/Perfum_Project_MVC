@@ -14,9 +14,6 @@ builder.Services
     .AddRepositoryDependencies(builder.Configuration)
     .AddServiceDependencies(builder.Configuration);
 
-// Add Scoped Service For File Service:
-//builder.Services.AddScoped<IFileService, FileService>();
-
 //Auto Mapper 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
@@ -26,6 +23,7 @@ builder.Services.AddAuthentication();
 
 builder.Services.IdentityService();
 builder.Services.PolicyService();
+
 #endregion
 
 

@@ -12,7 +12,21 @@ public class AccountController : Controller
 
     public IActionResult Login()
     {
-        return View();
+        var id = Request.Cookies["Id"];
+        var role = Request.Cookies["Role"];
+
+        if (id == null || role == null)
+            return View();
+
+        if (role == "Admin")
+            return RedirectToAction("Index", "Admin");
+
+        else if (role == "Customer")
+            return RedirectToAction("Index", "Customer");
+
+
+        return RedirectToAction("Index", "Home");
+
     }
 
 
@@ -40,7 +54,7 @@ public class AccountController : Controller
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
 
-            Response.Cookies.Append("ID", result.Id.ToString(), options);
+            Response.Cookies.Append("Id", result.Id.ToString(), options);
             Response.Cookies.Append("Email", result.Email, options);
             Response.Cookies.Append("Name", result.UserName, options);
             Response.Cookies.Append("Role", roles[0], options);
@@ -119,11 +133,26 @@ public class AccountController : Controller
     }
 
 
+
+    // --------------------------- UpdateProfileImage
+    [HttpPost]
+    public async Task<IActionResult> UpdateProfileImage(int id, IFormFile ProfileImage)
+    {
+        if (ProfileImage == null)
+            return BadRequest();
+
+        var imagePath = await _serviceManager.UserService.EditImageAsync(id, ProfileImage);
+
+        return Json(new { imagePath });
+    }
+
+
     // --------------------------- Logout
     public async Task<IActionResult> Logout()
     {
         try
         {
+            Response.Cookies.Delete("Id");
             Response.Cookies.Delete("Role");
             Response.Cookies.Delete("Name");
             Response.Cookies.Delete("Email");

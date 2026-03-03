@@ -1,22 +1,34 @@
 ﻿
 namespace Perfum.Services.Services.Authentication;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Perfum.MVC.Services;
 using System.Security.Claims;
 
 public class UserService : IUserService
 {
+    #region Fields
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     public readonly IMapper _mapper;
     public readonly IRoleService _roleService;
-    public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper, IRoleService roleService)
+    public readonly IFileService _fileService;
+
+    #endregion
+
+    #region CTOR
+    public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IMapper mapper, IRoleService roleService, IFileService fileManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _mapper = mapper;
-        this._roleService = roleService;
+        _roleService = roleService;
+        _fileService = fileManager;
     }
+    #endregion
+
+    #region Method Handlers 
 
     // ------------------- Create
     public async Task<IdentityResult> CreateAsync(User user, string password)
@@ -77,7 +89,40 @@ public class UserService : IUserService
     {
         return await _userManager.UpdateAsync(user);
     }
+    public async Task<string> EditImageAsync(int id, IFormFile imageFile)
+    {
+        try
+        {
+            var user = await FindByIdAsync(id);
+            if (user == null)
+                return string.Empty;
 
+            var roles = await _roleService.GetRolesAsync(user);
+            if (roles == null)
+                return string.Empty;
+            ;
+
+            var pathImage = await _fileService.SaveImageAsync(imageFile, $"Images/{roles[0]}");
+
+            if (pathImage == null)
+                return string.Empty;
+
+            if (user.ImagePath != null)
+                _fileService.DeleteImage(user.ImagePath);
+
+            user.ImagePath = pathImage;
+
+            await _userManager.UpdateAsync(user);
+
+            return pathImage;
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception(ex.Message);
+        }
+
+    }
     // ------------------- Delete
     public async Task<IdentityResult> DeleteAsync(User user)
     {
@@ -132,4 +177,5 @@ public class UserService : IUserService
 
         return users.Distinct().ToList();
     }
+    #endregion
 }

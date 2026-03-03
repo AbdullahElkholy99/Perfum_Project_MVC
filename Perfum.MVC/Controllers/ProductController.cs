@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
 using Perfum.MVC.Models;
 using Perfum.MVC.ViewModels;
-using Perfum.Services.IServices.ManagerService;
 using Perfum.Services.ViewModels.Paginations;
 using System.Diagnostics;
 
