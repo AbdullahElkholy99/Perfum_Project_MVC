@@ -1,4 +1,6 @@
-﻿namespace Perfum.Domain.Models;
+﻿using Perfum.Domain.Models.Orders;
+
+namespace Perfum.Domain.Models;
 
 public class Product
 {
@@ -21,8 +23,14 @@ public class Product
 
     public int Stock { get; set; }
 
+
+    // Relationships
     [ForeignKey(nameof(Category))]
     public int CategoryId { get; set; }
     public virtual Category Category { get; set; }
+
+
+    public virtual List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
 
 }

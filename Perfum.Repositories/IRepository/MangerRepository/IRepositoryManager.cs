@@ -1,8 +1,13 @@
-﻿namespace Perfum.Repositories.IRepository.MangerRepository;
+﻿
+namespace Perfum.Repositories.IRepository.MangerRepository;
 
 public interface IRepositoryManager
 {
     ICategoryRepository CategoryRepository { get; }
     IProductRepository ProductRepository { get; }
+    
+    IOrderRepository OrderRepository { get; }
+    IOrderItemRepository OrderItemRepository { get; }
+
 
 }
