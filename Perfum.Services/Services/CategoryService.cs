@@ -74,9 +74,9 @@ public class CategoryService : ICategoryService
                 DashboardVM = null
             };
         }
-        catch
+        catch(Exception e)
         {
-            return null;
+            throw e;
         }
     }
 
