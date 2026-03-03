@@ -1,0 +1,31 @@
+﻿@model ProductVM
+@{
+    ViewData["Title"] = "Product Details";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+}
+<div class="product-page">
+    <div class="topbar">
+        <div>
+            <div class="page-title">@Model.Name</div>
+            <div class="page-subtitle">Product details</div>
+        </div>
+        <div class="topbar-actions">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+            <a asp-action="Index" class="btn btn-ghost">Back to list</a>
+        </div>
+    </div>
+    <div class="stat-strip" style="max-width:400px;">
+        <div class="mini-stat"><div class="mini-icon ic-amber">✨</div><div><div class="mini-val">$@Model.Price.ToString("N2")</div><div class="mini-label">Price</div></div></div>
+        <div class="mini-stat"><div class="mini-icon ic-sage">📦</div><div><div class="mini-val">@Model.Stock</div><div class="mini-label">Stock</div></div></div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
+        <p><strong>Description:</strong> @(Model.Descreption ?? "—")</p>
+        <p><strong>Concentration:</strong> @(Model.Concentration ?? "—")</p>
+        <p><strong>Size (ml):</strong> @Model.Size_Ml</p>
+        <p><strong>Category Id:</strong> @Model.CategoryId</p>
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <p><img src="~/@Model.ImageUrl" alt="@Model.Name" style="max-width:200px;" /></p>
+        }
+    </div>
+</div>

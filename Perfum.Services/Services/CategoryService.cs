@@ -54,31 +54,26 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            // get all categories as no traking 
-            List<Category>? categories = await _repositoryManager.CategoryRepository.GetTableNoTracking().ToListAsync();
+            List<Category>? categories = await _repositoryManager.CategoryRepository
+                .GetTableNoTracking()
+                .ToListAsync();
 
-            //check for categories
             if (categories == null)
                 return null;
 
-
-            // filter 
-            if (filter != null)
-            {
-
-
-            }
-            // map from category to categoryVM
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
-
-            //check 
             if (categoriesVM == null)
                 return null;
 
-            //return
-            return null;
+            return new PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>
+            {
+                Items = categoriesVM,
+                TotalCount = categoriesVM.Count,
+                Filter = filter,
+                DashboardVM = null
+            };
         }
-        catch (Exception ex)
+        catch
         {
             return null;
         }

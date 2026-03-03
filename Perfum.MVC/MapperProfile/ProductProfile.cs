@@ -11,7 +11,8 @@ namespace Perfum.MVC.MapperProfile
 
             CreateMap<AddProductVM, Product>();
 
-            CreateMap<EditProductVM, Product>();
+            CreateMap<EditProductVM, Product>()
+                .ForMember(d => d.ImageUrl, o => o.Ignore());
         }
         
     }
