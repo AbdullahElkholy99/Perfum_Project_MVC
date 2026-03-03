@@ -1,4 +1,6 @@
-﻿namespace Perfum.Services.IServices.Authentication;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Perfum.Services.IServices.Authentication;
 
 public interface IUserService
 {
@@ -12,6 +14,7 @@ public interface IUserService
     Task<List<User>> GetAllUsersForSpecificRoleAsync(List<string> roles);
     // ------------------- Update
     Task<IdentityResult> UpdateAsync(User User);
+    Task<string> EditImageAsync(int id, IFormFile imageFile);
     // ------------------- Delete
     Task<IdentityResult> DeleteAsync(User user);
 
