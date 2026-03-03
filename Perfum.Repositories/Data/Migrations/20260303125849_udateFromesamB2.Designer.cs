@@ -12,8 +12,8 @@ using Perfum.Repositories.Data;
 namespace Perfum.Repositories.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260302130116_init")]
-    partial class init
+    [Migration("20260303125849_udateFromesamB2")]
+    partial class udateFromesamB2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,7 +166,7 @@ namespace Perfum.Repositories.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddedByID")
+                    b.Property<int?>("AdminId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -175,7 +175,7 @@ namespace Perfum.Repositories.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddedByID");
+                    b.HasIndex("AdminId");
 
                     b.ToTable("Categories");
                 });
@@ -191,9 +191,27 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Concentration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descreption")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Size_Ml")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -229,18 +247,8 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -357,13 +365,9 @@ namespace Perfum.Repositories.Data.Migrations
 
             modelBuilder.Entity("Perfum.Domain.Models.Category", b =>
                 {
-                    b.HasOne("Perfum.Domain.Models.Users.Admin", "Admin")
+                    b.HasOne("Perfum.Domain.Models.Users.Admin", null)
                         .WithMany("Categories")
-                        .HasForeignKey("AddedByID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Admin");
+                        .HasForeignKey("AdminId");
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Product", b =>

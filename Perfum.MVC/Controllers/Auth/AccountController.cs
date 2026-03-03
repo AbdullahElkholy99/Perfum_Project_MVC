@@ -29,7 +29,6 @@ public class AccountController : Controller
 
     }
 
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginVM model)
@@ -40,7 +39,7 @@ public class AccountController : Controller
             return View(model);
         }
         LoginResultVM? result = await _serviceManager.UserService.IsAuthenticate(model);
-        if (result.Result)
+        if (result.Result) // success 
         {
 
             var roles = result.Roles;

@@ -61,7 +61,7 @@ public class ProductService : IProductService
 
     // --------------------- Read ---------------------
 
-    public async Task<PagedResult<ProductVM, ProductFilter, DashBoardProduct>> GetAllAsync()
+    public async Task<PagedResult<ProductVM, ProductFilter, DashBoardProduct>> GetAllAsync(ProductFilter? filter)
     {
         try
         {
@@ -78,13 +78,18 @@ public class ProductService : IProductService
             //check 
             if (productVM == null)
                 return null;
+
+            //if(filter !=null){}
+
+
             var result = new PagedResult<ProductVM, ProductFilter, DashBoardProduct>()
             {
                 Items = productVM,
                 DashboardVM = null,
                 TotalCount = productVM.Count(),
-                Filter = null
+                Filter = filter
             };
+
             //return
             return result;
         }
@@ -93,6 +98,7 @@ public class ProductService : IProductService
             return null;
         }
     }
+    //create function for get some info products statics
 
     public async Task<ProductVM> GetByIdAsync(int id)
     {

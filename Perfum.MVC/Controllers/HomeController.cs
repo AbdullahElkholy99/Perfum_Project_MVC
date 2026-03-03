@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
 using Perfum.MVC.Models;
-using Perfum.Services.IServices.ManagerService;
-using Perfum.Services.ViewModels.Paginations;
 using System.Diagnostics;
 
 namespace Perfum.MVC.Controllers;
@@ -15,14 +12,12 @@ public class HomeController : Controller
         _serviceManager = serviceManager;
     }
 
-    public async Task<IActionResult> Index(CategoryFilter filter)
+    public async Task<IActionResult> Index()
     {
         try
         {
 
-            PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>? categories = await _serviceManager.CategoryService.GetAllAsync(filter);
-
-            return View(categories);
+            return View();
 
         }
         catch (Exception)
@@ -37,9 +32,6 @@ public class HomeController : Controller
 
 
         return View();
-        //save image first -> path image
-
-
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

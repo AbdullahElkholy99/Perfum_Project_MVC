@@ -5,6 +5,8 @@ using System.Diagnostics;
 
 namespace Perfum.MVC.Controllers;
 
+//[Authorize]
+
 public class ProductController : Controller
 {
     private readonly IServiceManager _serviceManager;
@@ -14,9 +16,10 @@ public class ProductController : Controller
         _serviceManager = serviceManager;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(PagedResult<ProductVM, ProductFilter, DashBoardProduct>? pagedResult)
     {
-        var result = await _serviceManager.ProductService.GetAllAsync();
+        PagedResult<ProductVM, ProductFilter, DashBoardProduct>? result = await _serviceManager.ProductService.GetAllAsync(null);
+
         if (result == null)
             result = new PagedResult<ProductVM, ProductFilter, DashBoardProduct>
             {
@@ -25,6 +28,7 @@ public class ProductController : Controller
                 Filter = null,
                 DashboardVM = null
             };
+
         return View(result);
     }
 

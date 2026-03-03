@@ -1,8 +1,166 @@
-﻿@{
+﻿@model PagedResult<ProductVM, ProductFilter, DashBoardProduct>
+@{
     ViewData["Title"] = "Home Page";
-}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sillage — Boutique</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<link href="~/css/users/customerpage.css" rel="stylesheet" />
+ 
+
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="scrollToShop()">Sill<span>age</span></div>
+    <div class="nav-links">
+      <div class="nav-link active" onclick="setNavActive(this)">Boutique</div>
+      <div class="nav-link" onclick="setNavActive(this)">Collections</div>
+      <div class="nav-link" onclick="setNavActive(this)">Atelier</div>
+      <div class="nav-link" onclick="setNavActive(this)">Journal</div>
+    </div>
+    <div class="nav-actions">
+      <div class="nav-icon-btn theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">🌙</div>
+      <div class="nav-icon-btn" onclick="toggleWishlist()" title="Wishlist">🤍</div>
+      <div class="nav-icon-btn" onclick="openCart()" title="Cart">
+        🛒<span class="cart-badge" id="cartBadge" style="display:none">0</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-tag">New Season · Spring 2026</div>
+  <h1 class="hero-title">The Art of<br><em>Invisible Presence</em></h1>
+  <p class="hero-sub">Each fragrance is a story told in air — a trail of memory left in every room you grace.</p>
+  <div class="hero-cta" onclick="scrollToShop()">Explore the Collection <span>→</span></div>
+  <div class="hero-badges">
+    <div class="hero-badge"><div class="hb-dot"></div>Free shipping over $250</div>
+    <div class="hero-badge"><div class="hb-dot"></div>Complimentary samples</div>
+    <div class="hero-badge"><div class="hb-dot"></div>Luxury gift wrapping</div>
+    <div class="hero-badge"><div class="hb-dot"></div>Easy 30-day returns</div>
+  </div>
+</section>
+
+<!-- ── SHOP ── -->
+<section class="shop" id="shopSection">
+  <div class="section-header">
+    <div class="section-title">Our <span>Fragrances</span></div>
+    <div class="filter-row" id="filterRow"></div>
+  </div>
+  <div class="shop-toolbar">
+    <div class="shop-search">
+      <span style="color:var(--text3);font-size:16px">⌕</span>
+      <input id="shopSearch" placeholder="Search fragrances, notes…" oninput="applyFilters()" />
+    </div>
+    <select class="sort-sel" id="sortSel" onchange="applyFilters()">
+      <option value="default">Featured</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+      <option value="rating">Top Rated</option>
+      <option value="name">Name A–Z</option>
+    </select>
+    <div class="count-label" id="countLabel"></div>
+  </div>
+  <div class="prod-grid" id="prodGrid"></div>
+</section>
+
+<footer>
+  <div class="footer-logo">Sillage</div>
+  <div class="footer-tagline">Luxury Fragrance Studio · Est. 2018</div>
+  <div class="footer-links">
+    <span class="footer-link">About</span><span class="footer-link">Ingredients</span>
+    <span class="footer-link">Sustainability</span><span class="footer-link">Privacy</span>
+    <span class="footer-link">Contact</span>
+  </div>
+  <div class="footer-copy">© 2026 Sillage Studio. All rights reserved.</div>
+</footer>
+
+<!-- ── PRODUCT MODAL ── -->
+<div class="modal-bg" id="modalBg" onclick="closeProductModal(event)">
+  <div class="prod-modal" id="prodModal">
+    <div class="pm-hero" id="pmHero">
+      <div id="pmEmoji" style="font-size:88px;position:relative;z-index:1;filter:drop-shadow(0 8px 28px rgba(0,0,0,.12))"></div>
+      <div class="pm-close" onclick="closeProductModal(true)">✕</div>
+    </div>
+    <div class="pm-body">
+      <div class="pm-cat" id="pmCat"></div>
+      <div class="pm-name" id="pmName"></div>
+      <div class="pm-tagline" id="pmTagline"></div>
+      <div class="pm-price-row">
+        <div class="pm-price" id="pmPrice"></div>
+        <div class="pm-size" id="pmSize"></div>
+      </div>
+      <div class="pm-section-title">Fragrance Notes</div>
+      <div class="pm-notes-grid" id="pmNotes"></div>
+      <div class="pm-section-title">Details</div>
+      <div class="pm-details-row" id="pmDetails" style="margin-bottom:22px;"></div>
+      <div class="pm-qty-row">
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeModalQty(-1)">−</button>
+          <div class="qty-val" id="modalQtyVal">1</div>
+          <button class="qty-btn" onclick="changeModalQty(1)">+</button>
+        </div>
+        <button class="pm-add-btn" id="pmAddBtn" onclick="addFromModal()">Add to Cart — <span id="pmTotal"></span></button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- ── CART DRAWER ── -->
+<div class="cart-backdrop" id="cartBg" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <div class="cart-title">Your Cart <span id="cartCount" style="font-size:14px;color:var(--text3)"></span></div>
+    <div class="cart-close" onclick="closeCart()">✕</div>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter"></div>
+</div>
+
+<!-- ── CHECKOUT OVERLAY ── -->
+<div class="checkout-overlay" id="checkoutOverlay">
+  <div class="co-nav">
+    <div class="co-back" onclick="closeCheckout()">← Back to cart</div>
+    <div class="co-logo">Sillage</div>
+    <div class="co-steps" id="coSteps"></div>
+  </div>
+  <div class="co-body">
+    <div class="co-left" id="coLeft"></div>
+    <div class="co-right" id="coRight"></div>
+  </div>
+</div>
+
+<!-- ── SUCCESS ── -->
+<div class="success-screen" id="successScreen">
+  <div class="success-ring">✓</div>
+  <div class="success-title">Order <em>Confirmed</em></div>
+  <p class="success-sub">Thank you for your purchase. Your fragrances will be carefully packaged and dispatched within 24 hours. A confirmation has been sent to your email.</p>
+  <div class="success-order-id" id="successOrderId">#5312</div>
+  <div class="success-actions">
+    <div class="hero-cta" onclick="continueShopping()">Continue Shopping</div>
+    <div class="hero-cta" style="background:var(--surface);color:var(--accent);border:1.5px solid var(--accent);box-shadow:none;" onclick="continueShopping()">View Orders</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg">Added to cart</span></div>
+
+
+<script src="~/js/users/customerpage.js"></script>
+
+</body>
+</html>

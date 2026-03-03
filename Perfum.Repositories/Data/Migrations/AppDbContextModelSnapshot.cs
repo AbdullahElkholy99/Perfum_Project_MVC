@@ -163,13 +163,16 @@ namespace Perfum.Repositories.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddedByID");
+                    b.HasIndex("AdminId");
 
                     b.ToTable("Categories");
                 });
@@ -359,13 +362,9 @@ namespace Perfum.Repositories.Data.Migrations
 
             modelBuilder.Entity("Perfum.Domain.Models.Category", b =>
                 {
-                    b.HasOne("Perfum.Domain.Models.Users.Admin", "Admin")
+                    b.HasOne("Perfum.Domain.Models.Users.Admin", null)
                         .WithMany("Categories")
-                        .HasForeignKey("AddedByID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Admin");
+                        .HasForeignKey("AdminId");
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Product", b =>

@@ -28,6 +28,7 @@ public abstract class BasePaginationFilter
 }
 
 
+
 public class AdminFilter : BasePaginationFilter
 {
 }
