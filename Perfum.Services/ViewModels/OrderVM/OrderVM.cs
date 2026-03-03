@@ -2,7 +2,6 @@
 
 using Perfum.Domain.Enums;
 using Perfum.Domain.Models.Orders;
-using System.ComponentModel.DataAnnotations;
 
 namespace Perfum.Services.ViewModels.OrderVM;
 
