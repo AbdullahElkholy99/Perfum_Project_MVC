@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace Perfum.Services.ViewModels.ProductVM;
 
 public record ProductVM
@@ -44,11 +44,12 @@ public record EditProductVM
     public double Price { get; set; }
     public double Size_Ml { get; set; }
 
-    public IFormFile ImageUrl { get; set; }
+    public IFormFile? ImageUrl { get; set; }
     public string Concentration { get; set; }
 
     public int Stock { get; set; }
     public int CategoryId { get; set; }
 }
+
 
 

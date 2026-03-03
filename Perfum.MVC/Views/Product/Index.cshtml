@@ -22,7 +22,7 @@
         <div class="topbar-actions">
             <button class="btn btn-ghost" onclick="showToast('Catalogue exported')">⬇ Export</button>
             <button class="btn btn-ghost" onclick="showToast('Import ready')">⬆ Import</button>
-            <button class="btn btn-primary" onclick="openAddModal()">✦ Add Product</button>
+            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">✦ Add Product</a>
         </div>
     </div>
 
@@ -85,6 +85,11 @@
                     <div class="prod-footer">
                         <div class="prod-price">$@p.Price.ToString("N2")</div>
                         <div class="prod-rating">Stock: @p.Stock</div>
+                        <div>
+                            <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-ghost btn-sm">Details</a>
+                            <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-ghost btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
                     </div>
                 </div>
             </div>
