@@ -1,7 +1,9 @@
 @model AddOrderItemVM
 @{
     ViewData["Title"] = "Add Order Item";
-    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+    var productList = ViewBag.Products as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+                      ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
 }
 
 <link href="~/css/dashbord/order.css" rel="stylesheet" />
@@ -31,25 +33,50 @@
 
             <div class="form-grid" style="grid-template-columns:1fr;">
 
+                @* ── Product dropdown ── *@
                 <div class="form-group">
-                    <label asp-for="ProductId" class="form-label">🔖 Product ID</label>
-                    <input asp-for="ProductId" type="number" min="1" class="form-control"
-                           placeholder="Enter product ID…" />
+                    <label class="form-label">🔖 Product</label>
+                    <select asp-for="ProductId" id="productSelect"
+                            class="form-control sort-select"
+                            style="width:100%;padding:9px 13px;"
+                            onchange="fillUnitPrice(this)">
+                        <option value="">— Select a product —</option>
+                        @foreach (var item in productList)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
                     <span asp-validation-for="ProductId" class="field-error"></span>
                 </div>
 
+                @* ── Quantity ── *@
                 <div class="form-group">
                     <label asp-for="Quantity" class="form-label">🔢 Quantity</label>
-                    <input asp-for="Quantity" type="number" min="1" class="form-control"
-                           placeholder="1" />
+                    <input asp-for="Quantity" id="quantityInput" type="number" min="1"
+                           class="form-control" placeholder="1" oninput="calcSubtotal()" />
                     <span asp-validation-for="Quantity" class="field-error"></span>
                 </div>
 
+                @* ── Unit Price (auto-filled, editable) ── *@
                 <div class="form-group">
                     <label asp-for="UnitPrice" class="form-label">💰 Unit Price</label>
-                    <input asp-for="UnitPrice" type="number" step="0.01" min="0" class="form-control"
-                           placeholder="0.00" />
+                    <input asp-for="UnitPrice" id="unitPriceInput" type="number"
+                           step="0.01" min="0" class="form-control"
+                           placeholder="0.00" oninput="calcSubtotal()" />
+                    <span style="font-size:11px;color:var(--text3);">
+                        Auto-filled from product — you can override it
+                    </span>
                     <span asp-validation-for="UnitPrice" class="field-error"></span>
+                </div>
+
+                @* ── Subtotal preview ── *@
+                <div class="form-group">
+                    <label class="form-label">🧾 Subtotal Preview</label>
+                    <div id="subtotalPreview" class="form-control"
+                         style="background:var(--surface3);cursor:default;
+                                font-weight:700;color:var(--accent2);">
+                        $0.00
+                    </div>
                 </div>
 
             </div>
@@ -64,5 +91,33 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Parse price from option text format: "Product Name — $120.00"
+        function getPriceFromText(text) {
+            var match = text.match(/\$([0-9,]+\.?[0-9]*)/);
+            return match ? parseFloat(match[1].replace(',', '')) : 0;
+        }
+
+        function fillUnitPrice(sel) {
+            var option = sel.options[sel.selectedIndex];
+            if (!option || !option.value) {
+                document.getElementById('unitPriceInput').value = '';
+                calcSubtotal();
+                return;
+            }
+            var price = getPriceFromText(option.text);
+            document.getElementById('unitPriceInput').value = price.toFixed(2);
+            calcSubtotal();
+        }
+
+        function calcSubtotal() {
+            var qty   = parseFloat(document.getElementById('quantityInput').value)  || 0;
+            var price = parseFloat(document.getElementById('unitPriceInput').value) || 0;
+            document.getElementById('subtotalPreview').textContent = '$' + (qty * price).toFixed(2);
+        }
+    </script>
 }

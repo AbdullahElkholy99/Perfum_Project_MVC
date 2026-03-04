@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Delete Order";
-    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
     var statusClass = Model.Status switch {
         Status.Active   => "sb-in",
         Status.Pending  => "sb-low",

@@ -1,7 +1,7 @@
 @model List<OrderItemVM>
 @{
     ViewData["Title"] = "Order Items";
-    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
     var orderId   = ViewBag.OrderId as int? ?? 0;
     var order     = ViewBag.Order as Perfum.Services.ViewModels.OrderVM.OrderVM;
     var items     = Model ?? new List<Perfum.Services.ViewModels.OrderItemVM.OrderItemVM>();

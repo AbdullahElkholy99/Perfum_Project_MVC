@@ -9,7 +9,7 @@ namespace Perfum.Services.Services.Orders;
 
 public class OrderService : IOrderService
 {
-    #region Fields 
+    #region Fields
 
     private readonly IRepositoryManager _repositoryManager;
     private readonly IFileService _fileService;
@@ -28,32 +28,53 @@ public class OrderService : IOrderService
     #endregion
 
 
+    #region Helpers
 
-    #region Method Handlers 
+    /// <summary>
+    /// Recalculates TotalPrice from the order's items and saves.
+    /// Call this after any add/edit/delete of an OrderItem.
+    /// </summary>
+    private async Task RecalculateTotalAsync(int orderId)
+    {
+        var order = await _repositoryManager.OrderRepository.GetByIdAsync(orderId);
+        if (order == null) return;
+
+        var items = await _repositoryManager.OrderItemRepository
+                          .GetAllByOrderId(orderId)
+                          .ToListAsync();
+
+        order.TotalPrice = items.Sum(i => i.UnitPrice * i.Quantity);
+
+        await _repositoryManager.OrderRepository.SaveChangesAsync();
+    }
+
+    #endregion
+
+
+    #region Method Handlers
+
     // --------------------- Create ---------------------
     public async Task<string> AddAsync(AddOrderVM model)
     {
-        using var Transaction = _repositoryManager.OrderRepository.BeginTransaction();
+        using var transaction = _repositoryManager.OrderRepository.BeginTransaction();
         try
         {
-            if (model == null)
-                return "Fail";
+            if (model == null) return "Fail";
 
-            var Order = _mapper.Map<Order>(model);
+            var order = _mapper.Map<Order>(model);
+            if (order == null) return "Fail";
 
-            if (Order == null)
-                return "Fail";
+            // Always start at 0 — items will drive the total
+            order.TotalPrice = 0;
 
+            await _repositoryManager.OrderRepository.AddAsync(order);
 
-            await _repositoryManager.OrderRepository.AddAsync(Order);
-
-            Transaction.Commit();
-
+            transaction.Commit();
             return "Success";
         }
-        catch (Exception ex)
+        catch
         {
-            Transaction.Rollback();
+            transaction.Rollback();
             return "Fail";
         }
     }
@@ -64,30 +85,24 @@ public class OrderService : IOrderService
     {
         try
         {
-            // get all Orders as no traking 
-            List<Order>? Orders = await _repositoryManager.OrderRepository.GetTableNoTracking().ToListAsync();
+            var orders = await _repositoryManager.OrderRepository
+                               .GetTableNoTracking()
+                               .ToListAsync();
 
-            //check for Orders
-            if (Orders == null)
-                return null;
+            if (orders == null) return null;
 
-            // map from Order to OrderVM
-            var OrderVM = _mapper.Map<List<OrderVM>>(Orders);
+            var orderVMs = _mapper.Map<List<OrderVM>>(orders);
+            if (orderVMs == null) return null;
 
-            //check 
-            if (OrderVM == null)
-                return null;
-            var result = new PagedResult<OrderVM, OrderFilter, DashBoardOrder>()
+            return new PagedResult<OrderVM, OrderFilter, DashBoardOrder>
             {
-                Items = OrderVM,
+                Items = orderVMs,
                 DashboardVM = null,
-                TotalCount = OrderVM.Count(),
+                TotalCount = orderVMs.Count,
                 Filter = null
             };
-            //return
-            return result;
         }
-        catch (Exception ex)
+        catch
         {
             return null;
         }
@@ -98,80 +113,62 @@ public class OrderService : IOrderService
     {
         try
         {
-            // get Order as traking 
-            var Order = await _repositoryManager.OrderRepository.GetByIdAsync(id);
+            var order = await _repositoryManager.OrderRepository.GetByIdAsync(id);
+            if (order == null) return new OrderVM();
 
-            //check for Order
-            if (Order == null)
-                return new OrderVM();
-
-            // map from Order to OrderVM
-            var OrderVM = _mapper.Map<OrderVM>(Order);
-
-            //check 
-            if (OrderVM == null)
-                return new OrderVM();
-
-            //return
-            return OrderVM;
+            var orderVM = _mapper.Map<OrderVM>(order);
+            return orderVM ?? new OrderVM();
         }
-        catch (Exception ex)
+        catch
         {
             return new OrderVM();
         }
     }
+
 
     // --------------------- Update ---------------------
     public async Task<string> UpdateAsync(int id, EditOrderVM model)
     {
         try
         {
-            // get Order as traking 
             var oldOrder = await _repositoryManager.OrderRepository.GetByIdAsync(id);
+            if (oldOrder == null) return "Fail";
 
-            //check for Order
-            if (oldOrder == null)
-                return "Fail";
-
-            // map from new Order (model) to  old Order
             _mapper.Map(model, oldOrder);
 
-            //save changes
-            await _repositoryManager.OrderRepository.SaveChangesAsync();
+            // Recalculate from items — ignore whatever value came from the form
+            var items = await _repositoryManager.OrderItemRepository
+                              .GetAllByOrderId(id)
+                              .ToListAsync();
 
-            //return
+            oldOrder.TotalPrice = items.Sum(i => i.UnitPrice * i.Quantity);
+
+            await _repositoryManager.OrderRepository.SaveChangesAsync();
             return "Success";
         }
-        catch (Exception ex)
+        catch
         {
             return "Fail";
         }
     }
+
 
     // --------------------- Delete ---------------------
     public async Task<string> DeleteAsync(int id)
     {
         try
         {
-            // get Order as traking 
-            var removeOrder = await _repositoryManager.OrderRepository.GetByIdAsync(id);
+            var order = await _repositoryManager.OrderRepository.GetByIdAsync(id);
+            if (order == null) return "Fail";
 
-            //check for Order
-            if (removeOrder == null)
-                return "Fail";
-
-            //save changes
-            await _repositoryManager.OrderRepository.DeleteAsync(removeOrder);
-
-            //return
+            await _repositoryManager.OrderRepository.DeleteAsync(order);
             return "Success";
         }
-        catch (Exception ex)
+        catch
         {
             return "Fail";
         }
     }
 
     #endregion
-
 }

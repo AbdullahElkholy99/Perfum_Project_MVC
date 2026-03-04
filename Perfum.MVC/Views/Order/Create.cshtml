@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Create Order";
-    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
 }
 
 <link href="~/css/dashbord/order.css" rel="stylesheet" />
@@ -62,7 +62,8 @@
                 <div class="form-group">
                     <label asp-for="TotalPrice" class="form-label">💰 Total Price</label>
                     <input asp-for="TotalPrice" type="number" step="0.01" min="0" class="form-control"
-                           placeholder="0.00" />
+                           placeholder="0.00" readonly style="cursor:not-allowed;opacity:.7;" />
+                    <span style="font-size:11px;color:var(--text3);">Auto-calculated from order items</span>
                     <span asp-validation-for="TotalPrice" class="field-error"></span>
                 </div>
 
