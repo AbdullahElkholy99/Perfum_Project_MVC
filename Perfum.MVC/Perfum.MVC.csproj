@@ -21,12 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\Users\" />
     <Folder Include="wwwroot\Images\Admins\" />
     <Folder Include="wwwroot\Images\Categories\" />
     <Folder Include="wwwroot\Images\Customers\" />
     <Folder Include="wwwroot\Images\Products\" />
-    <Folder Include="wwwroot\js\Users\" />
   </ItemGroup>
 
 </Project>

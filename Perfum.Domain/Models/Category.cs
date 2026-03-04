@@ -1,7 +1,4 @@
-﻿
-using Perfum.Domain.Models.Users;
-
-namespace Perfum.Domain.Models;
+﻿namespace Perfum.Domain.Models;
 
 public class Category
 {

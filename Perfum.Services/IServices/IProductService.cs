@@ -1,8 +1,5 @@
 ﻿using Perfum.Services.ViewModels.Paginations;
 using Perfum.Services.ViewModels.ProductVM;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Perfum.Services.IServices
 {
@@ -12,7 +9,7 @@ namespace Perfum.Services.IServices
         Task<string> AddAsync(AddProductVM model);
 
         // --------------------- Read ---------------------
-        Task<PagedResult<ProductVM, ProductFilter, DashBoardProduct>> GetAllAsync();
+        Task<PagedResult<ProductVM, ProductFilter, DashBoardProduct>> GetAllAsync(ProductFilter? filter);
         Task<ProductVM> GetByIdAsync(int id);
 
         // --------------------- Update ---------------------

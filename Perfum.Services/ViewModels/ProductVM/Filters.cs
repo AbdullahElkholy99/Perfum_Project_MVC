@@ -1,8 +1,5 @@
 ﻿using Perfum.Domain.Enums;
 using Perfum.Services.ViewModels.Paginations;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Perfum.Services.ViewModels.ProductVM;
 
@@ -10,7 +7,9 @@ public class ProductFilter : BasePaginationFilter
 {
     public Status? Status { get; set; }
     public double? MinRating { get; set; }
-    public decimal? Price { get; set; }
+    public double? MaxRating { get; set; }
+    public decimal? PriceAsc { get; set; }
+    public decimal? PriceDesc { get; set; }
 }
 public class DashBoardProduct
 {

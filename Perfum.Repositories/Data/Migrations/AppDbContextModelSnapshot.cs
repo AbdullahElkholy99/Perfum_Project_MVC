@@ -166,10 +166,13 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Property<int?>("AdminId")
                         .HasColumnType("int");
 
+<<<<<<< HEAD
+=======
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+>>>>>>> 42b84a39695af27be7774e041e92714b2c2e69fc
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -424,6 +427,8 @@ namespace Perfum.Repositories.Data.Migrations
                     b.HasOne("Perfum.Domain.Models.Users.Admin", null)
                         .WithMany("Categories")
                         .HasForeignKey("AdminId");
+<<<<<<< HEAD
+=======
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Orders.OrderItem", b =>
@@ -443,6 +448,7 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+>>>>>>> 42b84a39695af27be7774e041e92714b2c2e69fc
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Product", b =>
