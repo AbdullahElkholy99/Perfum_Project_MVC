@@ -1,0 +1,158 @@
+@model OrderVM
+@{
+    ViewData["Title"] = "Order Details";
+    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+    var items = ViewBag.OrderItems as List<Perfum.Services.ViewModels.OrderItemVM.OrderItemVM> ?? new();
+    var statusClass = Model.Status switch {
+        Status.Active   => "sb-in",
+        Status.Pending  => "sb-low",
+        Status.Inactive => "sb-out",
+        Status.Expired  => "sb-out",
+        _               => ""
+    };
+}
+
+<link href="~/css/dashbord/order.css" rel="stylesheet" />
+
+<div class="order-page">
+
+    @* ── Header ── *@
+    <div class="topbar">
+        <div>
+            <div class="page-title">Order <span>#@Model.Id</span></div>
+            <div class="page-subtitle">Full order details &amp; items</div>
+        </div>
+        <div class="topbar-actions">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-ghost">✎ Edit</a>
+            <a asp-action="Index" class="btn btn-primary">← Back to Orders</a>
+        </div>
+    </div>
+
+    @* ── Alerts ── *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">✓ @TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-error">✕ @TempData["Error"]</div>
+    }
+
+    @* ── Order Info Card ── *@
+    <div class="detail-grid">
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <span class="detail-card-title">📋 Order Information</span>
+                <span class="stock-badge @statusClass" style="position:static;">@Model.Status</span>
+            </div>
+            <div class="detail-fields">
+                <div class="detail-field">
+                    <div class="detail-label">Order ID</div>
+                    <div class="detail-value">#@Model.Id</div>
+                </div>
+                <div class="detail-field">
+                    <div class="detail-label">Shipping Address</div>
+                    <div class="detail-value">@(Model.ShippingAddress ?? "—")</div>
+                </div>
+                <div class="detail-field">
+                    <div class="detail-label">Order Date</div>
+                    <div class="detail-value">@(Model.Date?.ToString("MMM dd, yyyy · HH:mm") ?? "—")</div>
+                </div>
+                <div class="detail-field">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">
+                        <span class="stock-badge @statusClass" style="position:static;font-size:12px;">@Model.Status</span>
+                    </div>
+                </div>
+                <div class="detail-field">
+                    <div class="detail-label">Total Price</div>
+                    <div class="detail-value" style="font-size:22px;font-weight:700;color:var(--accent);">
+                        $@Model.TotalPrice.ToString("N2")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* ── Summary Card ── *@
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <span class="detail-card-title">📊 Summary</span>
+            </div>
+            <div class="detail-fields">
+                <div class="detail-field">
+                    <div class="detail-label">Total Items</div>
+                    <div class="detail-value">@items.Count</div>
+                </div>
+                <div class="detail-field">
+                    <div class="detail-label">Total Quantity</div>
+                    <div class="detail-value">@items.Sum(i => i.Quantity)</div>
+                </div>
+                <div class="detail-field">
+                    <div class="detail-label">Avg Unit Price</div>
+                    <div class="detail-value">
+                        @(items.Any() ? "$" + items.Average(i => (double)i.UnitPrice).ToString("N2") : "—")
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+                <a asp-action="OrderItems" asp-route-id="@Model.Id" class="btn btn-ghost btn-sm">📦 Manage Items</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm">✕ Delete Order</a>
+            </div>
+        </div>
+    </div>
+
+    @* ── Order Items Table ── *@
+    <div class="section-title" style="margin:28px 0 14px;font-size:16px;font-weight:600;color:var(--text1);">
+        📦 Order Items <span style="color:var(--text3);font-size:13px;font-weight:400;">(@items.Count)</span>
+    </div>
+
+    <div class="table-wrap" style="display:block;">
+        <table class="prod-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Product ID</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (items.Any())
+                {
+                    var i = 1;
+                    foreach (var item in items)
+                    {
+                        <tr>
+                            <td style="color:var(--text3);font-size:13px;">@i</td>
+                            <td>
+                                <div class="prod-identity">
+                                    <div class="prod-thumb" style="background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;">🧴</div>
+                                    <div>
+                                        <div class="pid-name">@(item.ProductName ?? "Product #" + item.ProductId)</div>
+                                        <div class="pid-sku">ID: @item.ProductId</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="color:var(--text3);">@item.ProductId</td>
+                            <td><span class="price-val">$@item.UnitPrice.ToString("N2")</span></td>
+                            <td><span class="stock-num">@item.Quantity</span></td>
+                            <td><span class="price-val">$@((item.UnitPrice * item.Quantity).ToString("N2"))</span></td>
+                        </tr>
+                        i++;
+                    }
+                    <tr style="border-top:2px solid var(--border);font-weight:700;">
+                        <td colspan="5" style="text-align:right;padding-right:20px;color:var(--text2);">Grand Total</td>
+                        <td><span class="price-val" style="font-size:16px;color:var(--accent);">$@Model.TotalPrice.ToString("N2")</span></td>
+                    </tr>
+                }
+                else
+                {
+                    <tr><td colspan="6" style="text-align:center;padding:48px;color:var(--text3);">No items in this order.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
