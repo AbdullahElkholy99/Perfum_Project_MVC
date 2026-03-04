@@ -740,3 +740,7 @@ select.form-control,
         grid-template-columns: 1fr;
     }
 }
+img {
+    width:  100%;
+    height : 50%;
+}

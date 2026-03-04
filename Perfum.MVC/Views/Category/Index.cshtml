@@ -5,49 +5,167 @@
 @{
     ViewData["Title"] = "Categories";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+
     var categories = Model?.Items ?? new List<CategoryVM>();
+    var total = Model?.TotalCount ?? categories.Count;
 }
 
-<div class="product-page" style="  ">
+<link href="~/css/dashbord/order.css" rel="stylesheet" />
+
+<div class="product-page">
+
+    <!-- Header -->
     <div class="topbar">
+
         <div>
-            <div class="page-title">Category <span>Catalogue</span></div>
-            <div class="page-subtitle">@categories.Count category@(categories.Count == 1 ? "" : "ies")</div>
+            <div class="page-title">
+                Categories <span>Catalogue</span>
+            </div>
+
+            <div class="page-subtitle">
+                @total categor@(total == 1 ? "y" : "ies")
+            </div>
         </div>
+
         <div class="topbar-actions">
-            <a asp-action="Create" class="btn btn-primary">+ Add Category</a>
+            <a asp-action="Create" class="btn btn-primary">
+                ✦ Add Category
+            </a>
         </div>
+
     </div>
 
+
+    <!-- Search -->
+    <div class="toolbar">
+
+        <div class="search-bar">
+            <span>⌕</span>
+
+            <input id="searchInput"
+                   placeholder="Search categories..."
+                   oninput="applySearch()" />
+        </div>
+
+    </div>
+
+
+    <!-- Categories Table -->
+
     <div class="table-wrap">
-        <table class="table">
+
+        <table class="prod-table">
+
             <thead>
                 <tr>
+                    <th style="width:80px;">ID</th>
                     <th>Name</th>
                     <th>Description</th>
-                    <th style="width:180px;"></th>
+                    <th style="width:200px;">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+
+            <tbody id="tableBody">
+
                 @foreach (var c in categories)
                 {
-                    <tr>
-                        <td>@c.Name</td>
-                        <td>@c.Description</td>
+                    <tr data-search="@((c.Name + " " + (c.Description ?? "")).ToLower())">
+
+                        <td>@c.Id</td>
+
                         <td>
-                            <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Details</a>
-                            <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-danger btn-sm">Delete</a>
+                            <strong>@c.Name</strong>
                         </td>
+
+                        <td>
+                            @(string.IsNullOrEmpty(c.Description)
+                                                    ? "—"
+                                                    : c.Description)
+                        </td>
+
+                        <td>
+
+                            <a asp-action="Details"
+                               asp-route-id="@c.Id"
+                               class="btn btn-ghost btn-sm">
+                                Details
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@c.Id"
+                               class="btn btn-ghost btn-sm">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@c.Id"
+                               class="btn btn-danger btn-sm">
+                                Delete
+                            </a>
+
+                        </td>
+
                     </tr>
                 }
+
                 @if (!categories.Any())
                 {
                     <tr>
-                        <td colspan="3" class="text-center">No categories found.</td>
+                        <td colspan="4"
+                            style="text-align:center;padding:40px;color:#999;">
+                            No categories found
+                        </td>
                     </tr>
                 }
+
             </tbody>
+
         </table>
+
     </div>
+
+
+    <!-- Pagination -->
+
+    <div class="pagination">
+
+        <div class="page-info">
+            Showing @categories.Count of @total
+        </div>
+
+    </div>
+
 </div>
+
+
+@section Scripts {
+
+    <script>
+
+        function applySearch(){
+
+            let search =
+                document.getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+            let rows =
+                document.querySelectorAll("#tableBody tr");
+
+            rows.forEach(r => {
+
+                let txt =
+                    r.dataset.search || "";
+
+                if(!search || txt.includes(search))
+                    r.style.display = "";
+                else
+                    r.style.display = "none";
+
+            });
+        }
+
+    </script>
+
+}

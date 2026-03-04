@@ -1,0 +1,274 @@
+﻿
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f9f7f4;
+    font-family: 'DM Sans', sans-serif;
+    color: #1a1a1a;
+    min-height: 100vh;
+}
+
+.page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    animation: rise .5s ease both;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Top bar ── */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #999;
+    text-decoration: none;
+    transition: color .2s;
+}
+
+    .back-link:hover {
+        color: #1a1a1a;
+    }
+
+    .back-link svg {
+        width: 15px;
+        height: 15px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+
+.btn-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #1a1a1a;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 9px 20px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background .2s, transform .15s;
+}
+
+    .btn-edit:hover {
+        background: #333;
+        transform: translateY(-1px);
+    }
+
+    .btn-edit svg {
+        width: 13px;
+        height: 13px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+
+/* ── Hero card ── */
+.hero {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 24px rgba(0,0,0,.07);
+    margin-bottom: 16px;
+}
+
+.hero-body {
+    padding: 44px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.category-pill {
+    display: inline-block;
+    background: #f5efe6;
+    color: #a07840;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+}
+
+.product-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    line-height: 1.1;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+}
+
+.product-desc {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: #777;
+    max-width: 380px;
+    margin-bottom: 36px;
+}
+
+.kpi-row {
+    display: flex;
+    gap: 32px;
+    padding-top: 28px;
+    border-top: 1px solid #f0ece6;
+    align-items: center;
+}
+
+.kpi {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.kpi-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px;
+    color: #1a1a1a;
+    line-height: 1;
+}
+
+.kpi-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ccc;
+}
+
+.kpi-divider {
+    width: 1px;
+    height: 36px;
+    background: #f0ece6;
+}
+
+/* Image panel */
+.hero-image {
+    overflow: hidden;
+    background: #1c1510;
+    position: relative;
+}
+
+    .hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: .88;
+        display: block;
+        transition: transform .6s ease, opacity .3s;
+    }
+
+    .hero-image:hover img {
+        transform: scale(1.04);
+        opacity: 1;
+    }
+
+/* ── Attribute chips ── */
+.attrs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.attr-chip {
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 10px rgba(0,0,0,.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: box-shadow .2s, transform .2s;
+}
+
+    .attr-chip:hover {
+        box-shadow: 0 4px 20px rgba(0,0,0,.09);
+        transform: translateY(-2px);
+    }
+
+.chip-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: #f5f0e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+.chip-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ccc;
+    margin-bottom: 3px;
+}
+
+.chip-value {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+/* ── Responsive ── */
+@media (max-width: 740px) {
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-image {
+        min-height: 240px;
+        order: -1;
+    }
+
+    .hero-body {
+        padding: 28px 24px;
+    }
+
+    .product-name {
+        font-size: 32px;
+    }
+
+    .attrs {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .topbar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
