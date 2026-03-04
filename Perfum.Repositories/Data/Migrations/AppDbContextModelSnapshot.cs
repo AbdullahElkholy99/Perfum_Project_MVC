@@ -50,6 +50,29 @@ namespace Perfum.Repositories.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "47d61672-7e17-482f-8d6b-46cf485edcb9",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "c3460194-85c0-492b-9f5c-285b4200fc8d",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "b951ed47-bfec-44cb-8e4e-04bda222e1d8",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -166,13 +189,10 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Property<int?>("AdminId")
                         .HasColumnType("int");
 
-<<<<<<< HEAD
-=======
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
->>>>>>> 42b84a39695af27be7774e041e92714b2c2e69fc
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -427,8 +447,6 @@ namespace Perfum.Repositories.Data.Migrations
                     b.HasOne("Perfum.Domain.Models.Users.Admin", null)
                         .WithMany("Categories")
                         .HasForeignKey("AdminId");
-<<<<<<< HEAD
-=======
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Orders.OrderItem", b =>
@@ -448,7 +466,6 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
->>>>>>> 42b84a39695af27be7774e041e92714b2c2e69fc
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Product", b =>

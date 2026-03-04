@@ -12,8 +12,8 @@ using Perfum.Repositories.Data;
 namespace Perfum.Repositories.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260303225512_assemv3")]
-    partial class assemv3
+    [Migration("20260304115136_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -22,18 +22,19 @@
                 <div class="nav-item"><span class="nav-icon">◈</span> Dashboard</div>
                 <div class="nav-item"><span class="nav-icon">◇</span> Analytics</div>
 
-                <li>
-                    <a asp-controller="Category" asp-action="Index">Categories</a>
-                </li>
-                <li>
-                    <a asp-controller="Product" asp-action="Index">Products</a>
-                </li>
-
             </div>
             <div class="nav-section" style="margin-top:12px">
                 <div class="nav-label">Catalogue</div>
-                <div class="nav-item active"><span class="nav-icon">✦</span> Fragrances</div>
-                <div class="nav-item"><span class="nav-icon">⬡</span> Collections</div>
+                <div class="nav-item active">
+                    <a asp-controller="Product" asp-action="Index">
+                        <span class="nav-icon">✦</span>
+                        Products
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
+                 
+                </div>
                 <div class="nav-item"><span class="nav-icon">◎</span> Ingredients</div>
             </div>
             <div class="nav-section" style="margin-top:12px">
@@ -53,18 +54,7 @@
         <!-- ── Main ── -->
         <main class="main">
 
-            <!-- Topbar -->
-            <div class="topbar">
-                <div>
-                    <div class="page-title">Category <span>Management</span></div>
-                    <div class="page-subtitle">Organise your fragrance catalogue</div>
-                </div>
-                <div class="topbar-actions">
-                    <button class="btn btn-ghost" onclick="showToast('Hierarchy exported')">⬇ Export</button>
-                    <button class="btn btn-primary" onclick="openModal(true)">✦ New Category</button>
-                </div>
-            </div>
-
+          
             <div class="DashboardContent">
                 @RenderBody();
             </div>
@@ -72,48 +62,7 @@
         </main>
     </div>
 
-    <!-- ── Modal ── -->
-    <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title" id="modalTitle">New Category</div>
-                <div class="modal-close" onclick="closeModal()">✕</div>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Name</label>
-                    <input class="form-input" id="modalName" placeholder="e.g. Fresh Citrus" />
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Icon</label>
-                    <div class="icon-picker" id="modalIconPicker"></div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Accent Colour</label>
-                    <div class="color-swatches" id="modalColorPicker"></div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Visibility</label>
-                    <div class="toggle-group" id="modalVisToggle">
-                        <div class="tg-btn on" onclick="setModalVis('active',this)">Active</div>
-                        <div class="tg-btn" onclick="setModalVis('hidden',this)">Hidden</div>
-                        <div class="tg-btn" onclick="setModalVis('draft',this)">Draft</div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Parent Category <span style="color:var(--text3)">(optional)</span></label>
-                    <select class="form-input" id="modalParent" style="appearance:none;cursor:pointer;">
-                        <option value="">— Root category —</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="createCategory()">Create Category</button>
-            </div>
-        </div>
-    </div>
-
+ 
     
 
     <!-- ── Toast ── -->

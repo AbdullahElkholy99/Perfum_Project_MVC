@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Perfum.Repositories.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class udateFromesamB2 : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -217,10 +217,7 @@ namespace Perfum.Repositories.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-<<<<<<<< HEAD:Perfum.Repositories/Data/Migrations/20260303125849_udateFromesamB2.cs
-========
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
->>>>>>>> 42b84a39695af27be7774e041e92714b2c2e69fc:Perfum.Repositories/Data/Migrations/20260303143648_init.cs
                     AdminId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -330,8 +327,6 @@ namespace Perfum.Repositories.Data.Migrations
                 name: "IX_Categories_AdminId",
                 table: "Categories",
                 column: "AdminId");
-<<<<<<<< HEAD:Perfum.Repositories/Data/Migrations/20260303125849_udateFromesamB2.cs
-========
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
@@ -342,7 +337,6 @@ namespace Perfum.Repositories.Data.Migrations
                 name: "IX_OrderItems_ProductId",
                 table: "OrderItems",
                 column: "ProductId");
->>>>>>>> 42b84a39695af27be7774e041e92714b2c2e69fc:Perfum.Repositories/Data/Migrations/20260303143648_init.cs
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",

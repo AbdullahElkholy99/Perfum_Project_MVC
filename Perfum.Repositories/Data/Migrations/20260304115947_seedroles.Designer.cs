@@ -12,13 +12,8 @@ using Perfum.Repositories.Data;
 namespace Perfum.Repositories.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Perfum.Repositories/Data/Migrations/20260303125849_udateFromesamB2.Designer.cs
-    [Migration("20260303125849_udateFromesamB2")]
-    partial class udateFromesamB2
-========
-    [Migration("20260303143648_init")]
-    partial class init
->>>>>>>> 42b84a39695af27be7774e041e92714b2c2e69fc:Perfum.Repositories/Data/Migrations/20260303143648_init.Designer.cs
+    [Migration("20260304115947_seedroles")]
+    partial class seedroles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +53,29 @@ namespace Perfum.Repositories.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "47d61672-7e17-482f-8d6b-46cf485edcb9",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "c3460194-85c0-492b-9f5c-285b4200fc8d",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "b951ed47-bfec-44cb-8e4e-04bda222e1d8",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -432,8 +450,6 @@ namespace Perfum.Repositories.Data.Migrations
                     b.HasOne("Perfum.Domain.Models.Users.Admin", null)
                         .WithMany("Categories")
                         .HasForeignKey("AdminId");
-<<<<<<<< HEAD:Perfum.Repositories/Data/Migrations/20260303125849_udateFromesamB2.Designer.cs
-========
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Orders.OrderItem", b =>
@@ -453,7 +469,6 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
->>>>>>>> 42b84a39695af27be7774e041e92714b2c2e69fc:Perfum.Repositories/Data/Migrations/20260303143648_init.Designer.cs
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Product", b =>
