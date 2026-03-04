@@ -1,0 +1,125 @@
+@model List<OrderItemVM>
+@{
+    ViewData["Title"] = "Order Items";
+    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+    var orderId   = ViewBag.OrderId as int? ?? 0;
+    var order     = ViewBag.Order as Perfum.Services.ViewModels.OrderVM.OrderVM;
+    var items     = Model ?? new List<Perfum.Services.ViewModels.OrderItemVM.OrderItemVM>();
+    var grandTotal = items.Sum(i => i.UnitPrice * i.Quantity);
+}
+
+<link href="~/css/dashbord/order.css" rel="stylesheet" />
+
+<div class="order-page">
+
+    @* ── Header ── *@
+    <div class="topbar">
+        <div>
+            <div class="page-title">Order Items <span>#@orderId</span></div>
+            <div class="page-subtitle">@items.Count item@(items.Count == 1 ? "" : "s") in this order</div>
+        </div>
+        <div class="topbar-actions">
+            <a asp-action="AddItem" asp-route-orderId="@orderId" class="btn btn-primary">✦ Add Item</a>
+            <a asp-action="Details" asp-route-id="@orderId" class="btn btn-ghost">Order Details</a>
+            <a asp-action="Index" class="btn btn-ghost">← Orders</a>
+        </div>
+    </div>
+
+    @* ── Alerts ── *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">✓ @TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-error">✕ @TempData["Error"]</div>
+    }
+
+    @* ── Stats ── *@
+    <div class="stat-strip">
+        <div class="mini-stat"><div class="mini-icon ic-amber">📦</div><div><div class="mini-val">@items.Count</div><div class="mini-label">Items</div></div></div>
+        <div class="mini-stat"><div class="mini-icon ic-sage">🔢</div><div><div class="mini-val">@items.Sum(i => i.Quantity)</div><div class="mini-label">Total Qty</div></div></div>
+        <div class="mini-stat"><div class="mini-icon ic-gold">💰</div><div><div class="mini-val">$@grandTotal.ToString("N2")</div><div class="mini-label">Grand Total</div></div></div>
+    </div>
+
+    @* ── Search ── *@
+    <div class="toolbar">
+        <div class="search-bar">
+            <span style="color:var(--text3);font-size:16px">⌕</span>
+            <input id="searchInput" placeholder="Search items…" oninput="filterItems()" />
+        </div>
+    </div>
+
+    @* ── Table ── *@
+    <div class="table-wrap" style="display:block;">
+        <table class="prod-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Product ID</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="itemsBody">
+                @if (items.Any())
+                {
+                    var idx = 1;
+                    foreach (var item in items)
+                    {
+                        <tr data-search="@((item.ProductName + " " + item.ProductId).ToLowerInvariant())">
+                            <td style="color:var(--text3);font-size:13px;">@idx</td>
+                            <td>
+                                <div class="prod-identity">
+                                    <div class="prod-thumb" style="background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;">🧴</div>
+                                    <div>
+                                        <div class="pid-name">@(item.ProductName ?? "Product #" + item.ProductId)</div>
+                                        <div class="pid-sku">Item ID: @item.Id</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="color:var(--text3);">@item.ProductId</td>
+                            <td><span class="price-val">$@item.UnitPrice.ToString("N2")</span></td>
+                            <td><span class="stock-num">@item.Quantity</span></td>
+                            <td><span class="price-val">$@((item.UnitPrice * item.Quantity).ToString("N2"))</span></td>
+                            <td>
+                                <a asp-action="EditItem" asp-route-id="@item.Id" class="btn btn-ghost btn-sm">Edit</a>
+                                <a asp-action="DeleteItem" asp-route-id="@item.Id" class="btn btn-danger btn-sm">✕</a>
+                            </td>
+                        </tr>
+                        idx++;
+                    }
+                    <tr style="border-top:2px solid var(--border);font-weight:700;">
+                        <td colspan="5" style="text-align:right;padding-right:20px;color:var(--text2);">Grand Total</td>
+                        <td colspan="2"><span class="price-val" style="font-size:16px;color:var(--accent);">$@grandTotal.ToString("N2")</span></td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" style="text-align:center;padding:60px;color:var(--text3);">
+                            No items found.
+                            <a asp-action="AddItem" asp-route-orderId="@orderId" style="color:var(--accent);margin-left:8px;">Add one →</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        function filterItems() {
+            var q = document.getElementById('searchInput').value.toLowerCase().trim();
+            document.querySelectorAll('#itemsBody tr[data-search]').forEach(function(row) {
+                var txt = row.getAttribute('data-search') || '';
+                row.style.display = (!q || txt.includes(q)) ? '' : 'none';
+            });
+        }
+    </script>
+}

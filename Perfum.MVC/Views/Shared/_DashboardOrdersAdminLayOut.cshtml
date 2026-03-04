@@ -1,0 +1,117 @@
+﻿
+
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sillage — Orders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link href="~/css/dashbord/dashboard.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="layout">
+
+        <!-- ── Sidebar ── -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-text">Sillage</div>
+                <div class="logo-sub">Fragrance Studio</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Overview</div>
+                <div class="nav-item"><span class="nav-icon">◈</span> Dashboard</div>
+                <div class="nav-item"><span class="nav-icon">◇</span> Analytics</div>
+                <div class="nav-item"><span class="nav-icon">◇</span> <a asp-controller="Category" asp-action="Index">Categories</a></div>
+                <div class="nav-item"><span class="nav-icon">◇</span> <a asp-controller="Product" asp-action="Index">Products</a></div>
+            </div>
+
+            <div class="nav-section" style="margin-top:12px">
+                <div class="nav-label">Catalogue</div>
+                <div class="nav-item active"><span class="nav-icon">✦</span> Fragrances</div>
+                <div class="nav-item"><span class="nav-icon">⬡</span> Collections</div>
+                <div class="nav-item"><span class="nav-icon">◎</span> Ingredients</div>
+            </div>
+            <div class="nav-section" style="margin-top:12px">
+                <div class="nav-label">Commerce</div>
+                <div class="nav-item"><span class="nav-icon">▣</span> <a asp-controller="Order" asp-action="Index">Orders</a></div>
+                <div class="nav-item"><span class="nav-icon">◯</span> Customers</div>
+                <div class="nav-item"><span class="nav-icon">▷</span> Marketing</div>
+            </div>
+            <div class="sidebar-bottom">
+                <div class="theme-toggle" onclick="toggleTheme()">
+                    <span id="themeLabel">Dark Mode</span>
+                    <div class="toggle-pill" id="pill"><div class="toggle-dot"></div></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ── Main ── -->
+        <main class="main">
+
+            <div class="DashboardContent">
+                @RenderBody();
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ── Modal ── -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">New Category</div>
+                <div class="modal-close" onclick="closeModal()">✕</div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input class="form-input" id="modalName" placeholder="e.g. Fresh Citrus" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Icon</label>
+                    <div class="icon-picker" id="modalIconPicker"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Accent Colour</label>
+                    <div class="color-swatches" id="modalColorPicker"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Visibility</label>
+                    <div class="toggle-group" id="modalVisToggle">
+                        <div class="tg-btn on" onclick="setModalVis('active',this)">Active</div>
+                        <div class="tg-btn" onclick="setModalVis('hidden',this)">Hidden</div>
+                        <div class="tg-btn" onclick="setModalVis('draft',this)">Draft</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Parent Category <span style="color:var(--text3)">(optional)</span></label>
+                    <select class="form-input" id="modalParent" style="appearance:none;cursor:pointer;">
+                        <option value="">— Root category —</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createCategory()">Create Category</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ── Toast ── -->
+    <div class="toast" id="toast">
+        <div class="toast-dot"></div>
+        <span id="toastMsg">Saved successfully</span>
+    </div>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/dashboard/dashboard.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

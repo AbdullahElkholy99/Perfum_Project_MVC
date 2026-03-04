@@ -1,0 +1,71 @@
+@model OrderItemVM
+@{
+    ViewData["Title"] = "Delete Item";
+    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+}
+
+<link href="~/css/dashbord/order.css" rel="stylesheet" />
+
+<div class="order-page">
+
+    @* ── Header ── *@
+    <div class="topbar">
+        <div>
+            <div class="page-title">Delete <span>Item</span></div>
+            <div class="page-subtitle">This action cannot be undone</div>
+        </div>
+        <div class="topbar-actions">
+            <a asp-action="OrderItems" asp-route-id="@Model.OrderId" class="btn btn-ghost">← Back to Items</a>
+        </div>
+    </div>
+
+    @* ── Confirm Card ── *@
+    <div class="form-card" style="max-width:500px;margin:0 auto;">
+
+        <div style="text-align:center;padding:12px 0 24px;">
+            <div style="font-size:52px;margin-bottom:12px;">🗑️</div>
+            <div style="font-size:20px;font-weight:700;color:var(--text1);margin-bottom:6px;">
+                Delete Item #@Model.Id?
+            </div>
+            <div style="color:var(--text3);font-size:14px;">
+                This item will be permanently removed from Order #@Model.OrderId.
+            </div>
+        </div>
+
+        @* Snapshot ── *@
+        <div class="delete-snapshot">
+            <div class="detail-field">
+                <div class="detail-label">Item ID</div>
+                <div class="detail-value">#@Model.Id</div>
+            </div>
+            <div class="detail-field">
+                <div class="detail-label">Product</div>
+                <div class="detail-value">@(Model.ProductName ?? "Product #" + Model.ProductId)</div>
+            </div>
+            <div class="detail-field">
+                <div class="detail-label">Quantity</div>
+                <div class="detail-value">@Model.Quantity</div>
+            </div>
+            <div class="detail-field">
+                <div class="detail-label">Unit Price</div>
+                <div class="detail-value">$@Model.UnitPrice.ToString("N2")</div>
+            </div>
+            <div class="detail-field">
+                <div class="detail-label">Subtotal</div>
+                <div class="detail-value" style="font-weight:700;color:var(--accent);">
+                    $@((Model.UnitPrice * Model.Quantity).ToString("N2"))
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="DeleteItem" asp-route-id="@Model.Id" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="orderId" value="@Model.OrderId" />
+            <div class="form-actions" style="justify-content:center;margin-top:28px;">
+                <a asp-action="OrderItems" asp-route-id="@Model.OrderId" class="btn btn-ghost">Cancel</a>
+                <button type="submit" class="btn btn-danger">✕ Yes, Delete Item</button>
+            </div>
+        </form>
+
+    </div>
+</div>

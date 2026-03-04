@@ -1,6 +1,5 @@
 ﻿
 using Perfum.Domain.Models.Orders;
-using Perfum.Services.ViewModels.OrderVM;
 
 namespace Perfum.MVC.MapperProfile.Orders;
 
