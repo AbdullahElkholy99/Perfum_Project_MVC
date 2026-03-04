@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Orders";
-    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
     var orders = Model?.Items ?? new List<Perfum.Services.ViewModels.OrderVM.OrderVM>();
     var totalCount = Model?.TotalCount ?? 0;
     var activeCount = orders.Count(o => o.Status == Status.Active);
@@ -14,7 +14,7 @@
 
 <link href="~/css/dashbord/order.css" rel="stylesheet" />
 
-<div class="order-page">
+<div class="order-page"  >
 
     @* ── Header ── *@
     <div class="topbar">

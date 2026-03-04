@@ -1,0 +1,172 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+}
+    <link href="~/css/dashbord/collections.css" rel="stylesheet" />
+
+
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Fragrance <span>Collections</span></div>
+        <div class="page-subtitle" id="pageSubtitle">Loading…</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" onclick="showToast('Collections exported')">⬇ Export</button>
+        <button class="btn btn-primary" onclick="openCreateModal()">✦ New Collection</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-strip">
+      <div class="mini-stat"><div class="mini-icon ic-a">⬡</div><div><div class="mini-val" id="statTotal">—</div><div class="mini-label">Collections</div><div class="mini-change">↑ 2 this season</div></div></div>
+      <div class="mini-stat"><div class="mini-icon ic-g">✦</div><div><div class="mini-val" id="statProds">—</div><div class="mini-label">Products Curated</div><div class="mini-change">Across all collections</div></div></div>
+      <div class="mini-stat"><div class="mini-icon ic-s">💰</div><div><div class="mini-val" id="statRev">—</div><div class="mini-label">Total Revenue</div><div class="mini-change">↑ 14.2%</div></div></div>
+      <div class="mini-stat"><div class="mini-icon ic-p">🏆</div><div><div class="mini-val" id="statTop">—</div><div class="mini-label">Best Seller</div><div class="mini-change neutral">By orders</div></div></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-bar">
+        <span style="color:var(--text3);font-size:16px">⌕</span>
+        <input id="searchInput" placeholder="Search collections…" oninput="applyFilters()" />
+      </div>
+      <div style="display:flex;gap:7px;" id="filterChips"></div>
+      <div class="view-toggle">
+        <div class="vbtn on" id="gridBtn" onclick="switchView('grid')" title="Grid">⊞</div>
+        <div class="vbtn" id="listBtn" onclick="switchView('list')" title="List">☰</div>
+      </div>
+    </div>
+
+    <!-- Grid View -->
+    <div class="coll-grid" id="collGrid"></div>
+
+    <!-- Table View -->
+    <div class="table-wrap hidden" id="tableWrap">
+      <table class="coll-table">
+        <thead>
+          <tr>
+            <th>Collection</th>
+            <th>Season / Theme</th>
+            <th>Products</th>
+            <th>Revenue</th>
+            <th>Orders</th>
+            <th>Status</th>
+            <th>Launched</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <div class="page-info" id="pageInfo">—</div>
+      <div class="page-btns">
+        <div class="page-btn">‹</div>
+        <div class="page-btn on">1</div>
+        <div class="page-btn">2</div>
+        <div class="page-btn">›</div>
+      </div>
+    </div>
+  </main>
+
+<!-- ── DRAWER ── -->
+<div class="drawer-backdrop" id="drawerBg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-hero" id="dHero">
+    <div class="dh-emoji" id="dEmoji"></div>
+    <div class="dh-close" onclick="closeDrawer()">✕</div>
+  </div>
+  <div class="drawer-body">
+    <div class="d-season" id="dSeason"></div>
+    <div class="d-name" id="dName"></div>
+    <div class="d-desc" id="dDesc"></div>
+
+    <div class="d-kpi-row" id="dKpis"></div>
+
+    <div class="d-section">
+      <div class="d-section-title">Monthly Performance</div>
+      <div class="mini-chart" id="dChart"></div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-section-title">Curated Products <span id="dProdCount" style="font-size:9px;color:var(--text3);letter-spacing:.04em;text-transform:none"></span></div>
+      <div class="d-prod-list" id="dProdList"></div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-section-title">Add Product</div>
+      <div class="add-prod-search">
+        <span style="color:var(--text3)">⌕</span>
+        <input id="addProdSearch" placeholder="Search to add…" oninput="renderAddProdList()" />
+      </div>
+      <div class="add-prod-list" id="addProdList"></div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-section-title">Edit Collection</div>
+      <div class="form-group"><label class="form-label">Name</label><input class="form-input" id="editName" /></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="editDesc" rows="2"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Season / Theme</label><input class="form-input" id="editSeason" /></div>
+        <div class="form-group"><label class="form-label">Launch Date</label><input class="form-input" id="editDate" /></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <div class="toggle-group" id="editStatusGroup">
+          <div class="tg-btn" onclick="setEditStatus('active',this)">Active</div>
+          <div class="tg-btn" onclick="setEditStatus('draft',this)">Draft</div>
+          <div class="tg-btn" onclick="setEditStatus('limited',this)">Limited</div>
+          <div class="tg-btn" onclick="setEditStatus('archived',this)">Archived</div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Cover Emoji</label><div class="emoji-picker" id="editEmojiPicker"></div></div>
+      <div class="form-group"><label class="form-label">Accent Colour</label><div class="color-swatches" id="editColorPicker"></div></div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-danger btn-sm" onclick="deleteCollection(currentColl?.id)">✕ Delete</button>
+    <button class="btn btn-ghost" onclick="closeDrawer()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveCollection()">Save Changes</button>
+  </div>
+</div>
+
+<!-- ── CREATE MODAL ── -->
+<div class="modal-backdrop" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">New Collection</div>
+      <div class="modal-close" onclick="closeModal(true)">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Collection Name</label><input class="form-input" id="mName" placeholder="e.g. Printemps Nocturne" /></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="mDesc" rows="2" placeholder="A brief evocative description…"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Season / Theme</label><input class="form-input" id="mSeason" placeholder="Spring 2026" /></div>
+        <div class="form-group"><label class="form-label">Launch Date</label><input class="form-input" id="mDate" placeholder="01 Apr 2026" /></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <div class="toggle-group" id="mStatusGroup">
+          <div class="tg-btn on" onclick="setModalStatus('active',this)">Active</div>
+          <div class="tg-btn" onclick="setModalStatus('draft',this)">Draft</div>
+          <div class="tg-btn" onclick="setModalStatus('limited',this)">Limited</div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Cover Emoji</label><div class="emoji-picker" id="mEmojiPicker"></div></div>
+      <div class="form-group"><label class="form-label">Accent Colour</label><div class="color-swatches" id="mColorPicker"></div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal(true)">Cancel</button>
+      <button class="btn btn-primary" onclick="createCollection()">✦ Create Collection</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg">Saved</span></div>
+
+@section Scripts {
+<script src="~/js/dashboard/collections.js"></script>
+}

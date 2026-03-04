@@ -12,11 +12,7 @@ using Perfum.Repositories.Data;
 namespace Perfum.Repositories.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:Perfum.Repositories/Data/Migrations/20260304115136_init.Designer.cs
-    [Migration("20260304115136_init")]
-========
-    [Migration("20260304031944_init")]
->>>>>>>> 280136c9d221c0806998146170ef342887986eb9:Perfum.Repositories/Data/Migrations/20260304031944_init.Designer.cs
+    [Migration("20260304121528_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -57,6 +53,29 @@ namespace Perfum.Repositories.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "47d61672-7e17-482f-8d6b-46cf485edcb9",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "c3460194-85c0-492b-9f5c-285b4200fc8d",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "b951ed47-bfec-44cb-8e4e-04bda222e1d8",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

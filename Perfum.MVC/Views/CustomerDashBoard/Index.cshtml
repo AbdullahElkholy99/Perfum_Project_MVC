@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewData["Title"] = "Customer Management";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+}
+
+<link href="~/css/dashbord/customerdashboard.css" rel="stylesheet" />
+
+<div class="layout">
+
+  <!-- Main -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title">Customer <span>Management</span></div>
+        <div class="page-subtitle" id="pageSubtitle">Loading…</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" onclick="showToast('Customers exported')">⬇ Export</button>
+        <button class="btn btn-ghost" onclick="showToast('Import ready')">⬆ Import</button>
+        <button class="btn btn-primary" onclick="openAddModal()">＋ Add Customer</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-strip">
+      <div class="mini-stat"><div class="s-icon ic-a">👥</div><div><div class="s-val" id="stTotal">—</div><div class="s-label">Total</div><div class="s-change">↑ 8.4%</div></div></div>
+      <div class="mini-stat"><div class="s-icon ic-g">💎</div><div><div class="s-val" id="stVip">—</div><div class="s-label">VIP</div><div class="s-change">↑ 12 new</div></div></div>
+      <div class="mini-stat"><div class="s-icon ic-s">🔁</div><div><div class="s-val" id="stRetention">68%</div><div class="s-label">Retention</div><div class="s-change down">↓ 1.2%</div></div></div>
+      <div class="mini-stat"><div class="s-icon ic-p">💰</div><div><div class="s-val" id="stLtv">—</div><div class="s-label">Avg. LTV</div><div class="s-change">↑ $18</div></div></div>
+      <div class="mini-stat"><div class="s-icon ic-r">📬</div><div><div class="s-val" id="stLapsed">—</div><div class="s-label">Lapsed</div><div class="s-change neutral">Need re-engage</div></div></div>
+    </div>
+
+    <!-- Segments -->
+    <div class="segments-row" id="segmentsRow"></div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-bar">
+        <span style="color:var(--text3);font-size:16px">⌕</span>
+        <input id="searchInput" placeholder="Search name, email, city, scent…" oninput="applyFilters()" />
+      </div>
+      <div style="display:flex;gap:7px;" id="tierChips"></div>
+      <select class="sort-sel" id="sortSel" onchange="applyFilters()">
+        <option value="name">Name A–Z</option>
+        <option value="spend-desc">Spend ↓</option>
+        <option value="spend-asc">Spend ↑</option>
+        <option value="orders">Most Orders</option>
+        <option value="recent">Most Recent</option>
+      </select>
+      <div class="view-toggle">
+        <div class="vbtn on" id="gridBtn" onclick="switchView('grid')">⊞</div>
+        <div class="vbtn" id="listBtn" onclick="switchView('list')">☰</div>
+      </div>
+    </div>
+
+    <!-- Bulk bar -->
+    <div class="bulk-bar" id="bulkBar">
+      <div class="bulk-text">Selected: <strong id="bulkCount">0</strong></div>
+      <button class="btn btn-ghost btn-sm" onclick="clearSel()">Clear</button>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Email campaign sent')">✉ Email</button>
+      <button class="btn btn-ghost btn-sm" onclick="bulkSetTier('vip')">⭐ Promote VIP</button>
+      <button class="btn btn-danger btn-sm" onclick="bulkDelete()">✕ Delete</button>
+    </div>
+
+    <!-- Grid View -->
+    <div class="cust-grid" id="custGrid"></div>
+    <!-- Table View -->
+    <div class="table-wrap hidden" id="tableWrap">
+      <table class="cust-table">
+        <thead><tr>
+          <th style="width:32px;cursor:default"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)" style="accent-color:var(--accent);cursor:pointer;width:15px;height:15px;"></th>
+          <th>Customer</th><th>Tier</th><th>Total Spend</th>
+          <th>Orders</th><th>Fav. Scent</th><th>City</th><th>Last Order</th><th></th>
+        </tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <div class="page-info" id="pageInfo">—</div>
+      <div class="page-btns" id="pageBtns"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ── PROFILE OVERLAY ── -->
+<div class="profile-overlay" id="profileOverlay">
+  <div class="profile-nav">
+    <div class="prof-back" onclick="closeProfile()">← All Customers</div>
+    <div class="prof-nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Email sent')">✉ Message</button>
+      <button class="btn btn-ghost btn-sm" onclick="openEditModal()">✏ Edit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteCurrentCustomer()">✕ Delete</button>
+    </div>
+  </div>
+  <div class="profile-hero">
+    <div class="ph-inner">
+      <div class="ph-av" id="phAv"></div>
+      <div class="ph-info">
+        <div class="ph-name" id="phName"></div>
+        <div class="ph-meta" id="phMeta"></div>
+        <div class="tags-row" id="phTags" style="margin-top:10px"></div>
+      </div>
+      <div class="ph-kpis" id="phKpis"></div>
+    </div>
+  </div>
+  <div class="profile-body">
+    <div class="prof-left" id="profLeft"></div>
+    <div class="prof-right" id="profRight"></div>
+  </div>
+</div>
+
+<!-- ── ADD / EDIT MODAL ── -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add Customer</div>
+      <div class="modal-close" onclick="closeModal(true)">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="mName" placeholder="Amira Hassan" /></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="mEmail" placeholder="amira@email.com" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="mPhone" placeholder="+20 10 1234 5678" /></div>
+        <div class="form-group"><label class="form-label">City</label><input class="form-input" id="mCity" placeholder="Cairo" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Country</label>
+          <select class="form-input" id="mCountry">
+            <option>Egypt</option><option>UAE</option><option>Saudi Arabia</option><option>France</option><option>UK</option><option>USA</option><option>Germany</option><option>Japan</option><option>Norway</option><option>Nigeria</option><option>India</option><option>Mexico</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Favourite Scent</label>
+          <select class="form-input" id="mScent">
+            <option>Nuit d'Ambre</option><option>Rose Sauvage</option><option>Bois Sacré</option><option>Oud Mystère</option><option>Sakura Lumière</option><option>Iris Blanc</option><option>Citrus Élite</option><option>Encens Royal</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Tier</label>
+        <div class="tg-group" id="mTierGroup">
+          <div class="tg-btn on" onclick="setModalTier('new',this)">New</div>
+          <div class="tg-btn" onclick="setModalTier('loyal',this)">Loyal</div>
+          <div class="tg-btn" onclick="setModalTier('vip',this)">VIP</div>
+          <div class="tg-btn" onclick="setModalTier('lapsed',this)">Lapsed</div>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="note-input" id="mNotes" rows="2" placeholder="Internal notes about this customer…" style="width:100%"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal(true)">Cancel</button>
+      <button class="btn btn-primary" id="modalSubmitBtn" onclick="submitModal()">Add Customer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg">Done</span></div>
+
+
+
+ 
+@section Scripts {
+    <script src="~/js/dashboard/customerdashboard.js"></script>
+}

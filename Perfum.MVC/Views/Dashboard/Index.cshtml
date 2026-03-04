@@ -1,0 +1,217 @@
+﻿
+@{
+ViewData["Title"] = "Index";
+Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+}
+<link href="~/css/dashbord/dashboardstyle.css" rel="stylesheet" />
+<div class="layout">
+
+<!-- ── Main ── -->
+<main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="greeting" id="greeting">Good morning</div>
+            <div class="page-title">Studio <em>Overview</em></div>
+        </div>
+        <div class="topbar-right">
+            <div class="period-toggle">
+                <div class="pt-btn" onclick="setPeriod('7d',this)">7D</div>
+                <div class="pt-btn on" onclick="setPeriod('30d',this)">30D</div>
+                <div class="pt-btn" onclick="setPeriod('90d',this)">90D</div>
+                <div class="pt-btn" onclick="setPeriod('1y',this)">1Y</div>
+            </div>
+            <button class="btn btn-ghost" onclick="showToast('Report generated')">📊 Report</button>
+            <button class="btn btn-primary" onclick="showToast('Quick add opened')">✦ Quick Add</button>
+        </div>
+    </div>
+
+    <!-- KPI Strip -->
+    <div class="kpi-strip" id="kpiStrip"></div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <div class="qa-card" onclick="showToast('Opening orders…')">
+            <div class="qa-icon" style="background:linear-gradient(135deg,rgba(200,133,74,.15),rgba(200,133,74,.04))">📦</div>
+            <div class="qa-label">New Order</div>
+            <div class="qa-sub">Create manually</div>
+        </div>
+        <div class="qa-card" onclick="showToast('Opening products…')">
+            <div class="qa-icon" style="background:linear-gradient(135deg,rgba(122,158,126,.15),rgba(122,158,126,.04))">✦</div>
+            <div class="qa-label">Add Product</div>
+            <div class="qa-sub">To catalogue</div>
+        </div>
+        <div class="qa-card" onclick="showToast('Opening campaign editor…')">
+            <div class="qa-icon" style="background:linear-gradient(135deg,rgba(154,122,200,.15),rgba(154,122,200,.04))">📧</div>
+            <div class="qa-label">Campaign</div>
+            <div class="qa-sub">Email / SMS</div>
+        </div>
+        <div class="qa-card" onclick="showToast('Generating report…')">
+            <div class="qa-icon" style="background:linear-gradient(135deg,rgba(212,168,68,.15),rgba(212,168,68,.04))">📊</div>
+            <div class="qa-label">Export Data</div>
+            <div class="qa-sub">CSV / PDF</div>
+        </div>
+    </div>
+
+    <!-- Revenue Chart + Donut -->
+    <div class="dash-grid" style="animation:fadeUp .5s ease-out .18s both">
+        <!-- Revenue Bar Chart -->
+        <div class="panel" style="animation:none">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Revenue <span>& Volume</span></div>
+                    <div class="panel-sub" id="revSubtitle">Last 30 days · $84,240 total</div>
+                </div>
+                <div class="panel-action" onclick="showToast('Opening full analytics…')">View All →</div>
+            </div>
+            <div class="revenue-chart">
+                <div class="chart-grid-lines"><div class="cgl"></div><div class="cgl"></div><div class="cgl"></div><div class="cgl"></div></div>
+                <div class="bar-chart" id="barChart"></div>
+                <div class="chart-labels" id="chartLabels"></div>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Revenue</div>
+                <div class="legend-item"><div class="legend-dot" style="background:rgba(122,144,190,.6)"></div>Units Sold</div>
+            </div>
+        </div>
+
+        <!-- Donut + Category breakdown -->
+        <div class="panel" style="animation:none">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Category <span>Mix</span></div>
+                    <div class="panel-sub">By revenue share</div>
+                </div>
+            </div>
+            <div class="donut-wrap">
+                <div style="position:relative;width:150px;height:150px">
+                    <svg class="donut-svg" viewBox="0 0 120 120" id="donutSvg"></svg>
+                    <div class="donut-center">
+                        <div class="donut-center-val">148</div>
+                        <div class="donut-center-label">Products</div>
+                    </div>
+                </div>
+                <div class="donut-legend" id="donutLegend"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Products + Orders + Activity -->
+    <div class="dash-grid" style="animation:fadeUp .5s ease-out .24s both">
+        <!-- Recent Orders -->
+        <div class="panel" style="animation:none">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Recent <span>Orders</span></div>
+                    <div class="panel-sub">Latest 6 transactions</div>
+                </div>
+                <div class="panel-action" onclick="showToast('Opening orders page…')">View All →</div>
+            </div>
+            <table class="orders-table" id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Top Products -->
+        <div class="panel" style="animation:none">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Top <span>Fragrances</span></div>
+                    <div class="panel-sub">By revenue this period</div>
+                </div>
+            </div>
+            <div id="topProducts"></div>
+        </div>
+    </div>
+
+    <!-- Goals + Geo + Cohort + Realtime -->
+    <div class="dash-grid-3" style="animation:fadeUp .5s ease-out .3s both">
+
+        <!-- Monthly Goals -->
+        <div class="panel" style="animation:none">
+            <div class="panel-header">
+                <div class="panel-title">Monthly <span>Goals</span></div>
+            </div>
+            <div id="goalsPanel"></div>
+        </div>
+
+        <!-- Geo Breakdown -->
+        <div class="panel" style="animation:none">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Top <span>Markets</span></div>
+                    <div class="panel-sub">By revenue</div>
+                </div>
+            </div>
+            <div class="geo-list" id="geoList"></div>
+        </div>
+
+        <!-- Real-time Ticker -->
+        <div class="panel" style="animation:none">
+            <div class="panel-header">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div class="panel-title">Live <span>Activity</span></div>
+                    <div style="width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0"></div>
+                </div>
+                <div class="panel-action" onclick="refreshTicker()">↻ Refresh</div>
+            </div>
+            <div id="tickerFeed"></div>
+        </div>
+    </div>
+
+    <!-- Customer Cohort + Low Stock + Notifications -->
+    <div class="dash-grid-2" style="animation:fadeUp .5s ease-out .36s both">
+
+        <!-- Customer Cohort -->
+        <div class="panel" style="animation:none">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Customer <span>Insights</span></div>
+                    <div class="panel-sub">Segments & retention</div>
+                </div>
+            </div>
+            <div class="cohort-grid" id="cohortGrid"></div>
+            <div style="margin-top:20px">
+                <div class="panel-title" style="font-size:14px;margin-bottom:14px;color:var(--text2)">Retention Rate</div>
+                <div class="goal-track" style="height:8px"><div class="goal-fill" style="width:68%;background:linear-gradient(to right,var(--green)99,var(--green))"></div></div>
+                <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--text3)"><span>0%</span><span style="color:var(--green)">68% retention</span><span>100%</span></div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alerts + Notifications -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+            <div class="panel" style="animation:none">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">⚠ Stock <span>Alerts</span></div>
+                        <div class="panel-sub">Needs attention</div>
+                    </div>
+                    <div class="panel-action" onclick="showToast('Opening inventory…')">Manage →</div>
+                </div>
+                <div id="stockAlerts"></div>
+            </div>
+            <div class="panel" style="animation:none">
+                <div class="panel-header">
+                    <div class="panel-title">🔔 <span>Notifications</span></div>
+                    <div class="panel-action" onclick="markAllRead()">Mark all read</div>
+                </div>
+                <div id="notifPanel"></div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg"></span></div>
+
+<script src="~/js/dashboard/dasboardscript.js"></script>
