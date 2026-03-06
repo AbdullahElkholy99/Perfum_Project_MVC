@@ -1,5 +1,4 @@
-﻿using Perfum.MVC.Services;
-using Perfum.Services.ViewModels.Paginations;
+﻿
 using Perfum.Services.ViewModels.ProductVM;
 
 namespace Perfum.Services.Services;

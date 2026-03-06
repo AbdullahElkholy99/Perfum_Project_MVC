@@ -1,4 +1,4 @@
-﻿using Perfum.Services.IServices.Orders;
+﻿using Perfum.Services.IServices.Users;
 
 namespace Perfum.Services.Services.ManagerService;
 
@@ -12,9 +12,12 @@ public class ServiceManager : IServiceManager
     public IOrderService OrderService { get; }
     public IOrderItemService OrderItemService { get; }
 
+    public ICustomerService CustomerService { get; }
+
     public ServiceManager(ICategoryService categoryService, IProductService productService,
                             IRoleService roleService, IUserService userService,
-                            IOrderItemService orderItemService, IOrderService orderService)
+                            IOrderItemService orderItemService, IOrderService orderService,
+                            ICustomerService customerService)
     {
         RoleService = roleService;
         CategoryService = categoryService;
@@ -23,5 +26,6 @@ public class ServiceManager : IServiceManager
         UserService = userService;
         OrderService = orderService;
         OrderItemService = orderItemService;
+        CustomerService = customerService;
     }
 }

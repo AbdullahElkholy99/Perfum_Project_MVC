@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Perfum.Repositories\Perfum.Repositories.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\UserVM\" />
-  </ItemGroup>
-
 </Project>

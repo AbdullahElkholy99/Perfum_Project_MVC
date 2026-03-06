@@ -31,6 +31,7 @@ public class Product
 
 
     public virtual List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public virtual List<Review> Reviews { get; set; } = new List<Review>();
 
 
 }

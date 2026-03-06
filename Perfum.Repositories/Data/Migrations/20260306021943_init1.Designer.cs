@@ -12,8 +12,8 @@ using Perfum.Repositories.Data;
 namespace Perfum.Repositories.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260304121528_init")]
-    partial class init
+    [Migration("20260306021943_init1")]
+    partial class init1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -215,6 +215,9 @@ namespace Perfum.Repositories.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime2");
 
@@ -229,6 +232,8 @@ namespace Perfum.Repositories.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
                 });
@@ -300,6 +305,34 @@ namespace Perfum.Repositories.Data.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Perfum.Domain.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Users.User", b =>
@@ -452,6 +485,17 @@ namespace Perfum.Repositories.Data.Migrations
                         .HasForeignKey("AdminId");
                 });
 
+            modelBuilder.Entity("Perfum.Domain.Models.Orders.Order", b =>
+                {
+                    b.HasOne("Perfum.Domain.Models.Users.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("Perfum.Domain.Models.Orders.OrderItem", b =>
                 {
                     b.HasOne("Perfum.Domain.Models.Orders.Order", "Order")
@@ -480,6 +524,17 @@ namespace Perfum.Repositories.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Perfum.Domain.Models.Review", b =>
+                {
+                    b.HasOne("Perfum.Domain.Models.Users.Customer", "Customer")
+                        .WithMany("Reviews")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Users.Admin", b =>
@@ -518,6 +573,13 @@ namespace Perfum.Repositories.Data.Migrations
             modelBuilder.Entity("Perfum.Domain.Models.Users.Admin", b =>
                 {
                     b.Navigation("Categories");
+                });
+
+            modelBuilder.Entity("Perfum.Domain.Models.Users.Customer", b =>
+                {
+                    b.Navigation("Orders");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

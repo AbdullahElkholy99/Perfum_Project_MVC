@@ -12,6 +12,8 @@ global using Perfum.Repositories.IRepository.Orders;
 global using Perfum.Domain.Models.Orders;
 global using Perfum.Repositories.Repository.Orders;
 
+global using Perfum.Repositories.IRepository.Users;
+global using Perfum.Repositories.Repository.Users;
 
 
 

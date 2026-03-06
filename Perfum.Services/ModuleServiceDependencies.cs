@@ -1,10 +1,6 @@
 ﻿
-using Perfum.MVC;
-using Perfum.MVC.Services;
-using Perfum.Services.IServices.Orders;
-using Perfum.Services.Services.Authentication;
-using Perfum.Services.Services.OrderItems;
-using Perfum.Services.Services.Orders;
+using Perfum.Services.IServices.Users;
+using Perfum.Services.Services.Users;
 
 namespace Perfum.Services;
 
@@ -27,6 +23,9 @@ public static class ModuleServiceDependencies
 
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IOrderItemService, OrderItemService>();
+
+        services.AddScoped<ICustomerService, CustomerService>();
+
 
         return services;
     }

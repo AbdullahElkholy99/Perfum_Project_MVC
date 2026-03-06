@@ -1,4 +1,4 @@
-﻿using Perfum.Services.IServices.Orders;
+﻿using Perfum.Services.IServices.Users;
 
 namespace Perfum.Services.IServices.ManagerService;
 
@@ -12,4 +12,6 @@ public interface IServiceManager
 
     public IOrderService OrderService { get; }
     public IOrderItemService OrderItemService { get; }
+
+    public ICustomerService CustomerService { get; }
 }
