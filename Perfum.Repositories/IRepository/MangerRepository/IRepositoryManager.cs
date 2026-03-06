@@ -1,4 +1,6 @@
 ﻿
+using Perfum.Repositories.IRepository.Users;
+
 namespace Perfum.Repositories.IRepository.MangerRepository;
 
 public interface IRepositoryManager
@@ -9,5 +11,6 @@ public interface IRepositoryManager
     IOrderRepository OrderRepository { get; }
     IOrderItemRepository OrderItemRepository { get; }
 
+    ICustomerRepository CustomerRepository { get; }
 
 }

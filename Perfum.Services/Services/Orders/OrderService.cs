@@ -1,9 +1,6 @@
 ﻿
 using Perfum.Domain.Models.Orders;
-using Perfum.MVC.Services;
-using Perfum.Services.IServices.Orders;
 using Perfum.Services.ViewModels.OrderVM;
-using Perfum.Services.ViewModels.Paginations;
 
 namespace Perfum.Services.Services.Orders;
 
