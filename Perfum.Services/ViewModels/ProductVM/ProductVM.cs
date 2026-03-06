@@ -44,8 +44,9 @@ public record EditProductVM
 
     public double Price { get; set; }
     public double Size_Ml { get; set; }
+    public string? ImageUrl { get; set; }
+    public IFormFile? ImageFile { get; set; }
 
-    public IFormFile? ImageUrl { get; set; }
     public string Concentration { get; set; }
 
     public int Stock { get; set; }

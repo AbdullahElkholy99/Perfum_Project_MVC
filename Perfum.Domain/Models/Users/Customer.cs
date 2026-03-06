@@ -11,4 +11,6 @@ public class Customer : User
     public virtual List<Review> Reviews { get; set; } = new List<Review>();
 
 
+
+    //relations 
 }

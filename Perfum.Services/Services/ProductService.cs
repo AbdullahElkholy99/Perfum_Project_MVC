@@ -141,7 +141,7 @@ public class ProductService : IProductService
 
             if (model.ImageUrl != null && model.ImageUrl.Length > 0)
             {
-                string path = await _fileService.SaveImageAsync(model.ImageUrl, "Images/product");
+                string path = await _fileService.SaveImageAsync(model.ImageFile, "Images/product");
                 oldProduct.ImageUrl = path;
             }
 

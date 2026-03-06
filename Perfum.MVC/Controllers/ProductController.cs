@@ -1,6 +1,5 @@
 using Perfum.MVC.Models;
 using Perfum.MVC.ViewModels;
-using Perfum.Services.ViewModels.Paginations;
 using System.Diagnostics;
 
 namespace Perfum.MVC.Controllers;
@@ -39,7 +38,13 @@ public class ProductController : Controller
             return NotFound();
         return View(product);
     }
-
+    public async Task<IActionResult> AddToCart(int id)
+    {
+        var product = await _serviceManager.ProductService.GetByIdAsync(id);
+        if (product == null || product.Id == 0)
+            return Json(() => new { Result = false });
+        return Json(() => new { Result = product });
+    }
     [HttpGet]
     public async Task<IActionResult> Create()
     {

@@ -11,4 +11,6 @@ public class User : IdentityUser<int>
     public IFormFile? ImageFile { get; set; }
 
     public string? ImagePath { get; set; }
+
+
 }

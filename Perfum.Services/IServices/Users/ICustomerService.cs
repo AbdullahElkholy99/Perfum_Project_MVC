@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿
 namespace Perfum.Services.IServices.Users;
 
@@ -17,4 +18,12 @@ public interface ICustomerService
 
     // --------------------- Delete ---------------------
     Task<string> DeleteAsync(int id);
+=======
+﻿namespace Perfum.Services.IServices.Users;
+
+public interface ICustomerService
+{
+
+    Task<Customer> GetAllAsync(Customer customer);
+>>>>>>> 8dee4014fe6596003dadc632b51af84721b68726
 }
