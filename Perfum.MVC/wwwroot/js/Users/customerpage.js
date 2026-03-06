@@ -1,9 +1,9 @@
 ﻿
 // ── DATA ──
-    const CAT_COLORS={'Floral':'#c97a7a','Oriental':'#c8854a','Woody':'#7a9e7e','Fresh':'#7a90be','Fougère':'#a87ac8','Gourmand':'#d4a844'};
-    const EMOJIS={'Floral':'🌸','Oriental':'🔥','Woody':'🌳','Fresh':'❄️','Fougère':'🌿','Gourmand':'🍂'};
+const CAT_COLORS={'Floral':'#c97a7a','Oriental':'#c8854a','Woody':'#7a9e7e','Fresh':'#7a90be','Fougère':'#a87ac8','Gourmand':'#d4a844'};
+const EMOJIS={'Floral':'🌸','Oriental':'🔥','Woody':'🌳','Fresh':'❄️','Fougère':'🌿','Gourmand':'🍂'};
 
-    const PRODUCTS=[
+const PRODUCTS=[
     {id:1,name:"Nuit d'Ambre",cat:'Oriental',size:'50ml',price:210,stock:24,rating:4.8,reviews:142,tagline:'A deep amber reverie threaded with labdanum and tonka bean.',top:['Cardamom','Pepper','Saffron'],heart:['Rose','Oud','Labdanum'],base:['Amber','Benzoin','Vanilla'],badge:''},
     {id:2,name:'Rose Sauvage',cat:'Floral',size:'100ml',price:185,stock:8,rating:4.9,reviews:218,tagline:'A wild rose caught between morning dew and warm earth.',top:['Bergamot','Geranium','Lychee'],heart:['Rose','Peony','Magnolia'],base:['Musk','Sandalwood','Cedarwood'],badge:'low'},
     {id:3,name:'Bois Sacré',cat:'Woody',size:'75ml',price:340,stock:31,rating:4.7,reviews:89,tagline:'Sacred cedarwood veiled in incense and soft leather.',top:['Lemon','Juniper','Grapefruit'],heart:['Cedar','Vetiver','Iris'],base:['Oakmoss','Musk','Amber'],badge:''},
@@ -16,27 +16,26 @@
     {id:10,name:'Praline Noir',cat:'Gourmand',size:'50ml',price:175,stock:13,rating:4.6,reviews:72,tagline:'Dark praline folded into vetiver and smoked birch.',top:['Caramel','Praline','Black Pepper'],heart:['Chocolate','Tobacco','Jasmine'],base:['Birch','Vanilla','Musk'],badge:'new'},
     {id:11,name:'Lavande Étoile',cat:'Fougère',size:'100ml',price:125,stock:55,rating:4.2,reviews:134,tagline:'Classic lavender laced with oakmoss and coumarin.',top:['Lavender','Bergamot','Petitgrain'],heart:['Geranium','Sage','Rose'],base:['Oakmoss','Coumarin','Musk'],badge:''},
     {id:12,name:'Aqua Marina',cat:'Fresh',size:'75ml',price:135,stock:28,rating:4.1,reviews:92,tagline:'Oceanic ozonic freshness over a cedar-driftwood base.',top:['Sea Spray','Ozonic','Citrus'],heart:['Aquatic','Violet','Marine'],base:['Cedar','Musk','Driftwood'],badge:''},
-    ];
+];
 
-    let cart=[];
-    let wishlist=new Set();
-    let catFilter='all';
-    let modalProduct=null;
-    let modalQty=1;
-    let paymentMethod='card';
-    let checkoutStep=1;
-    let dark=false;
+let wishlist=new Set();
+let catFilter='all';
+let modalProduct=null;
+let modalQty=1;
+let paymentMethod='card';
+let checkoutStep=1;
+let dark=false;
 
-    // ── FILTER / SORT / RENDER ──
-    function getCategories(){return['all',...new Set(PRODUCTS.map(p=>p.cat))];}
+// ── FILTER / SORT / RENDER ──
+function getCategories(){return['all',...new Set(PRODUCTS.map(p=>p.cat))];}
 
-    function buildFilterRow(){
-        document.getElementById('filterRow').innerHTML = getCategories().map(c => `
+function buildFilterRow(){
+    document.getElementById('filterRow').innerHTML = getCategories().map(c => `
     <div class="fchip ${c === catFilter ? 'on' : ''}" onclick="setCat('${c}',this)">${c === 'all' ? 'All' : c}</div>`).join('');
 }
-    function setCat(c,el){catFilter = c;document.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on'));el.classList.add('on');applyFilters();}
+function setCat(c,el){catFilter = c;document.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on'));el.classList.add('on');applyFilters();}
 
-    function getFiltered(){
+function getFiltered(){
   const q=document.getElementById('shopSearch').value.toLowerCase().trim();
     const sort=document.getElementById('sortSel').value;
   let data=PRODUCTS.filter(p=>{
@@ -51,47 +50,48 @@
     return data;
 }
 
-    function applyFilters(){
+function applyFilters(){
   const data=getFiltered();
     document.getElementById('countLabel').textContent=`${data.length} fragrance${data.length !== 1 ? 's' : ''}`;
     const grid=document.getElementById('prodGrid');
     if(!data.length){grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:64px;color:var(--text3)"><div style="font-size:40px;margin-bottom:12px;opacity:.4">🔍</div><div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text2);margin-bottom:6px">No fragrances found</div><div style="font-size:12px">Try a different search or category</div></div>`;return;}
-  grid.innerHTML=data.map((p,i)=>{
-    const col=CAT_COLORS[p.cat]||'#c8854a';
-    const em=EMOJIS[p.cat]||'🧴';
-    const inWish=wishlist.has(p.id);
-    const outOfStock=p.stock===0;
-    let ribbon='';
-    if(outOfStock)ribbon=`<div class="stock-ribbon sr-out">Out of Stock</div>`;
-    else if(p.badge==='new')ribbon=`<div class="stock-ribbon sr-new">New Arrival</div>`;
-    else if(p.badge==='low'||p.stock<10)ribbon=`<div class="stock-ribbon sr-low">Low Stock</div>`;
-    return `
-    <div class="prod-card" style="animation-delay:${i*.05}s" onclick="openProductModal(${p.id})">
-        ${ribbon}
-        <div class="card-wishlist ${inWish?'loved':''}" onclick="event.stopPropagation();toggleWishlistItem(${p.id})" title="Wishlist">${inWish ? '❤️' : '🤍'}</div>
-        <div class="card-banner" style="background:linear-gradient(140deg,${col}1e,${col}08)">${em}</div>
-        <div class="card-body">
-            <div class="card-cat">${p.cat} · ${p.size}</div>
-            <div class="card-name">${p.name}</div>
-            <div class="card-tagline">${p.tagline}</div>
-            <div class="card-notes">${p.top.slice(0, 3).map(n => `<span class="note-pill">${n}</span>`).join('')}</div>
-            <div class="card-footer">
-                <div>
-                    <div class="card-price">$${p.price}</div>
-                    <div class="card-size">${p.size}</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px">
-                    <div class="card-stars"><span class="star-val">★</span> ${p.rating}</div>
-                    <button class="add-btn" onclick="event.stopPropagation();quickAdd(${p.id})" ${outOfStock ? 'disabled' : ''} title="${outOfStock?'Out of stock':'Add to cart'}">+</button>
-                </div>
-            </div>
-        </div>
-    </div>`;
-  }).join('');
+
+        //grid.innerHTML = data.map((p, i) => {
+        //    const col=CAT_COLORS[p.cat]||'#c8854a';
+        //    const em=EMOJIS[p.cat]||'🧴';
+        //    const inWish=wishlist.has(p.id);
+        //    const outOfStock=p.stock===0;
+        //    let ribbon='';
+        //    if(outOfStock)ribbon=`<div class="stock-ribbon sr-out">Out of Stock</div>`;
+        //    else if(p.badge==='new')ribbon=`<div class="stock-ribbon sr-new">New Arrival</div>`;
+        //    else if(p.badge==='low'||p.stock<10)ribbon=`<div class="stock-ribbon sr-low">Low Stock</div>`;
+        //    return `
+        //    <div class="prod-card" style="animation-delay:${i*.05}s" onclick="openProductModal(${p.id})">
+        //        ${ribbon}
+        //        <div class="card-wishlist ${inWish?'loved':''}" onclick="event.stopPropagation();toggleWishlistItem(${p.id})" title="Wishlist">${inWish ? '❤️' : '🤍'}</div>
+        //        <div class="card-banner" style="background:linear-gradient(140deg,${col}1e,${col}08)">${em}</div>
+        //        <div class="card-body">
+        //            <div class="card-cat">${p.cat} · ${p.size}</div>
+        //            <div class="card-name">${p.name}</div>
+        //            <div class="card-tagline">${p.tagline}</div>
+        //            <div class="card-notes">${p.top.slice(0, 3).map(n => `<span class="note-pill">${n}</span>`).join('')}</div>
+        //            <div class="card-footer">
+        //                <div>
+        //                    <div class="card-price">$${p.price}</div>
+        //                    <div class="card-size">${p.size}</div>
+        //                </div>
+        //                <div style="display:flex;align-items:center;gap:8px">
+        //                    <div class="card-stars"><span class="star-val">★</span> ${p.rating}</div>
+        //                    <button class="add-btn" onclick="event.stopPropagation();quickAdd(${p.id})" ${outOfStock ? 'disabled' : ''} title="${outOfStock?'Out of stock':'Add to cart'}">+</button>
+        //                </div>
+        //            </div>
+        //        </div>
+        //    </div>`;
+        //  }).join('');
 }
 
-    // ── PRODUCT MODAL ──
-    function openProductModal(id){
+// ── PRODUCT MODAL ──
+function openProductModal(id){
   const p=PRODUCTS.find(x=>x.id===id);
     if(!p)return;
     modalProduct=p; modalQty=1;
@@ -120,74 +120,109 @@
     document.getElementById('modalBg').classList.add('open');
 }
 
-    function closeProductModal(force){
-  if(force===true||force?.target===document.getElementById('modalBg'))
-    document.getElementById('modalBg').classList.remove('open');
+function closeProductModal(force){
+     if(force===true||force?.target===document.getElementById('modalBg'))
+      document.getElementById('modalBg').classList.remove('open');
 }
 
-    function changeModalQty(d){
+function changeModalQty(d){
   if(!modalProduct)return;
     modalQty=Math.max(1,Math.min(modalQty+d,modalProduct.stock||99));
     document.getElementById('modalQtyVal').textContent=modalQty;
     document.getElementById('pmTotal').textContent=`$${modalProduct.price * modalQty}`;
 }
 
-    function addFromModal(){
+function addFromModal(){
   if(!modalProduct||modalProduct.stock===0)return;
     addToCart(modalProduct.id,modalQty);
     document.getElementById('modalBg').classList.remove('open');
 }
+function showproduct(item) {
+    console.log(item)
+    //addToCart(id, 1);
+}
+let cart = [];
+let products = [];
 
-    // ── CART ──
-    function quickAdd(id){
-        addToCart(id, 1);
+// ── CART ──
+function quickAdd(id, name, price, imageUrl, stock, size_Ml) {
+
+    const product = {
+        id: id,
+        name: name,
+        price: price,
+        imageUrl: imageUrl,
+        stock: stock,
+        size: size_Ml,
+
+    }
+    if (!products.find(x => x.id === id)) {
+        products.push(product)
+    }
+    console.log("-------------------- quickAdd")
+    console.log(products)
+    console.log("-------------------- ")
+
+    addToCart(product, 1);
 }
 
-    function addToCart(id,qty=1){
-  const p=PRODUCTS.find(x=>x.id===id);
-    if(!p||p.stock===0)return;
-  const existing=cart.find(x=>x.id===id);
-    if(existing){existing.qty = Math.min(existing.qty + qty, p.stock);}
-    else{cart.push({ id, qty: Math.min(qty, p.stock) });}
-    updateCartBadge();renderCart();
+function addToCart(product, qty = 1) {
+
+    const id = product.id
+    const p = products.find(x => x.id === id);
+    //var response = await fetch()
+    console.log("-------------------- addToCart")
+    console.log(product)
+    console.log("-------------------- ")
+
+    if (!product || product.stock === 0) return;
+
+    const existing = cart.find(x => x.id === id);
+
+    if (existing) {
+        console.log(cart)
+        existing.qty = Math.min(existing.qty + qty, product.stock);
+        console.log(cart)
+        console.log("------------")
+
+    }
+    else {
+        cart.push({ id, qty: Math.min(qty, product.stock) });
+        console.log(cart)
+        console.log("***********")
+    }
+
+    updateCartBadge(); renderCart();
+     
     showToast(`"${p.name}" added to cart 🛒`);
 }
+function updateCartBadge() {
 
-    function removeFromCart(id){cart = cart.filter(x => x.id !== id);updateCartBadge();renderCart();}
+    const n = cart.reduce((s, x) => s + x.qty, 0);
 
-    function changeCartQty(id,d){
-  const item=cart.find(x=>x.id===id);
-  const p=PRODUCTS.find(x=>x.id===id);
-    if(!item||!p)return;
-    item.qty=Math.max(1,Math.min(item.qty+d,p.stock));
-    updateCartBadge();renderCart();
-}
+    const badge = document.getElementById('cartBadge');
 
-    function updateCartBadge(){
-  const n=cart.reduce((s,x)=>s+x.qty,0);
-    const badge=document.getElementById('cartBadge');
-    badge.style.display=n?'flex':'none';
+    badge.style.display = n ? 'flex' : 'none';
+
     badge.textContent=n;
 }
 
-    function getCartTotal(){return cart.reduce((s,x)=>{const p=PRODUCTS.find(pr=>pr.id===x.id);return s+(p?p.price*x.qty:0);},0);}
-    function getCartShipping(){return getCartTotal()>=250?0:18;}
-    function getCartDiscount(){return getCartTotal()>=400?Math.round(getCartTotal()*.05):0;}
-
-    function renderCart(){
-  const el=document.getElementById('cartItems');
-    const footer=document.getElementById('cartFooter');
-    document.getElementById('cartCount').textContent=cart.length?`(${cart.reduce((s, x) => s + x.qty, 0)} items)`:'';
-    if(!cart.length){
+function renderCart() {
+    const el = document.getElementById('cartItems');
+    const footer = document.getElementById('cartFooter');
+    document.getElementById('cartCount').textContent = cart.length ? `(${cart.reduce((s, x) => s + x.qty, 0)} items)` : '';
+    if (!cart.length) {
         el.innerHTML = `<div class="cart-empty"><div class="ce-icon">🛒</div><div class="ce-title">Your cart is empty</div><div class="ce-sub">Add fragrances to begin</div></div>`;
-    footer.innerHTML=`<button class="continue-btn" onclick="closeCart()">Continue Shopping</button>`;
-    return;
-  }
-  el.innerHTML=cart.map(item=>{
-    const p=PRODUCTS.find(x=>x.id===item.id);if(!p)return'';
-    const col=CAT_COLORS[p.cat]||'#c8854a';
-    return`<div class="cart-item">
-        <div class="ci-emoji" style="background:linear-gradient(135deg,${col}22,${col}08)">${EMOJIS[p.cat] || '🧴'}</div>
+        footer.innerHTML = `<button class="continue-btn" onclick="closeCart()">Continue Shopping</button>`;
+        return;
+    }
+    el.innerHTML = cart.map(item => {
+        const p = products.find(x => x.id === item.id); if (!p) return '';
+        const col = CAT_COLORS[p.cat] || '#c8854a';
+        return `<div class="cart-item">
+        <div class="ci-emoji" style="background:linear-gradient(135deg,${col}22,${col}08)">
+              <img src="${p.imageUrl}" style="width:40px;height:40px;object-fit:cover">
+        </div>
         <div class="ci-info">
             <div class="ci-name">${p.name}</div>
             <div class="ci-meta">${p.cat} · ${p.size}</div>
@@ -200,10 +235,10 @@
         </div>
         <div class="ci-price">$${p.price * item.qty}</div>
     </div>`;
-  }).join('');
+    }).join('');
 
-    const subtotal=getCartTotal(),shipping=getCartShipping(),discount=getCartDiscount(),total=subtotal+shipping-discount;
-    footer.innerHTML=`
+    const subtotal = getCartTotal(), shipping = getCartShipping(), discount = getCartDiscount(), total = subtotal + shipping - discount;
+    footer.innerHTML = `
     <div class="cart-summary">
         <div class="cs-row"><span class="cs-label">Subtotal</span><span>$${subtotal}</span></div>
         <div class="cs-row"><span class="cs-label">Shipping</span><span>${shipping === 0 ? '<span style="color:var(--green)">Free</span>' : '$' + shipping}</span></div>
@@ -215,24 +250,39 @@
     <button class="continue-btn" onclick="closeCart()">Continue Shopping</button>`;
 }
 
-    function openCart(){renderCart();document.getElementById('cartBg').classList.add('open');document.getElementById('cartDrawer').classList.add('open');}
-    function closeCart(){document.getElementById('cartBg').classList.remove('open');document.getElementById('cartDrawer').classList.remove('open');}
+function removeFromCart(id){cart = cart.filter(x => x.id !== id);updateCartBadge();renderCart();}
 
-    // ── CHECKOUT ──
-    function openCheckout(){
+function changeCartQty(id,d){
+  const item=cart.find(x=>x.id===id);
+  const p=products.find(x=>x.id===id);
+    if(!item||!p)return;
+    item.qty=Math.max(1,Math.min(item.qty+d,p.stock));
+    updateCartBadge();renderCart();
+}
+
+
+function getCartTotal(){return cart.reduce((s,x)=>{const p=products.find(pr=>pr.id===x.id);return s+(p?p.price*x.qty:0);},0);}
+function getCartShipping(){return getCartTotal()>=250?0:18;}
+function getCartDiscount(){return getCartTotal()>=400?Math.round(getCartTotal()*.05):0;}
+
+function openCart(){renderCart();document.getElementById('cartBg').classList.add('open');document.getElementById('cartDrawer').classList.add('open');}
+function closeCart(){document.getElementById('cartBg').classList.remove('open');document.getElementById('cartDrawer').classList.remove('open');}
+
+// ── CHECKOUT ──
+ function openCheckout(){
         closeCart();
     renderCheckout();
     document.getElementById('checkoutOverlay').classList.add('open');
 }
-    function closeCheckout(){document.getElementById('checkoutOverlay').classList.remove('open');}
+function closeCheckout(){document.getElementById('checkoutOverlay').classList.remove('open');}
 
-    function renderCheckout(){
-        renderCoSteps();
+function renderCheckout(){
+    renderCoSteps();
     renderCoRight();
     renderCoLeft();
 }
 
-    function renderCoSteps(){
+function renderCoSteps(){
   const steps=[{n:1,l:'Info'},{n:2,l:'Shipping'},{n:3,l:'Payment'}];
   document.getElementById('coSteps').innerHTML=steps.map((s,i)=>`
     ${i > 0 ? '<div class="co-step-sep"></div>' : ''}
@@ -242,12 +292,12 @@
     </div>`).join('');
 }
 
-    function renderCoRight(){
+function renderCoRight(){
   const subtotal=getCartTotal(),shipping=getCartShipping(),discount=getCartDiscount(),total=subtotal+shipping-discount;
     document.getElementById('coRight').innerHTML=`
     <div class="co-right-title">Order Summary</div>
     ${cart.map(item => {
-        const p = PRODUCTS.find(x => x.id === item.id); if (!p) return '';
+        const p = products.find(x => x.id === item.id); if (!p) return '';
         const col = CAT_COLORS[p.cat] || '#c8854a';
         return `<div class="co-item">
         <div class="co-item-emoji" style="background:linear-gradient(135deg,${col}22,${col}08)">${EMOJIS[p.cat] || '🧴'}</div>
@@ -267,14 +317,14 @@
     </div>`;
 }
 
-    function renderCoLeft(){
-  const el=document.getElementById('coLeft');
+function renderCoLeft(){
+    const el=document.getElementById('coLeft');
     if(checkoutStep===1) el.innerHTML=renderStep1();
     else if(checkoutStep===2) el.innerHTML=renderStep2();
     else el.innerHTML=renderStep3();
 }
 
-    function renderStep1(){
+function renderStep1(){
   return`
     <div class="co-section">
         <div class="co-section-title">Contact Information</div>
@@ -303,7 +353,7 @@
     <button class="place-order-btn" onclick="nextStep()" style="background:var(--accent)">Continue to Shipping →</button>`;
 }
 
-    function renderStep2(){
+function renderStep2(){
   return`
     <div class="co-section">
         <div class="co-section-title">Shipping Method</div>
@@ -338,7 +388,7 @@
     </div>`;
 }
 
-    function renderStep3(){
+function renderStep3(){
   const total=getCartTotal()+getCartShipping()-getCartDiscount();
     return`
     <div class="co-section">
@@ -371,7 +421,7 @@
     </div>`;
 }
 
-    function renderPaymentFields(){
+function renderPaymentFields(){
   const el=document.getElementById('paymentFields');if(!el)return;
     if(paymentMethod==='card'){
         el.innerHTML = `<div class="card-fields">
@@ -403,31 +453,31 @@
   }
 }
 
-    function selectPayment(id,el){
-        paymentMethod = id;
-  document.querySelectorAll('.pm-method').forEach(x=>x.classList.remove('selected'));
+function selectPayment(id,el){
+    paymentMethod = id;
+    document.querySelectorAll('.pm-method').forEach(x=>x.classList.remove('selected'));
     el.classList.add('selected');
     renderPaymentFields();
 }
 
-    function selectShipping(el){
+function selectShipping(el){
         el.closest('.co-section').querySelectorAll('.pm-method').forEach(x => x.classList.remove('selected'));
     el.classList.add('selected');
 }
 
-    function applyPromo(){
+function applyPromo(){
   const val=document.getElementById('promoInput')?.value?.toUpperCase();
     if(val==='SILLAGE20')showToast('Promo code applied! 20% off 🎉');
     else showToast('Invalid promo code');
 }
 
-    function formatCard(el){el.value = el.value.replace(/\D/g, '').replace(/(\d{4})/g, '$1 ').trim().slice(0, 19);}
-    function formatExpiry(el){el.value = el.value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1 / $2').slice(0, 7);}
+function formatCard(el){el.value = el.value.replace(/\D/g, '').replace(/(\d{4})/g, '$1 ').trim().slice(0, 19);}
+function formatExpiry(el){el.value = el.value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1 / $2').slice(0, 7);}
 
-    function nextStep(){if(checkoutStep<3){checkoutStep++;renderCoSteps();renderCoLeft();if(checkoutStep===3)setTimeout(renderPaymentFields,50);}}
-    function prevStep(){if(checkoutStep>1){checkoutStep--;renderCoSteps();renderCoLeft();}}
+function nextStep(){if(checkoutStep<3){checkoutStep++;renderCoSteps();renderCoLeft();if(checkoutStep===3)setTimeout(renderPaymentFields,50);}}
+function prevStep(){if(checkoutStep>1){checkoutStep--;renderCoSteps();renderCoLeft();}}
 
-    function placeOrder(){
+function placeOrder(){
   const orderId='#'+Math.floor(5300+Math.random()*200);
     document.getElementById('successOrderId').textContent=orderId;
     closeCheckout();
@@ -436,32 +486,35 @@
     checkoutStep=1;
 }
 
-    function continueShopping(){
+function continueShopping(){
         document.getElementById('successScreen').classList.remove('open');
     applyFilters();
 }
 
-    // ── WISHLIST ──
-    function toggleWishlistItem(id){
+// ── WISHLIST ──
+function toggleWishlistItem(id){
   if(wishlist.has(id))wishlist.delete(id);else wishlist.add(id);
     applyFilters();
-  const p=PRODUCTS.find(x=>x.id===id);
+  const p=products.find(x=>x.id===id);
     showToast(wishlist.has(id)?`"${p?.name}" added to wishlist ❤️`:`"${p?.name}" removed from wishlist`);
 }
-    function toggleWishlist(){showToast('Wishlist: ' + wishlist.size + ' item' + (wishlist.size !== 1 ? 's' : ''));}
+function toggleWishlist(){showToast('Wishlist: ' + wishlist.size + ' item' + (wishlist.size !== 1 ? 's' : ''));}
 
-    // ── THEME ──
-    function toggleTheme(){
-        dark = !dark;
+// ── THEME ──
+function toggleTheme(){
+    dark = !dark;
     document.documentElement.setAttribute('data-theme',dark?'dark':'light');
     document.getElementById('themeBtn').textContent=dark?'☀️':'🌙';
 }
 
-    // ── UTILS ──
-    function scrollToShop(){document.getElementById('shopSection').scrollIntoView({ behavior: 'smooth' });}
-    function setNavActive(el){document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));el.classList.add('active');}
-    function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+// ── UTILS ──
+function scrollToShop(){document.getElementById('shopSection').scrollIntoView({ behavior: 'smooth' });}
+function setNavActive(el){document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));el.classList.add('active');}
+function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
-    // ── BOOT ──
-    buildFilterRow();
-    applyFilters();
+// ── BOOT ──
+buildFilterRow();
+applyFilters();
+
+
+

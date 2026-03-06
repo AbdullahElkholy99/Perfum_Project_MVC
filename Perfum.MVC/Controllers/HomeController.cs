@@ -1,6 +1,3 @@
-using Perfum.MVC.Models;
-using System.Diagnostics;
-
 namespace Perfum.MVC.Controllers;
 
 public class HomeController : Controller
@@ -12,31 +9,20 @@ public class HomeController : Controller
         _serviceManager = serviceManager;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(PagedResult<ProductVM, ProductFilter, DashBoardProduct>? pagedResult)
     {
-        try
-        {
+        PagedResult<ProductVM, ProductFilter, DashBoardProduct>? result = await _serviceManager.ProductService.GetAllAsync(null);
 
-            return View();
+        if (result == null)
+            result = new PagedResult<ProductVM, ProductFilter, DashBoardProduct>
+            {
+                Items = new List<ProductVM>(),
+                TotalCount = 0,
+                Filter = null,
+                DashboardVM = null
+            };
 
-        }
-        catch (Exception)
-        {
-
-            throw;
-        }
+        return View(result);
     }
 
-    public IActionResult Privacy()
-    {
-
-
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
 }

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿
+
+
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -8,117 +11,115 @@
     <link href="~/css/dashbord/dashboard.css" rel="stylesheet" />
 </head>
 <body>
+
     <header class="nav-bar">
 
-        <div class="navbar-left">
-            <h2 class="page-title">Dashboard</h2>
+    <div class="navbar-left">
+        <h2 class="page-title">Dashboard</h2>
+    </div>
+
+    <div class="navbar-right">
+
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
         </div>
 
-        <div class="navbar-right">
-
-            <div class="search-box">
-                <input type="text" placeholder="Search...">
-            </div>
-
-            <div class="navbar-icon">
-                🔔
-            </div>
-
-            <div class="navbar-user">
-                <img src="https://i.pravatar.cc/40" class="user-avatar">
-                <span class="user-name">Admin</span>
-            </div>
-
+        <div class="navbar-icon">
+            🔔
         </div>
 
-    </header>
+        <div class="navbar-user">
+            <img src="https://i.pravatar.cc/40" class="user-avatar">
+            <span class="user-name">Admin</span>
+        </div>
 
+    </div>
 
-        <!-- ── Sidebar ── -->
-        <aside class="sidebar">
-            <div class="logo">
-                <div class="logo-text">Sillage</div>
-                <div class="logo-sub">Fragrance Studio</div>
-            </div>
+</header>
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-text">Sillage</div>
+            <div class="logo-sub">Fragrance Studio</div>
+        </div>
             
-            <div class="nav-section">
-                <div class="nav-label">Overview</div>
+        <div class="nav-section">
+            <div class="nav-label">Overview</div>
 
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")">
-                    <a asp-controller="Dashboard" asp-action="Index">
-                        <span class="nav-icon">◈</span>
-                        Dashboard
-                    </a>
-                </div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")">
+            <a asp-controller="Dashboard" asp-action="Index">
+                <span class="nav-icon">◈</span>
+                Dashboard
+            </a>
+        </div>
  
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Analytics" ? "active" : "")">
-                <a asp-controller="Analytics" asp-action="Index">
-                        <span class="nav-icon">◇</span>
-                        Analytics
-                    </a>
-                </div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Analytics" ? "active" : "")">
+            <a asp-controller="Analytics" asp-action="Index">
+                    <span class="nav-icon">◇</span>
+                    Analytics
+                </a>
             </div>
-            <div class="nav-section" style="margin-top:12px">
-                <div class="nav-label">Catalogue</div>
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Product" ? "active" : "")">
-                <a asp-controller="Product" asp-action="Index">
-                        <span class="nav-icon">✦</span>
-                        Products
-                    </a>
-                </div>
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Category" ? "active" : "")">
-                <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
+        </div>
+
+        <div class="nav-section" style="margin-top:12px">
+            <div class="nav-label">Catalogue</div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Product" ? "active" : "")">
+            <a asp-controller="Product" asp-action="Index">
+                    <span class="nav-icon">✦</span>
+                    Products
+                </a>
+            </div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Category" ? "active" : "")">
+            <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
                  
-                </div>
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Ingredient" ? "active" : "")">
-                <a asp-controller="Ingredient" asp-action="Index">
-                        <span class="nav-icon">◎</span> Ingredients
+            </div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Ingredient" ? "active" : "")">
+            <a asp-controller="Ingredient" asp-action="Index">
+                    <span class="nav-icon">◎</span> Ingredients
+                </a>
+            </div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Collection" ? "active" : "")">
+            <a asp-controller="Collection" asp-action="Index">
+                    <span class="nav-icon">◎</span> Collections
+                </a>
+            </div>
+        </div>
+        <div class="nav-section" style="margin-top:12px">
+            <div class="nav-label">Commerce</div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Order" ? "active" : "")">
+            <a asp-controller="Order" asp-action="Index">
+                <span class="nav-icon">▣</span> Orders 
                     </a>
-                </div>
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Collection" ? "active" : "")">
-                <a asp-controller="Collection" asp-action="Index">
-                        <span class="nav-icon">◎</span> Collections
+            </div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "CustomerDashboard" ? "active" : "")">
+            <a asp-controller="CustomerDashboard" asp-action="Index">
+                    <span class="nav-icon">◯</span> Customers
                     </a>
-                </div>
             </div>
-            <div class="nav-section" style="margin-top:12px">
-                <div class="nav-label">Commerce</div>
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Order" ? "active" : "")">
-                <a asp-controller="Order" asp-action="Index">
-                    <span class="nav-icon">▣</span> Orders 
-                     </a>
-                </div>
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "CustomerDashboard" ? "active" : "")">
-                <a asp-controller="CustomerDashboard" asp-action="Index">
-                        <span class="nav-icon">◯</span> Customers
-                     </a>
-                </div>
-            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Marketing" ? "active" : "")">
-                <a asp-controller="Marketing" asp-action="Index">
-                        <span class="nav-icon">▷</span> Marketing
-                     </a>
-                </div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Marketing" ? "active" : "")">
+            <a asp-controller="Marketing" asp-action="Index">
+                    <span class="nav-icon">▷</span> Marketing
+                    </a>
             </div>
-            <div class="sidebar-bottom">
-                <div class="theme-toggle" onclick="toggleTheme()">
-                    <span id="themeLabel">Dark Mode</span>
-                    <div class="toggle-pill" id="pill"><div class="toggle-dot"></div></div>
-                </div>
+        </div>
+        <div class="sidebar-bottom">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span id="themeLabel">Dark Mode</span>
+                <div class="toggle-pill" id="pill"><div class="toggle-dot"></div></div>
             </div>
-        </aside>
+        </div>
+    </aside>
 
-        <!-- ── Main ── -->
-        <main class="mainDashboard">
+    <!-- ── Main ── -->
+    <main class="mainDashboard">
 
+        <div class="DashboardContent">
+            @RenderBody();
+        </div>
 
-            <div class="DashboardContent">
-                @RenderBody();
-            </div>
-
-        </main>
-
- 
-    
+    </main>
 
     <!-- ── Toast ── -->
     <div class="toast" id="toast">
@@ -129,6 +130,7 @@
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/dashboard/dashboard.js"></script>
+
     @await RenderSectionAsync("Scripts",required:false)
 </body>
 </html>

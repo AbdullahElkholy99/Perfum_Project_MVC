@@ -3,4 +3,6 @@
 public class Customer : User
 {
 
+
+    //relations 
 }

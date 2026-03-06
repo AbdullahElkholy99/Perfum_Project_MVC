@@ -3,7 +3,13 @@
     ViewData["Title"] = "Home Page";
 
     Layout = null;
+    var products = Model?.Items ?? new List<ProductVM>();
+    var totalCount = Model?.TotalCount ?? 0;
+    var inStock = products.Count(p => p.Stock > 10);
+    var lowStock = products.Count(p => p.Stock > 0 && p.Stock <= 10);
+    var outOfStock = products.Count(p => p.Stock == 0);
 }
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -63,20 +69,92 @@
     <div class="filter-row" id="filterRow"></div>
   </div>
   <div class="shop-toolbar">
-    <div class="shop-search">
-      <span style="color:var(--text3);font-size:16px">⌕</span>
-      <input id="shopSearch" placeholder="Search fragrances, notes…" oninput="applyFilters()" />
-    </div>
-    <select class="sort-sel" id="sortSel" onchange="applyFilters()">
-      <option value="default">Featured</option>
-      <option value="price-asc">Price: Low → High</option>
-      <option value="price-desc">Price: High → Low</option>
-      <option value="rating">Top Rated</option>
-      <option value="name">Name A–Z</option>
-    </select>
-    <div class="count-label" id="countLabel"></div>
+      <form asp-action="Index" > 
+
+        <div class="shop-search">
+          <span style="color:var(--text3);font-size:16px">⌕</span>
+          <input id="shopSearch" asp-for="Filter.SearchByName" placeholder="Search fragrances, notes…" oninput="applyFilters()" />
+        </div>
+
+        <select class="sort-sel" id="sortSel" asp-for="Filter.PriceAsc" onchange="applyFilters()">
+          <option value="default">Featured</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="rating">Top Rated</option>
+          <option value="name">Name A–Z</option>
+        </select>
+        <div class="count-label" id="countLabel"></div>
+      </form>
   </div>
-  <div class="prod-grid" id="prodGrid"></div>
+        <div class="prod-grid">
+
+            @foreach (var item in products)
+            {
+                var outOfStock = item.Stock == 0;
+                var lowStock = item.Stock < 10;
+
+                <div class="prod-card" onclick="openProductModal(@item.Id)">
+
+                    @if (outOfStock)
+                    {
+                        <div class="stock-ribbon sr-out">Out of Stock</div>
+                    }
+                    else if (lowStock)
+                    {
+                        <div class="stock-ribbon sr-low">Low Stock</div>
+                    }
+
+                    <div class="card-wishlist"
+                         onclick="event.stopPropagation();toggleWishlistItem(@item.Id)"
+                         title="Wishlist">
+                        🤍
+                    </div>
+
+                    <div class="card-banner">
+                        <img src="@item.ImageUrl" alt="@item.Name" style="width:100%;height:100%;object-fit:cover;" />
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="card-cat">
+                            @item.CategoryName · @item.Size_Ml ML
+                        </div>
+
+                        <div class="card-name">
+                            @item.Name
+                        </div>
+
+                        <div class="card-tagline">
+                            @item.Descreption
+                        </div>
+
+                        <div class="card-footer">
+                            <div>
+                                <div class="card-price">
+                                    $@item.Price
+                                </div>
+
+                                <div class="card-size">
+                                    @item.Size_Ml ML
+                                </div>
+                            </div>
+
+                            <div style="display:flex;align-items:center;gap:8px">
+
+                                <button class="add-btn"
+                                    @* onclick="event.stopPropagation(); quickAdd( @item.Id)" *@
+                                    onclick="event.stopPropagation(); quickAdd( @item.Id,`@item.Name`,`@item.Price`,'@Url.Content(item.ImageUrl)',`@item.Stock`,`@item.Size_Ml`)"
+                                    @(outOfStock ? "disabled" : "")
+                                    title="@(outOfStock ? "Out of stock" : "Add to cart")">
+                                    +
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
 </section>
 
 <footer>

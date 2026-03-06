@@ -1,6 +1,7 @@
-﻿namespace Perfum.Services.IServices.Users
+﻿namespace Perfum.Services.IServices.Users;
+
+public interface ICustomerService
 {
-    internal interface ICustomerService
-    {
-    }
+
+    Task<Customer> GetAllAsync(Customer customer);
 }
