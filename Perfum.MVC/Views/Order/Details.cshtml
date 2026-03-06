@@ -1,7 +1,7 @@
 @model OrderVM
 @{
     ViewData["Title"] = "Order Details";
-    Layout = "~/Views/Shared/_DashboardOrdersAdminLayOut.cshtml";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
     var items = ViewBag.OrderItems as List<Perfum.Services.ViewModels.OrderItemVM.OrderItemVM> ?? new();
     var statusClass = Model.Status switch {
         Status.Active   => "sb-in",

@@ -3,20 +3,37 @@
    order.css  –  Dashboard Orders & Items styles
 */
 
-/* ── Variables (inherit from your root, or define fallbacks) ── */
+/* ── Variables — Light mode (default) ── */
 :root {
     --accent: #a08060;
     --accent2: #c8a882;
+    --surface1: #f5f0ea;
+    --surface2: #ffffff;
+    --surface3: #f0ebe3;
+    --border: #ddd5c8;
+    --text1: #2c2016;
+    --text2: #6b5744;
+    --text3: #a08878;
+    --green: #3a9e6a;
+    --amber: #c98a10;
+    --rose: #c0504d;
+    --input-bg: #ffffff;
+    --input-color: #2c2016;
+    --search-bg: #ffffff;
+}
+
+/* ── Variables — Dark mode ── */
+[data-theme="dark"] {
     --surface1: #1a1714;
     --surface2: #241f1b;
     --surface3: #2e2820;
     --border: #3a322a;
-    --text1: #7a6a58;
+    --text1: #f0e8de;
     --text2: #c0a88a;
     --text3: #7a6a58;
-    --green: #4caf7d;
-    --amber: #e6a020;
-    --rose: #c0504d;
+    --input-bg: #2e2820;
+    --input-color: #f0e8de;
+    --search-bg: #2e2820;
 }
 
 /* ── Page wrapper ── */
@@ -45,7 +62,7 @@
 }
 
     .page-title span {
-        color: var(--accent2);
+        color: var(--accent);
     }
 
 .page-subtitle {
@@ -85,6 +102,13 @@
     .btn:active {
         transform: translateY(0);
     }
+
+.btn-danger:hover {
+    opacity: 1;
+    background: #a83230;
+    color: #fff;
+    transform: translateY(-1px);
+}
 
 .btn-primary {
     background: var(--accent);
@@ -154,7 +178,7 @@
 }
 
 .ic-dark {
-    background: rgba(90,80,70,.3);
+    background: rgba(90,80,70,.2);
 }
 
 .mini-val {
@@ -173,31 +197,41 @@
 .toolbar {
     display: flex;
     align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
     gap: 12px;
-    flex-wrap: wrap;
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 12px 16px;
 }
 
+    .toolbar .search-bar {
+        flex: 1;
+    }
+
+    .toolbar .sort-select {
+        flex: 0 0 auto;
+        width: auto;
+        padding: 7px 30px 7px 12px;
+    }
+
+/* ── Search bar ── */
 .search-bar {
-    flex: 1;
-    min-width: 180px;
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--surface3);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 7px 12px;
 }
 
     .search-bar input {
-        background: none;
+        background: transparent;
         border: none;
         outline: none;
-        color: var(--text1);
+        color: var(--input-color);
         font-size: 13px;
         width: 100%;
     }
@@ -206,21 +240,23 @@
             color: var(--text3);
         }
 
+/* ── Sort select ── */
 .sort-select {
-    background: var(--surface3);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
-    color: var(--text2);
+    color: var(--input-color);
     font-size: 13px;
     padding: 7px 14px;
     cursor: pointer;
     outline: none;
 }
 
+/* ── View toggle ── */
 .view-toggle {
     display: flex;
     gap: 4px;
-    background: var(--surface3);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 4px;
@@ -321,12 +357,12 @@
 }
 
 .order-banner {
-    background: linear-gradient(135deg, var(--surface3) 0%, #2a221a 100%);
+    background: linear-gradient(135deg, var(--surface3) 0%, var(--surface2) 100%);
 }
 
 .order-icon {
     font-size: 44px;
-    opacity: .8;
+    opacity: .7;
 }
 
 /* ── Card body ── */
@@ -414,7 +450,7 @@
     }
 
     .prod-table tbody tr:hover {
-        background: var(--surface2);
+        background: var(--surface3);
     }
 
 .prod-identity {
@@ -610,21 +646,31 @@
     letter-spacing: .5px;
 }
 
-.form-control {
-    background: var(--surface3);
+/* ── All writable inputs — white in light, dark in dark ── */
+.form-control,
+.form-control:focus,
+input.form-control,
+textarea.form-control,
+select.form-control,
+.search-bar input,
+.sort-select {
+    background: var(--input-bg);
+    color: var(--input-color);
     border: 1px solid var(--border);
     border-radius: 8px;
-    color: var(--text1);
     font-size: 13px;
     padding: 9px 13px;
     outline: none;
-    transition: border-color .15s;
+    transition: border-color .15s, box-shadow .15s;
     width: 100%;
     box-sizing: border-box;
 }
 
-    .form-control:focus {
+    .form-control:focus,
+    .search-bar input:focus,
+    .sort-select:focus {
         border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(160,128,96,.12);
     }
 
 .form-textarea {
@@ -694,4 +740,7 @@
         grid-template-columns: 1fr;
     }
 }
-
+img {
+    width:  100%;
+    height : 50%;
+}

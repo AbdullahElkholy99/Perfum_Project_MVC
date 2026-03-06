@@ -3,6 +3,9 @@
     ViewData["Title"] = "Product Details";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
 }
+
+<link href="~/css/dashbord/product-details.css" rel="stylesheet" />
+<link href="~/css/dashbord/productdetailscard.css" rel="stylesheet" />
 <div class="product-page">
     <div class="topbar">
         <div>
@@ -10,22 +13,55 @@
             <div class="page-subtitle">Product details</div>
         </div>
         <div class="topbar-actions">
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-            <a asp-action="Index" class="btn btn-ghost">Back to list</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary" style="text-decoration:none">Edit</a>
+            <a asp-action="Index" class="btn btn-ghost" style="text-decoration:none">Back to list</a>
         </div>
     </div>
     <div class="stat-strip" style="max-width:400px;">
         <div class="mini-stat"><div class="mini-icon ic-amber">✨</div><div><div class="mini-val">$@Model.Price.ToString("N2")</div><div class="mini-label">Price</div></div></div>
         <div class="mini-stat"><div class="mini-icon ic-sage">📦</div><div><div class="mini-val">@Model.Stock</div><div class="mini-label">Stock</div></div></div>
     </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
-        <p><strong>Description:</strong> @(Model.Descreption ?? "—")</p>
-        <p><strong>Concentration:</strong> @(Model.Concentration ?? "—")</p>
-        <p><strong>Size (ml):</strong> @Model.Size_Ml</p>
-        <p><strong>Category: </strong> @Model.CategoryName</p>
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))
-        {
-            <p><img src="~/@Model.ImageUrl" alt="@Model.Name" style="max-width:200px;" /></p>
-        }
+
+    <div class="product-detail-card">
+
+        <div class="product-card-image-wrapper">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="~/@Model.ImageUrl" alt="@Model.Name" />
+            }
+            else
+            {
+                <div class="product-card-no-image">
+                    <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="M21 15l-5-5L5 21" />
+                    </svg>
+                </div>
+            }
+        </div>
+
+        <div class="product-card-body">
+            <span class="product-card-category">@(Model.CategoryName ?? "Product")</span>
+            <h2 class="product-card-name">@Model.Name</h2>
+
+            <div class="product-card-divider"></div>
+
+            <div class="product-card-details">
+                <div class="product-card-detail-row">
+                    <span class="product-card-detail-label">Description</span>
+                    <span class="product-card-detail-value">@(Model.Descreption ?? "—")</span>
+                </div>
+                <div class="product-card-detail-row">
+                    <span class="product-card-detail-label">Concentration</span>
+                    <span class="product-card-detail-value">@(Model.Concentration ?? "—")</span>
+                </div>
+                <div class="product-card-detail-row">
+                    <span class="product-card-detail-label">Size</span>
+                    <span class="product-card-detail-value">@Model.Size_Ml ml</span>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>

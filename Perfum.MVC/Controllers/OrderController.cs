@@ -1,6 +1,6 @@
-﻿
-namespace Perfum.MVC.Controllers;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
+namespace Perfum.MVC.Controllers;
 
 public class OrderController : Controller
 {
@@ -40,7 +40,7 @@ public class OrderController : Controller
             });
         }
 
-        return View("Index", result);
+        return View(result);
     }
 
     #endregion
@@ -66,7 +66,7 @@ public class OrderController : Controller
         var orderItems = await _serviceManager.OrderItemService.GetAllByOrderIdAsync(id);
         ViewBag.OrderItems = orderItems ?? new List<OrderItemVM>();
 
-        return View("Details", order);
+        return View(order);
     }
 
     #endregion
@@ -229,10 +229,18 @@ public class OrderController : Controller
     }
 
     // GET: /Order/AddItem/5
-    public IActionResult AddItem(int orderId)
+    public async Task<IActionResult> AddItem(int orderId)
     {
         if (orderId <= 0)
             return BadRequest();
+
+        var products = await _serviceManager.ProductService.GetAllAsync(new ProductFilter());
+        ViewBag.Products = (products?.Items ?? new List<ProductVM>())
+            .Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.Name} — ${p.Price:N2}"
+            }).ToList();
 
         return View(new AddOrderItemVM { OrderId = orderId });
     }
@@ -243,7 +251,16 @@ public class OrderController : Controller
     public async Task<IActionResult> AddItem(AddOrderItemVM model)
     {
         if (!ModelState.IsValid)
+        {
+            var products = await _serviceManager.ProductService.GetAllAsync(new ProductFilter());
+            ViewBag.Products = (products?.Items ?? new List<ProductVM>())
+                .Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = $"{p.Name} — ${p.Price:N2}"
+                }).ToList();
             return View(model);
+        }
 
         var result = await _serviceManager.OrderItemService.AddAsync(model);
 

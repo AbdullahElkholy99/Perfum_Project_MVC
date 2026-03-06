@@ -10,8 +10,8 @@
     var outOfStock = products.Count(p => p.Stock == 0);
 }
 
-<link href="~/css/dashbord/product.css" rel="stylesheet" />
-
+@* <link href="~/css/dashbord/product.css" rel="stylesheet" /> *@
+<link href="~/css/dashbord/order.css" rel="stylesheet" />
 <div class="product-page" >
     @* ── Header ── *@
     <div class="topbar">
@@ -168,7 +168,7 @@
     window.productsFromServer = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(products));
 </script>
 
-@section Scripts {
+@* @section Scripts {
     <script>
         (function() {
             function getSortFn(sortVal) {
@@ -218,5 +218,277 @@
             if (inp) inp.addEventListener('input', applyFilters);
             if (sel) sel.addEventListener('change', applyFilters);
         })();
+    </script> *@
+@section Scripts {
+    <script>
+        (function () {
+
+            /* ───── View toggle ───── */
+            window.switchView = function (v) {
+
+                var grid  = document.getElementById('prodGrid');
+                var table = document.getElementById('tableWrap');
+
+                var gBtn = document.getElementById('gridViewBtn');
+                var lBtn = document.getElementById('listViewBtn');
+
+                if (v === 'grid') {
+                    grid.classList.remove('hidden');
+                    table.classList.add('hidden');
+
+                    gBtn.classList.add('active');
+                    lBtn.classList.remove('active');
+                }
+                else {
+                    grid.classList.add('hidden');
+                    table.classList.remove('hidden');
+
+                    lBtn.classList.add('active');
+                    gBtn.classList.remove('active');
+                }
+            };
+
+
+            /* ───── Sorting function ───── */
+            function getSortFn(sortVal) {
+
+                switch (sortVal) {
+
+                    case 'name':
+                        return function (a, b) {
+                            return (a.dataset.name || "")
+                                .localeCompare(b.dataset.name || "");
+                        };
+
+                    case 'price-asc':
+                        return function (a, b) {
+                            return parseFloat(a.dataset.price || 0)
+                                - parseFloat(b.dataset.price || 0);
+                        };
+
+                    case 'price-desc':
+                        return function (a, b) {
+                            return parseFloat(b.dataset.price || 0)
+                                - parseFloat(a.dataset.price || 0);
+                        };
+
+                    case 'stock':
+                        return function (a, b) {
+                            return parseInt(a.dataset.stock || 0)
+                                - parseInt(b.dataset.stock || 0);
+                        };
+
+                    default:
+                        return function () { return 0; };
+                }
+            }
+
+
+            /* ───── Filter + Search + Sort ───── */
+            window.applyFilters = function () {
+
+                var search =
+                    (document.getElementById('searchInput').value || "")
+                    .toLowerCase()
+                    .trim();
+
+                var sortValue =
+                    document.getElementById('sortSel').value;
+
+                var sortFn = getSortFn(sortValue);
+
+
+                /* ───── GRID ───── */
+
+                var grid = document.getElementById('prodGrid');
+
+                var cards = Array.from(
+                    grid.querySelectorAll('.prod-card')
+                );
+
+                var matching = cards.filter(function (el) {
+
+                    var text = el.dataset.search || "";
+
+                    return !search || text.includes(search);
+
+                });
+
+                var hidden = cards.filter(function (el) {
+
+                    var text = el.dataset.search || "";
+
+                    return search && !text.includes(search);
+                });
+
+                matching.sort(sortFn);
+
+                matching.forEach(function (el) {
+
+                    el.style.display = '';
+                    grid.appendChild(el);
+
+                });
+
+                hidden.forEach(function (el) {
+
+                    el.style.display = 'none';
+
+                });
+
+
+
+                /* ───── TABLE ───── */
+
+                var tbody = document.getElementById('tableBody');
+
+                var rows = Array.from(
+                    tbody.querySelectorAll('tr[data-search]')
+                );
+
+                var showRows = rows.filter(function (el) {
+
+                    var text = el.dataset.search || "";
+
+                    return !search || text.includes(search);
+
+                });
+
+                var hideRows = rows.filter(function (el) {
+
+                    var text = el.dataset.search || "";
+
+                    return search && !text.includes(search);
+
+                });
+
+                showRows.sort(sortFn);
+
+                showRows.forEach(function (el) {
+
+                    el.style.display = '';
+                    tbody.appendChild(el);
+
+                });
+
+                hideRows.forEach(function (el) {
+
+                    el.style.display = 'none';
+
+                });
+
+
+
+                /* ───── Update page info ───── */
+
+                var pi = document.getElementById('pageInfo');
+
+                if (pi) {
+
+                    var total = cards.length;
+                    var visible = matching.length;
+
+                    if (search)
+                        pi.textContent =
+                            "Showing " + visible + " of " + total + " matching";
+
+                    else
+                        pi.textContent =
+                            "Showing 1–" + Math.min(12, total) + " of " + total;
+                }
+            };
+
+
+            document
+                .getElementById('searchInput')
+                .addEventListener('input', applyFilters);
+
+            document
+                .getElementById('sortSel')
+                .addEventListener('change', applyFilters);
+
+
+
+            /* ───── Bulk select ───── */
+
+            window.toggleSelectAll = function (cb) {
+
+                document.querySelectorAll('.row-check')
+                    .forEach(function (c) {
+
+                        c.checked = cb.checked;
+
+                    });
+
+                updateBulkBar();
+            };
+
+            function updateBulkBar() {
+
+                var count =
+                    document.querySelectorAll('.row-check:checked').length;
+
+                document.getElementById('bulkCount').textContent = count;
+
+                document.getElementById('bulkBar').style.display =
+                    count > 0 ? 'flex' : 'none';
+            }
+
+            window.clearSelection = function () {
+
+                document.querySelectorAll('input[type=checkbox]')
+                    .forEach(function (c) { c.checked = false; });
+
+                updateBulkBar();
+            };
+
+
+            window.bulkDelete = function () {
+
+                if (confirm('Delete selected products?')) {
+
+                    showToast('Selected products deleted');
+
+                    clearSelection();
+                }
+            };
+
+            document.addEventListener('change', function (e) {
+
+                if (e.target.classList.contains('row-check'))
+                    updateBulkBar();
+
+            });
+
+
+            /* ───── Toast ───── */
+
+            window.showToast = function (msg) {
+
+                var t = document.createElement('div');
+
+                t.textContent = msg;
+
+                t.style.cssText =
+                    "position:fixed;" +
+                    "bottom:24px;" +
+                    "right:24px;" +
+                    "background:var(--accent);" +
+                    "color:#fff;" +
+                    "padding:10px 20px;" +
+                    "border-radius:8px;" +
+                    "z-index:9999;" +
+                    "font-size:14px;" +
+                    "box-shadow:0 4px 16px rgba(0,0,0,.2);";
+
+                document.body.appendChild(t);
+
+                setTimeout(function () {
+                    t.remove();
+                }, 2500);
+            };
+
+        })();
     </script>
+
 }
