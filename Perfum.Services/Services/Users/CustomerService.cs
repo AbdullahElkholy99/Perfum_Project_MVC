@@ -147,7 +147,7 @@ public class CustomerService : ICustomerService
             var CustomerVM = _mapper.Map<CustomerVM>(customer);
 
             // Get orders for customer
-            var orders =  _repositoryManager.OrderRepository.GetOrdersForCustomerAsync(customer.Id);
+            var orders = _repositoryManager.OrderRepository.GetOrdersForCustomerAsync(customer.Id);
             CustomerVM.Orders = orders.ToList<Order>();
 
             //check 
@@ -214,6 +214,11 @@ public class CustomerService : ICustomerService
         {
             return "Fail";
         }
+    }
+
+    public Task<Customer> GetAllAsync(Customer customer)
+    {
+        throw new NotImplementedException();
     }
 
     #endregion

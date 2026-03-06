@@ -27,5 +27,25 @@ public class Order
     public int CustomerId { get; set; }
     public virtual Customer Customer { get; set; }
 
+    // By Abdullah Ali
+    public DeliveryMethod? deliveryMethod { get; set; }
+    public string PaymentIntentId { get; set; }
+    public string? ClientSecret { get; set; }
+    public string? BuyerEmail { get; set; }
+    public decimal GetTotal()
+    {
+        return TotalPrice + deliveryMethod.Price;
+    }
+    public ShippingAddress shippingAddress { get; set; }
+    public Order(string buyerEmail, decimal subTotal, ShippingAddress shippingAddress, DeliveryMethod deliveryMethod, List<OrderItem> orderItems, string PaymentIntentId)
+    {
+        BuyerEmail = buyerEmail;
+        TotalPrice = subTotal;
+        shippingAddress = shippingAddress;
+        this.deliveryMethod = deliveryMethod;
+        this.OrderItems = orderItems;
+        this.PaymentIntentId = PaymentIntentId;
+    }
+    // ----------- 
 
 }

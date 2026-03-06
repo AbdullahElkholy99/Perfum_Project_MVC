@@ -55,12 +55,12 @@
             </a>
         </div>
  
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Analytics" ? "active" : "")">
+        @*     <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Analytics" ? "active" : "")">
             <a asp-controller="Analytics" asp-action="Index">
                     <span class="nav-icon">◇</span>
                     Analytics
                 </a>
-            </div>
+            </div> *@
         </div>
 
         <div class="nav-section" style="margin-top:12px">
@@ -75,7 +75,7 @@
             <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
                  
             </div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Ingredient" ? "active" : "")">
+     @*    <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Ingredient" ? "active" : "")">
             <a asp-controller="Ingredient" asp-action="Index">
                     <span class="nav-icon">◎</span> Ingredients
                 </a>
@@ -84,7 +84,7 @@
             <a asp-controller="Collection" asp-action="Index">
                     <span class="nav-icon">◎</span> Collections
                 </a>
-            </div>
+            </div> *@
         </div>
         <div class="nav-section" style="margin-top:12px">
             <div class="nav-label">Commerce</div>
@@ -119,17 +119,10 @@
             @RenderBody();
         </div>
 
-<<<<<<< HEAD
     </main>
-=======
-            <div class="DashboardContent">
-                @RenderBody()
-            </div>
-        </main>
 
  
     
->>>>>>> e1d19676b1c7455dfae281bc7dd8aed87c6f55eb
 
     <!-- ── Toast ── -->
     <div class="toast" id="toast">

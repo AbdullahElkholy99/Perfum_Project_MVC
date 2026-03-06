@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-﻿
+
 namespace Perfum.Services.IServices.Users;
 
 public interface ICustomerService
@@ -10,6 +9,7 @@ public interface ICustomerService
     // --------------------- Read ---------------------
     Task<PagedResult<CustomerVM, ViewModels.UserVM.CustomersFilter, DashBoardCustomer>> GetAllAsync(CustomersFilter? filter);
     Task<CustomerVM> GetByIdAsync(int id);
+    Task<Customer> GetAllAsync(Customer customer);
 
     Task<CustomerVM> GetByEmailAsync(string email);
 
@@ -18,12 +18,5 @@ public interface ICustomerService
 
     // --------------------- Delete ---------------------
     Task<string> DeleteAsync(int id);
-=======
-﻿namespace Perfum.Services.IServices.Users;
 
-public interface ICustomerService
-{
-
-    Task<Customer> GetAllAsync(Customer customer);
->>>>>>> 8dee4014fe6596003dadc632b51af84721b68726
 }

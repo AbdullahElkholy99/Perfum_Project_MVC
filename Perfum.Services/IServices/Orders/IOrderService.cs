@@ -1,5 +1,5 @@
-﻿using Perfum.Services.ViewModels.OrderVM;
-using Perfum.Services.ViewModels.Paginations;
+﻿using Perfum.Domain.Models.Orders;
+using Perfum.Services.ViewModels.OrderVM;
 
 namespace Perfum.Services.IServices.Orders;
 
@@ -7,6 +7,8 @@ public interface IOrderService
 {
     // --------------------- Create ---------------------
     Task<string> AddAsync(AddOrderVM model);
+    //by abdullah ali
+    Task<Order> CreateOrdersAsync(OrderDTO orderDTO, string BuyerEmail);
 
     // --------------------- Read ---------------------
     Task<PagedResult<OrderVM, OrderFilter, DashBoardOrder>> GetAllAsync();

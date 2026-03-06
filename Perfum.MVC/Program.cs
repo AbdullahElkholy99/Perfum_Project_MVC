@@ -1,5 +1,7 @@
 
 
+using StackExchange.Redis;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,7 +28,13 @@ builder.Services.PolicyService();
 
 #endregion
 
+// by abdullah ali
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var configuration = builder.Configuration.GetConnectionString("Redis");
 
+    return ConnectionMultiplexer.Connect(configuration);
+});
 
 var app = builder.Build();
 
