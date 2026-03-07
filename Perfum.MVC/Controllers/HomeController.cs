@@ -11,16 +11,20 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index(PagedResult<ProductVM, ProductFilter, DashBoardProduct>? pagedResult)
     {
-        PagedResult<ProductVM, ProductFilter, DashBoardProduct>? result = await _serviceManager.ProductService.GetAllAsync(null);
+        var filter = new ProductFilter();
+
+        var result = await _serviceManager.ProductService.GetAllAsync(filter);
 
         if (result == null)
             result = new PagedResult<ProductVM, ProductFilter, DashBoardProduct>
             {
                 Items = new List<ProductVM>(),
                 TotalCount = 0,
-                Filter = null,
+                Filter = filter,
                 DashboardVM = null
             };
+        else if (result.Filter == null)
+            result.Filter = filter;
 
         return View(result);
     }

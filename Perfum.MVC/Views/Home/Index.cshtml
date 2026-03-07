@@ -3,6 +3,7 @@
     ViewData["Title"] = "Home Page";
 
     Layout = null;
+    Model.Filter ??= new ProductFilter();
     var products = Model?.Items ?? new List<ProductVM>();
     var totalCount = Model?.TotalCount ?? 0;
     var inStock = products.Count(p => p.Stock > 10);
@@ -103,6 +104,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
             {
                 var outOfStock = item.Stock == 0;
                 var lowStock = item.Stock < 10;
+                var imgSrc = string.IsNullOrEmpty(item.ImageUrl)
+                ? Url.Content("~/Images/product/default.png")
+                : Url.Content("~/" + item.ImageUrl.TrimStart('~', '/'));
 
                 <div class="prod-card" onclick="openProductModal(@item.Id)">
 
@@ -122,7 +126,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                     </div>
 
                     <div class="card-banner">
-                        <img src="@item.ImageUrl" alt="@item.Name" style="width:100%;height:100%;object-fit:cover;" />
+                        <img src="@imgSrc" alt="@item.Name" style="width:100%;height:100%;object-fit:cover;" />
                     </div>
 
                     <div class="card-body">
@@ -154,7 +158,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 
                                 <button class="add-btn"
                                     @* onclick="event.stopPropagation(); quickAdd( @item.Id)" *@
-                                    onclick="event.stopPropagation(); quickAdd( @item.Id,`@item.Name`,`@item.Price`,'@Url.Content(item.ImageUrl)',`@item.Stock`,`@item.Size_Ml`)"
+                                    onclick="event.stopPropagation(); quickAdd( @item.Id,`@item.Name`,`@item.Price`,'@imgSrc',`@item.Stock`,`@item.Size_Ml`)"
                                     @(outOfStock ? "disabled" : "")
                                     title="@(outOfStock ? "Out of stock" : "Add to cart")">
                                     +
