@@ -1,8 +1,4 @@
 ﻿
-
-using Perfum.Domain.Enums;
-using Perfum.Domain.Models.Orders;
-
 namespace Perfum.Services.ViewModels.OrderVM;
 
 public record OrderVM
@@ -16,6 +12,8 @@ public record OrderVM
     public Status Status { get; set; }
 
     public decimal TotalPrice { get; set; }
+
+    public int CustomerId { get; set; }
 
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
@@ -31,6 +29,8 @@ public record AddOrderVM
     public Status Status { get; set; }
     public decimal TotalPrice { get; set; }
 
+    public int CustomerId { get; set; }   
+
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
 }
@@ -43,6 +43,7 @@ public record EditOrderVM
 
     public Status Status { get; set; }
     public decimal TotalPrice { get; set; }
+    public int CustomerId { get; set; }
 
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 

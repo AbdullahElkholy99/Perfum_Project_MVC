@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-
+﻿
 namespace Perfum.MVC.Controllers;
 
 public class OrderController : Controller
@@ -16,6 +15,33 @@ public class OrderController : Controller
     public OrderController(IServiceManager serviceManager)
     {
         _serviceManager = serviceManager;
+    }
+
+    #endregion
+
+
+    #region Helpers
+
+    private async Task LoadCustomersDropdownAsync()
+    {
+        var customers = await _serviceManager.CustomerService.GetAllAsync(null);
+        ViewBag.Customers = (customers?.Items ?? new List<CustomerVM>())
+            .Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = $"{c.UserName} — {c.Email}"
+            }).ToList();
+    }
+
+    private async Task LoadProductsDropdownAsync()
+    {
+        var products = await _serviceManager.ProductService.GetAllAsync(new ProductFilter());
+        ViewBag.Products = (products?.Items ?? new List<ProductVM>())
+            .Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.Name} — ${p.Price:N2}"
+            }).ToList();
     }
 
     #endregion
@@ -62,7 +88,6 @@ public class OrderController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        // Load order items for this order
         var orderItems = await _serviceManager.OrderItemService.GetAllByOrderIdAsync(id);
         ViewBag.OrderItems = orderItems ?? new List<OrderItemVM>();
 
@@ -75,8 +100,9 @@ public class OrderController : Controller
     #region Create
 
     // GET: /Order/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
+        await LoadCustomersDropdownAsync();
         return View(new AddOrderVM());
     }
 
@@ -86,13 +112,17 @@ public class OrderController : Controller
     public async Task<IActionResult> Create(AddOrderVM model)
     {
         if (!ModelState.IsValid)
+        {
+            await LoadCustomersDropdownAsync();
             return View(model);
+        }
 
         var result = await _serviceManager.OrderService.AddAsync(model);
 
         if (result != "Success")
         {
-            TempData["Error"] = "Failed to create order. Please try again.";
+            TempData["Error"] = result; // show real error message
+            await LoadCustomersDropdownAsync();
             return View(model);
         }
 
@@ -119,12 +149,15 @@ public class OrderController : Controller
             return RedirectToAction(nameof(Index));
         }
 
+        await LoadCustomersDropdownAsync();
+
         var editModel = new EditOrderVM
         {
             ShippingAddress = order.ShippingAddress,
             Date = order.Date,
             Status = order.Status,
             TotalPrice = order.TotalPrice,
+            CustomerId = order.CustomerId,
             OrderItems = order.OrderItems
         };
 
@@ -142,6 +175,7 @@ public class OrderController : Controller
 
         if (!ModelState.IsValid)
         {
+            await LoadCustomersDropdownAsync();
             ViewBag.OrderId = id;
             return View(model);
         }
@@ -150,7 +184,8 @@ public class OrderController : Controller
 
         if (result != "Success")
         {
-            TempData["Error"] = "Failed to update order. Please try again.";
+            TempData["Error"] = result;
+            await LoadCustomersDropdownAsync();
             ViewBag.OrderId = id;
             return View(model);
         }
@@ -204,9 +239,9 @@ public class OrderController : Controller
     #endregion
 
 
-    #region Order Items (nested actions)
+    #region Order Items
 
-    // GET: /Order/OrderItems/5  — list items for an order
+    // GET: /Order/OrderItems/5
     public async Task<IActionResult> OrderItems(int id)
     {
         if (id <= 0)
@@ -228,20 +263,13 @@ public class OrderController : Controller
         return View(items ?? new List<OrderItemVM>());
     }
 
-    // GET: /Order/AddItem/5
+    // GET: /Order/AddItem?orderId=5
     public async Task<IActionResult> AddItem(int orderId)
     {
         if (orderId <= 0)
             return BadRequest();
 
-        var products = await _serviceManager.ProductService.GetAllAsync(new ProductFilter());
-        ViewBag.Products = (products?.Items ?? new List<ProductVM>())
-            .Select(p => new SelectListItem
-            {
-                Value = p.Id.ToString(),
-                Text = $"{p.Name} — ${p.Price:N2}"
-            }).ToList();
-
+        await LoadProductsDropdownAsync();
         return View(new AddOrderItemVM { OrderId = orderId });
     }
 
@@ -252,13 +280,7 @@ public class OrderController : Controller
     {
         if (!ModelState.IsValid)
         {
-            var products = await _serviceManager.ProductService.GetAllAsync(new ProductFilter());
-            ViewBag.Products = (products?.Items ?? new List<ProductVM>())
-                .Select(p => new SelectListItem
-                {
-                    Value = p.Id.ToString(),
-                    Text = $"{p.Name} — ${p.Price:N2}"
-                }).ToList();
+            await LoadProductsDropdownAsync();
             return View(model);
         }
 
@@ -267,6 +289,7 @@ public class OrderController : Controller
         if (result != "Success")
         {
             TempData["Error"] = "Failed to add item. Please try again.";
+            await LoadProductsDropdownAsync();
             return View(model);
         }
 

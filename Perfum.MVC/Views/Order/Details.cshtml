@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Order Details";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
-    var items = ViewBag.OrderItems as List<Perfum.Services.ViewModels.OrderItemVM.OrderItemVM> ?? new();
+    var items = ViewBag.OrderItems as List<OrderItemVM> ?? new();
     var statusClass = Model.Status switch {
         Status.Active   => "sb-in",
         Status.Pending  => "sb-low",
@@ -12,7 +12,7 @@
     };
 }
 
-<link href="~/css/dashbord/order.css" rel="stylesheet" />
+<link href="~/css/Dashbord/order.css" rel="stylesheet" />
 
 <div class="order-page">
 

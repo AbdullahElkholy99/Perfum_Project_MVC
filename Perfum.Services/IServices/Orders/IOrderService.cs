@@ -1,6 +1,4 @@
-﻿using Perfum.Domain.Models.Orders;
-using Perfum.Services.ViewModels.OrderVM;
-
+﻿
 namespace Perfum.Services.IServices.Orders;
 
 public interface IOrderService

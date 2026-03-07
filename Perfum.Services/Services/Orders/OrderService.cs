@@ -1,8 +1,4 @@
 ﻿
-using Perfum.Domain.Models.Orders;
-using Perfum.Repositories.Data;
-using Perfum.Services.IServices.PaymentMethods;
-using Perfum.Services.ViewModels.OrderVM;
 
 namespace Perfum.Services.Services.Orders;
 

@@ -1,5 +1,4 @@
 using Perfum.MVC.Models;
-using Perfum.Services.ViewModels.Paginations;
 using System.Diagnostics;
 
 namespace Perfum.MVC.Controllers;

@@ -50,6 +50,11 @@ public class Order
         this.OrderItems = orderItems;
         this.PaymentIntentId = PaymentIntentId;
     }
+
+    public Order()
+    {
+        
+    }
     // ----------- 
 
 }

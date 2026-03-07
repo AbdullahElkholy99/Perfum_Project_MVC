@@ -7,9 +7,10 @@ public interface ICustomerService
     Task<string> AddAsync(AddCustomerVM model);
 
     // --------------------- Read ---------------------
-    Task<PagedResult<CustomerVM, ViewModels.UserVM.CustomersFilter, DashBoardCustomer>> GetAllAsync(CustomersFilter? filter);
+    Task<PagedResult<CustomerVM, CustomersFilter, DashBoardCustomer>> GetAllAsync(CustomersFilter? filter);
+    //Task<Customer> GetAllAsync(Customer customer);
+
     Task<CustomerVM> GetByIdAsync(int id);
-    Task<Customer> GetAllAsync(Customer customer);
 
     Task<CustomerVM> GetByEmailAsync(string email);
 
