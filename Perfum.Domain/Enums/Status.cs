@@ -10,4 +10,7 @@ public enum Status
     Pending,
     [Display(Name = "منتهي")]
     Expired,
+    PaymentReceived,
+    PaymentFaild
+
 }

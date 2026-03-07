@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Perfum.Services.ViewModels.CategoryVM;
-using Perfum.Services.ViewModels.ProductVM;
+﻿
 
 namespace Perfum.MVC.ViewModels;
 

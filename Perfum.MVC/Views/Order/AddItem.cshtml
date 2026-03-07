@@ -2,11 +2,11 @@
 @{
     ViewData["Title"] = "Add Order Item";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
-    var productList = ViewBag.Products as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
-                      ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>();
+    var productList = ViewBag.Products as List<SelectListItem>
+                      ?? new List<SelectListItem>();
 }
 
-<link href="~/css/dashbord/order.css" rel="stylesheet" />
+<link href="~/css/Dashbord/order.css" rel="stylesheet" />
 
 <div class="order-page">
 

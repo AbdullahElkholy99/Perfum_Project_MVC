@@ -1,166 +1,406 @@
-﻿
+﻿@model PagedResult<CustomerVM, CustomersFilter, DashBoardCustomer>
+
 @{
-    ViewData["Title"] = "Customer Management";
+    ViewData["Title"] = "Customers";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+    var customers = Model?.Items ?? new List<CustomerVM>();
+    var totalCount = Model?.TotalCount ?? 0;
+    var withOrders = customers.Count(c => c.Orders != null && c.Orders.Any());
+    var noOrders = customers.Count(c => c.Orders == null || !c.Orders.Any());
+    var withReviews = customers.Count(c => c.Reviews != null && c.Reviews.Any());
 }
 
-<link href="~/css/dashbord/customerdashboard.css" rel="stylesheet" />
+<link href="~/css/Dashbord/order.css" rel="stylesheet" />
+<link href="~/css/Dashbord/customer.css" rel="stylesheet" />
 
-<div class="layout">
+<div class="order-page">
 
-  <!-- Main -->
-  <main class="main">
+    @* ── Header ── *@
     <div class="topbar">
-      <div>
-        <div class="page-title">Customer <span>Management</span></div>
-        <div class="page-subtitle" id="pageSubtitle">Loading…</div>
-      </div>
-      <div class="topbar-actions">
-        <button class="btn btn-ghost" onclick="showToast('Customers exported')">⬇ Export</button>
-        <button class="btn btn-ghost" onclick="showToast('Import ready')">⬆ Import</button>
-        <button class="btn btn-primary" onclick="openAddModal()">＋ Add Customer</button>
-      </div>
+        <div>
+            <div class="page-title">Customers <span>Management</span></div>
+            <div class="page-subtitle">@totalCount customer@(totalCount == 1 ? "" : "s") registered</div>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn btn-ghost" onclick="exportCSV()">⬇ Export</button>
+            <a asp-action="Create" class="btn btn-primary">✦ Add Customer</a>
+        </div>
     </div>
 
-    <!-- Stats -->
+    @* ── Alerts ── *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">✓ @TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-error">✕ @TempData["Error"]</div>
+    }
+
+    @* ── Stats ── *@
     <div class="stat-strip">
-      <div class="mini-stat"><div class="s-icon ic-a">👥</div><div><div class="s-val" id="stTotal">—</div><div class="s-label">Total</div><div class="s-change">↑ 8.4%</div></div></div>
-      <div class="mini-stat"><div class="s-icon ic-g">💎</div><div><div class="s-val" id="stVip">—</div><div class="s-label">VIP</div><div class="s-change">↑ 12 new</div></div></div>
-      <div class="mini-stat"><div class="s-icon ic-s">🔁</div><div><div class="s-val" id="stRetention">68%</div><div class="s-label">Retention</div><div class="s-change down">↓ 1.2%</div></div></div>
-      <div class="mini-stat"><div class="s-icon ic-p">💰</div><div><div class="s-val" id="stLtv">—</div><div class="s-label">Avg. LTV</div><div class="s-change">↑ $18</div></div></div>
-      <div class="mini-stat"><div class="s-icon ic-r">📬</div><div><div class="s-val" id="stLapsed">—</div><div class="s-label">Lapsed</div><div class="s-change neutral">Need re-engage</div></div></div>
+        <div class="mini-stat">
+            <div class="mini-icon ic-amber">👤</div>
+            <div><div class="mini-val">@totalCount</div><div class="mini-label">Total Customers</div></div>
+        </div>
+        <div class="mini-stat">
+            <div class="mini-icon ic-sage">🛒</div>
+            <div><div class="mini-val">@withOrders</div><div class="mini-label">Have Orders</div></div>
+        </div>
+        <div class="mini-stat">
+            <div class="mini-icon ic-rose">⊘</div>
+            <div><div class="mini-val">@noOrders</div><div class="mini-label">No Orders</div></div>
+        </div>
+        <div class="mini-stat">
+            <div class="mini-icon ic-gold">⭐</div>
+            <div><div class="mini-val">@withReviews</div><div class="mini-label">Reviewed</div></div>
+        </div>
     </div>
 
-    <!-- Segments -->
-    <div class="segments-row" id="segmentsRow"></div>
-
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <div class="search-bar">
-        <span style="color:var(--text3);font-size:16px">⌕</span>
-        <input id="searchInput" placeholder="Search name, email, city, scent…" oninput="applyFilters()" />
-      </div>
-      <div style="display:flex;gap:7px;" id="tierChips"></div>
-      <select class="sort-sel" id="sortSel" onchange="applyFilters()">
-        <option value="name">Name A–Z</option>
-        <option value="spend-desc">Spend ↓</option>
-        <option value="spend-asc">Spend ↑</option>
-        <option value="orders">Most Orders</option>
-        <option value="recent">Most Recent</option>
-      </select>
-      <div class="view-toggle">
-        <div class="vbtn on" id="gridBtn" onclick="switchView('grid')">⊞</div>
-        <div class="vbtn" id="listBtn" onclick="switchView('list')">☰</div>
-      </div>
+    @* ── Filter Toolbar ── *@
+    <div class="cust-filter-bar">
+        <div class="search-bar" style="flex:1;min-width:100px">
+            <span style="color:var(--text3);font-size:16px">⌕</span>
+            <input id="searchName" placeholder="Search by name…" oninput="applyFilters()" />
+        </div>
+        <div class="search-bar" style="flex:1;min-width:80px">
+            <span style="color:var(--text3);font-size:13px">&#64;</span>
+            <input id="searchEmail" placeholder="Search by email…" oninput="applyFilters()" />
+        </div>
+        <select id="filterOrders" class="sort-select sort-select-styled w-25" onchange="applyFilters()">
+            <option value="all">All Customers</option>
+            <option value="has">Has Orders</option>
+            <option value="none">No Orders</option>
+        </select>
+        <select id="sortSel" class="sort-select sort-select-styled" onchange="applyFilters()">
+            <option value="name">Name A→Z</option>
+            <option value="name-desc">Name Z→A</option>
+            <option value="orders-desc">Most Orders</option>
+            <option value="orders-asc">Fewest Orders</option>
+        </select>
+        <button class="btn btn-ghost" onclick="resetFilters()">✕ Clear</button>
+        <div class="view-toggle">
+            <div class="view-btn active" id="gridViewBtn" onclick="switchView('grid')" title="Grid">⊞</div>
+            <div class="view-btn" id="listViewBtn" onclick="switchView('list')" title="Table">☰</div>
+        </div>
     </div>
 
-    <!-- Bulk bar -->
-    <div class="bulk-bar" id="bulkBar">
-      <div class="bulk-text">Selected: <strong id="bulkCount">0</strong></div>
-      <button class="btn btn-ghost btn-sm" onclick="clearSel()">Clear</button>
-      <button class="btn btn-ghost btn-sm" onclick="showToast('Email campaign sent')">✉ Email</button>
-      <button class="btn btn-ghost btn-sm" onclick="bulkSetTier('vip')">⭐ Promote VIP</button>
-      <button class="btn btn-danger btn-sm" onclick="bulkDelete()">✕ Delete</button>
+    @* ── Grid View ── *@
+    <div id="gridView">
+        <div class="cust-grid" id="gridBody">
+            @foreach (var c in customers)
+            {
+                int ordCnt = c.Orders != null ? c.Orders.Count : 0;
+                int revCnt = c.Reviews != null ? c.Reviews.Count : 0;
+                <div class="cust-card"
+                     data-name="@(c.UserName != null ? c.UserName.ToLower() : "")"
+                     data-email="@(c.Email != null ? c.Email.ToLower() : "")"
+                     data-orders="@ordCnt">
+                    <div class="cust-card-header">
+                        @if (!string.IsNullOrEmpty(c.ImageUrl))
+                        {
+                            <img src="/@c.ImageUrl" alt="@c.UserName" class="cust-avatar" />
+                        }
+                        else
+                        {
+                            <div class="cust-avatar cust-avatar-placeholder">
+                                @(c.UserName != null && c.UserName.Length > 0 ? c.UserName.Substring(0, 1).ToUpper() : "?")
+                            </div>
+                        }
+                        <div class="cust-badge-row">
+                            @if (ordCnt > 0)
+                            {
+                                <span class="cust-badge badge-active">@ordCnt orders</span>
+                            }
+                            else
+                            {
+                                <span class="cust-badge badge-inactive">No orders</span>
+                            }
+                            @if (revCnt > 0)
+                            {
+                                <span class="cust-badge badge-gold">@revCnt reviews</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="cust-card-body">
+                        <div class="cust-name">@c.UserName</div>
+                        <div class="cust-email">@c.Email</div>
+                        <div class="cust-meta">
+                            @if (!string.IsNullOrEmpty(c.PhoneNumber))
+                            {
+                                <span>📞 @c.PhoneNumber</span>
+                            }
+                            @if (!string.IsNullOrEmpty(c.Address))
+                            {
+                                <span>📍 @c.Address</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="cust-card-actions">
+                        <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Details</a>
+                        <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="gridEmpty" style="display:none;text-align:center;padding:48px 0">
+            <div style="font-size:40px">👤</div>
+            <div style="font-size:16px;font-weight:600;color:var(--text1);margin-top:10px">No customers match your search</div>
+            <button class="btn btn-ghost" style="margin-top:14px" onclick="resetFilters()">Clear filters</button>
+        </div>
+        <div class="cust-pagination" id="gridPagination"></div>
     </div>
 
-    <!-- Grid View -->
-    <div class="cust-grid" id="custGrid"></div>
-    <!-- Table View -->
-    <div class="table-wrap hidden" id="tableWrap">
-      <table class="cust-table">
-        <thead><tr>
-          <th style="width:32px;cursor:default"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)" style="accent-color:var(--accent);cursor:pointer;width:15px;height:15px;"></th>
-          <th>Customer</th><th>Tier</th><th>Total Spend</th>
-          <th>Orders</th><th>Fav. Scent</th><th>City</th><th>Last Order</th><th></th>
-        </tr></thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+    @* ── Table View ── *@
+    <div id="listView" style="display:none">
+        <div class="cust-table-wrap">
+            <table class="order-table cust-table">
+                <thead>
+                    <tr>
+                        <th style="width:44px">#</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th style="text-align:center">Orders</th>
+                        <th style="text-align:center">Reviews</th>
+                        <th style="text-align:right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="listBody">
+                    @foreach (var c in customers)
+                    {
+                        int ordCnt = c.Orders != null ? c.Orders.Count : 0;
+                        int revCnt = c.Reviews != null ? c.Reviews.Count : 0;
+                        <tr class="cust-row"
+                            data-name="@(c.UserName != null ? c.UserName.ToLower() : "")"
+                            data-email="@(c.Email != null ? c.Email.ToLower() : "")"
+                            data-orders="@ordCnt">
+                            <td><span class="order-id">#@c.Id</span></td>
+                            <td>
+                                <div class="cust-cell-user">
+                                    @if (!string.IsNullOrEmpty(c.ImageUrl))
+                                    {
+                                        <img src="/@c.ImageUrl" class="cust-avatar-sm" style="border-radius:50%;object-fit:cover" />
+                                    }
+                                    else
+                                    {
+                                        <div class="cust-avatar-sm">
+                                            @(c.UserName != null && c.UserName.Length > 0 ? c.UserName.Substring(0, 1).ToUpper() : "?")
+                                        </div>
+                                    }
+                                    <div>
+                                        <div class="cust-cell-name">@c.UserName</div>
+                                        @if (ordCnt > 0)
+                                        {
+                                            <span class="cust-badge badge-active" style="font-size:10px">@ordCnt orders</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="cust-badge badge-inactive" style="font-size:10px">No orders</span>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cust-cell-muted">@c.Email</td>
+                            <td class="cust-cell-muted">@(string.IsNullOrEmpty(c.PhoneNumber) ? "—" : c.PhoneNumber)</td>
+                            <td class="cust-cell-muted cust-cell-addr">@(string.IsNullOrEmpty(c.Address) ? "—" : c.Address)</td>
+                            <td style="text-align:center">
+                                <span class="cust-count-pill @(ordCnt > 0 ? "pill-green" : "pill-grey")">@ordCnt</span>
+                            </td>
+                            <td style="text-align:center">
+                                <span class="cust-count-pill @(revCnt > 0 ? "pill-gold" : "pill-grey")">@revCnt</span>
+                            </td>
+                            <td>
+                                <div class="action-btns" style="justify-content:flex-end">
+                                    <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Details</a>
+                                    <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-danger btn-sm">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div id="listEmpty" style="display:none;text-align:center;padding:48px 0">
+                <div style="font-size:40px">👤</div>
+                <div style="font-size:16px;font-weight:600;color:var(--text1);margin-top:10px">No customers match your search</div>
+                <button class="btn btn-ghost" style="margin-top:14px" onclick="resetFilters()">Clear filters</button>
+            </div>
+        </div>
+        <div class="cust-pagination" id="listPagination"></div>
     </div>
 
-    <div class="pagination">
-      <div class="page-info" id="pageInfo">—</div>
-      <div class="page-btns" id="pageBtns"></div>
-    </div>
-  </main>
+    @* ── No data ── *@
+    @if (!customers.Any())
+    {
+        <div class="empty-state">
+            <div style="font-size:48px;margin-bottom:12px">👤</div>
+            <div style="font-size:18px;font-weight:600;color:var(--text1)">No customers yet</div>
+            <div style="color:var(--text3);margin-top:6px">Add your first customer to get started</div>
+            <a asp-action="Create" class="btn btn-primary" style="margin-top:18px">✦ Add Customer</a>
+        </div>
+    }
+
 </div>
 
-<!-- ── PROFILE OVERLAY ── -->
-<div class="profile-overlay" id="profileOverlay">
-  <div class="profile-nav">
-    <div class="prof-back" onclick="closeProfile()">← All Customers</div>
-    <div class="prof-nav-actions">
-      <button class="btn btn-ghost btn-sm" onclick="showToast('Email sent')">✉ Message</button>
-      <button class="btn btn-ghost btn-sm" onclick="openEditModal()">✏ Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteCurrentCustomer()">✕ Delete</button>
-    </div>
-  </div>
-  <div class="profile-hero">
-    <div class="ph-inner">
-      <div class="ph-av" id="phAv"></div>
-      <div class="ph-info">
-        <div class="ph-name" id="phName"></div>
-        <div class="ph-meta" id="phMeta"></div>
-        <div class="tags-row" id="phTags" style="margin-top:10px"></div>
-      </div>
-      <div class="ph-kpis" id="phKpis"></div>
-    </div>
-  </div>
-  <div class="profile-body">
-    <div class="prof-left" id="profLeft"></div>
-    <div class="prof-right" id="profRight"></div>
-  </div>
-</div>
-
-<!-- ── ADD / EDIT MODAL ── -->
-<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Add Customer</div>
-      <div class="modal-close" onclick="closeModal(true)">✕</div>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="mName" placeholder="Amira Hassan" /></div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="mEmail" placeholder="amira@email.com" /></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="mPhone" placeholder="+20 10 1234 5678" /></div>
-        <div class="form-group"><label class="form-label">City</label><input class="form-input" id="mCity" placeholder="Cairo" /></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Country</label>
-          <select class="form-input" id="mCountry">
-            <option>Egypt</option><option>UAE</option><option>Saudi Arabia</option><option>France</option><option>UK</option><option>USA</option><option>Germany</option><option>Japan</option><option>Norway</option><option>Nigeria</option><option>India</option><option>Mexico</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Favourite Scent</label>
-          <select class="form-input" id="mScent">
-            <option>Nuit d'Ambre</option><option>Rose Sauvage</option><option>Bois Sacré</option><option>Oud Mystère</option><option>Sakura Lumière</option><option>Iris Blanc</option><option>Citrus Élite</option><option>Encens Royal</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group"><label class="form-label">Tier</label>
-        <div class="tg-group" id="mTierGroup">
-          <div class="tg-btn on" onclick="setModalTier('new',this)">New</div>
-          <div class="tg-btn" onclick="setModalTier('loyal',this)">Loyal</div>
-          <div class="tg-btn" onclick="setModalTier('vip',this)">VIP</div>
-          <div class="tg-btn" onclick="setModalTier('lapsed',this)">Lapsed</div>
-        </div>
-      </div>
-      <div class="form-group"><label class="form-label">Notes</label><textarea class="note-input" id="mNotes" rows="2" placeholder="Internal notes about this customer…" style="width:100%"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal(true)">Cancel</button>
-      <button class="btn btn-primary" id="modalSubmitBtn" onclick="submitModal()">Add Customer</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg">Done</span></div>
-
-
-
- 
 @section Scripts {
-    <script src="~/js/dashboard/customerdashboard.js"></script>
+    <script>
+        var PAGE_SIZE   = 5;
+        var currentView = 'grid';
+        var allCards = [], allRows = [];
+        var filteredC = [], filteredR = [];
+        var gridPage = 1, listPage = 1;
+
+        window.addEventListener('DOMContentLoaded', function () {
+            allCards  = Array.from(document.querySelectorAll('#gridBody .cust-card'));
+            allRows   = Array.from(document.querySelectorAll('#listBody .cust-row'));
+            filteredC = allCards.slice();
+            filteredR = allRows.slice();
+            renderGrid();
+            renderList();
+        });
+
+        function switchView(v) {
+            currentView = v;
+            document.getElementById('gridView').style.display = v === 'grid' ? '' : 'none';
+            document.getElementById('listView').style.display = v === 'list' ? '' : 'none';
+            document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
+            document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
+        }
+
+        function applyFilters() {
+            var name   = document.getElementById('searchName').value.toLowerCase().trim();
+            var email  = document.getElementById('searchEmail').value.toLowerCase().trim();
+            var orders = document.getElementById('filterOrders').value;
+            var sort   = document.getElementById('sortSel').value;
+
+            function matches(el) {
+                var n = el.dataset.name  || '';
+                var e = el.dataset.email || '';
+                var o = parseInt(el.dataset.orders) || 0;
+                if (name  && n.indexOf(name)  === -1) return false;
+                if (email && e.indexOf(email) === -1) return false;
+                if (orders === 'has'  && o === 0) return false;
+                if (orders === 'none' && o  >  0) return false;
+                return true;
+            }
+
+            function sortArr(arr) {
+                return arr.slice().sort(function (a, b) {
+                    var an = a.dataset.name || '', bn = b.dataset.name || '';
+                    var ao = parseInt(a.dataset.orders) || 0;
+                    var bo = parseInt(b.dataset.orders) || 0;
+                    if (sort === 'name')        return an.localeCompare(bn);
+                    if (sort === 'name-desc')   return bn.localeCompare(an);
+                    if (sort === 'orders-desc') return bo - ao;
+                    if (sort === 'orders-asc')  return ao - bo;
+                    return 0;
+                });
+            }
+
+            filteredC = sortArr(allCards.filter(matches));
+            filteredR = sortArr(allRows.filter(matches));
+            gridPage  = 1;
+            listPage  = 1;
+            renderGrid();
+            renderList();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchName').value   = '';
+            document.getElementById('searchEmail').value  = '';
+            document.getElementById('filterOrders').value = 'all';
+            document.getElementById('sortSel').value      = 'name';
+            applyFilters();
+        }
+
+        function renderGrid() {
+            var body  = document.getElementById('gridBody');
+            var empty = document.getElementById('gridEmpty');
+            allCards.forEach(function (c) { c.style.display = 'none'; });
+            if (filteredC.length === 0) {
+                empty.style.display = '';
+                document.getElementById('gridPagination').innerHTML = '';
+                return;
+            }
+            empty.style.display = 'none';
+            var start = (gridPage - 1) * PAGE_SIZE;
+            filteredC.forEach(function (c, i) {
+                body.appendChild(c);
+                c.style.display = (i >= start && i < start + PAGE_SIZE) ? '' : 'none';
+            });
+            renderPagination('gridPagination', filteredC.length, gridPage, 'grid');
+        }
+
+        function renderList() {
+            var body  = document.getElementById('listBody');
+            var empty = document.getElementById('listEmpty');
+            allRows.forEach(function (r) { r.style.display = 'none'; });
+            if (filteredR.length === 0) {
+                empty.style.display = '';
+                document.getElementById('listPagination').innerHTML = '';
+                return;
+            }
+            empty.style.display = 'none';
+            var start = (listPage - 1) * PAGE_SIZE;
+            filteredR.forEach(function (r, i) {
+                body.appendChild(r);
+                r.style.display = (i >= start && i < start + PAGE_SIZE) ? '' : 'none';
+            });
+            renderPagination('listPagination', filteredR.length, listPage, 'list');
+        }
+
+        function renderPagination(containerId, total, page, view) {
+            var tp  = Math.ceil(total / PAGE_SIZE);
+            var el  = document.getElementById(containerId);
+            if (tp <= 1) { el.innerHTML = ''; return; }
+            var from = Math.min((page - 1) * PAGE_SIZE + 1, total);
+            var to   = Math.min(page * PAGE_SIZE, total);
+            var html = '<div class="pag-info">Showing ' + from + '&ndash;' + to + ' of ' + total + '</div>';
+            html += '<div class="pag-btns">';
+            html += '<button class="pag-btn" ' + (page === 1 ? 'disabled' : '') + ' onclick="pagGo(\'' + view + '\',' + (page - 1) + ')">&#8249;</button>';
+            for (var i = 1; i <= tp; i++) {
+                if (i === 1 || i === tp || Math.abs(i - page) <= 1) {
+                    html += '<button class="pag-btn ' + (i === page ? 'pag-active' : '') + '" onclick="pagGo(\'' + view + '\',' + i + ')">' + i + '</button>';
+                } else if (Math.abs(i - page) === 2) {
+                    html += '<span class="pag-ellipsis">&hellip;</span>';
+                }
+            }
+            html += '<button class="pag-btn" ' + (page === tp ? 'disabled' : '') + ' onclick="pagGo(\'' + view + '\',' + (page + 1) + ')">&#8250;</button>';
+            html += '</div>';
+            el.innerHTML = html;
+        }
+
+        function pagGo(view, p) {
+            if (view === 'grid') { gridPage = p; renderGrid(); }
+            else                 { listPage = p; renderList(); }
+            document.querySelector('.order-page').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function exportCSV() {
+            var rows = [['ID', 'Username', 'Email', 'Phone', 'Address', 'Orders', 'Reviews']];
+            filteredR.forEach(function (r) {
+                var tds = r.querySelectorAll('td');
+                rows.push([
+                    tds[0] ? tds[0].innerText.replace('#', '') : '',
+                    r.dataset.name  || '',
+                    r.dataset.email || '',
+                    tds[3] ? tds[3].innerText : '',
+                    tds[4] ? tds[4].innerText : '',
+                    r.dataset.orders || '0',
+                    tds[6] ? tds[6].innerText : ''
+                ]);
+            });
+            var csv  = rows.map(function (r) {
+                return r.map(function (v) { return '"' + String(v || '').replace(/"/g, '""') + '"'; }).join(',');
+            }).join('\n');
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var a    = document.createElement('a');
+            a.href      = URL.createObjectURL(blob);
+            a.download  = 'customers.csv';
+            a.click();
+        }
+    </script>
 }

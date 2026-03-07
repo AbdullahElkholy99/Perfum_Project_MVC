@@ -1,6 +1,3 @@
-using Perfum.MVC.Models;
-using Perfum.MVC.ViewModels;
-using System.Diagnostics;
 
 namespace Perfum.MVC.Controllers;
 

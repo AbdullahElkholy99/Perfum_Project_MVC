@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace Perfum.MVC.Extensions;
+namespace Perfum.MVC.ExtentionServices;
 
 public static class EnumExtensions
 {

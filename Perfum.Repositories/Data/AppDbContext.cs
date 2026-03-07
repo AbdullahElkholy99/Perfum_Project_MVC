@@ -1,13 +1,10 @@
-﻿
-using Perfum.Domain.Models.Orders;
-
-namespace Perfum.Repositories.Data;
+﻿namespace Perfum.Repositories.Data;
 
 //  Add-Migration init -o "Data/Migrations"
 public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     #region Ctors
-    public AppDbContext() { }
+    //public AppDbContext() { }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -19,11 +16,11 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         base.OnModelCreating(modelBuilder);
 
-        
+
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-        
+
 
     }
     #endregion
@@ -40,10 +37,18 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
 
+    #region Orders
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
 
+    #endregion
     public DbSet<Review> Reviews { get; set; }
+
+    #region Payment Methods : 
+    public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+
+    #endregion
+
     #endregion
 
 }

@@ -1,7 +1,4 @@
 ﻿
-using Microsoft.AspNetCore.Http;
-using Perfum.Domain.Models.Orders;
-
 namespace Perfum.Services.ViewModels.UserVM;
 
 public record CustomerVM

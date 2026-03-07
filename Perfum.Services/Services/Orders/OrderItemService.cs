@@ -1,9 +1,4 @@
 ﻿
-using Perfum.Domain.Models.Orders;
-using Perfum.MVC.Services;
-using Perfum.Services.IServices.Orders;
-using Perfum.Services.ViewModels.OrderItemVM;
-
 namespace Perfum.Services.Services.OrderItems;
 
 public class OrderItemService : IOrderItemService
@@ -29,9 +24,8 @@ public class OrderItemService : IOrderItemService
 
     #region Helpers
 
-    /// <summary>
-    /// Recalculates and saves TotalPrice on the parent Order.
-    /// </summary>
+
+    // Recalculates and saves TotalPrice on the parent Order.
     private async Task RecalculateOrderTotalAsync(int orderId)
     {
         var order = await _repositoryManager.OrderRepository.GetByIdAsync(orderId);

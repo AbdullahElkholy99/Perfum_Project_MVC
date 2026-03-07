@@ -1,7 +1,4 @@
 ﻿
-using Perfum.Domain.Models.Orders;
-using Perfum.Services.ViewModels.OrderItemVM;
-
 namespace Perfum.MVC.MapperProfile.Orders;
 
 public class OrderItemProfile : Profile

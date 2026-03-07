@@ -1,0 +1,147 @@
+@model CustomerVM
+
+@{
+    ViewData["Title"] = "Customer Details";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+    var ordersCount  = Model?.Orders?.Count  ?? 0;
+    var reviewsCount = Model?.Reviews?.Count ?? 0;
+    var totalSpent   = Model?.Orders?.Sum(o => o.TotalPrice) ?? 0;
+}
+
+<link href="~/css/Dashbord/order.css" rel="stylesheet" />
+<link href="~/css/Dashbord/customer.css" rel="stylesheet" />
+
+<div class="order-page">
+
+    @* ── Header ── *@
+    <div class="topbar">
+        <div>
+            <div class="page-title">Customer <span>Details</span></div>
+            <div class="page-subtitle"><a asp-action="Index" style="color:var(--accent)">Customers</a> / @Model?.UserName</div>
+        </div>
+        <div class="topbar-actions">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-ghost">✎ Edit</a>
+            <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">✕ Delete</a>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+
+        @* ── Profile Card ── *@
+        <div class="detail-card detail-card-profile">
+            <div class="profile-avatar-wrap">
+                @if (!string.IsNullOrEmpty(Model?.ImageUrl))
+                {
+                    <img src="/@Model.ImageUrl" alt="@Model.UserName" class="profile-avatar" />
+                }
+                else
+                {
+                    <div class="profile-avatar profile-avatar-ph">@(Model?.UserName?.Substring(0,1).ToUpper() ?? "?")</div>
+                }
+            </div>
+            <div class="profile-name">@Model?.UserName</div>
+            <div class="profile-email">@Model?.Email</div>
+
+            <div class="profile-stats">
+                <div class="pstat">
+                    <div class="pstat-val">@ordersCount</div>
+                    <div class="pstat-label">Orders</div>
+                </div>
+                <div class="pstat">
+                    <div class="pstat-val">@reviewsCount</div>
+                    <div class="pstat-label">Reviews</div>
+                </div>
+                <div class="pstat">
+                    <div class="pstat-val">$@totalSpent.ToString("N0")</div>
+                    <div class="pstat-label">Spent</div>
+                </div>
+            </div>
+
+            <div class="profile-info">
+                <div class="info-row">
+                    <span class="info-label">📞 Phone</span>
+                    <span class="info-val">@(Model?.PhoneNumber ?? "—")</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">📍 Address</span>
+                    <span class="info-val">@(Model?.Address ?? "—")</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">🆔 ID</span>
+                    <span class="info-val">#@Model?.Id</span>
+                </div>
+            </div>
+        </div>
+
+        @* ── Right Column ── *@
+        <div class="detail-right">
+
+            @* Orders Table *@
+            <div class="detail-card">
+                <div class="detail-card-title">🛒 Orders <span class="badge-count">@ordersCount</span></div>
+                @if (Model?.Orders != null && Model.Orders.Any())
+                {
+                    <table class="order-table" style="margin-top:10px">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var o in Model.Orders)
+                            {
+                                <tr>
+                                    <td><span class="order-id">#@o.Id</span></td>
+                                    <td>@(o.Date?.ToString("MMM dd, yyyy") ?? "—")</td>
+                                    <td><span class="status-badge status-@o.Status.ToString().ToLower()">@o.Status</span></td>
+                                    <td><strong>$@o.TotalPrice.ToString("N2")</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" style="text-align:right;font-weight:600;color:var(--text2)">Total Spent</td>
+                                <td><strong style="color:var(--accent)">$@totalSpent.ToString("N2")</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <div class="empty-inline">No orders placed yet</div>
+                }
+            </div>
+
+            @* Reviews *@
+            <div class="detail-card">
+                <div class="detail-card-title">⭐ Reviews <span class="badge-count">@reviewsCount</span></div>
+                @if (Model?.Reviews != null && Model.Reviews.Any())
+                {
+                    <div class="reviews-list">
+                        @foreach (var r in Model.Reviews)
+                        {
+                            <div class="review-item">
+                                <div class="review-stars">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <span style="color:@(i <= r.Rating ? "#c98a10" : "var(--border)")">★</span>
+                                    }
+                                </div>
+                                <div class="review-comment">@r.Comment</div>
+                                <div class="review-date">@r.ReviewDate.ToString("MMM dd, yyyy")</div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-inline">No reviews submitted yet</div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>

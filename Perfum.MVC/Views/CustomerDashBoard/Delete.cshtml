@@ -1,0 +1,72 @@
+@model CustomerVM
+
+@{
+    ViewData["Title"] = "Delete Customer";
+    Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
+    var ordersCount = Model?.Orders?.Count ?? 0;
+}
+
+<link href="~/css/Dashbord/order.css" rel="stylesheet" />
+<link href="~/css/Dashbord/customer.css" rel="stylesheet" />
+
+<div class="order-page">
+
+    <div class="topbar">
+        <div>
+            <div class="page-title">Delete <span style="color:var(--rose)">Customer</span></div>
+            <div class="page-subtitle"><a asp-action="Index" style="color:var(--accent)">Customers</a> / Delete #@Model?.Id</div>
+        </div>
+        <a asp-action="Index" class="btn btn-ghost">← Back</a>
+    </div>
+
+    <div class="form-card delete-confirm-card">
+
+        <div class="delete-warning-icon">⚠️</div>
+        <div class="delete-warning-title">Are you sure you want to delete this customer?</div>
+        <div class="delete-warning-sub">This action is permanent and cannot be undone.</div>
+
+        @if (ordersCount > 0)
+        {
+            <div class="alert-error" style="margin:16px 0">
+                ⚠ This customer has <strong>@ordersCount order@(ordersCount == 1 ? "" : "s")</strong> — all associated data will be removed.
+            </div>
+        }
+
+        <div class="delete-snapshot">
+            <div class="delete-snapshot-avatar">
+                @if (!string.IsNullOrEmpty(Model?.ImageUrl))
+                {
+                    <img src="/@Model.ImageUrl" class="profile-avatar" style="width:64px;height:64px" />
+                }
+                else
+                {
+                    <div class="profile-avatar-ph" style="width:64px;height:64px;font-size:24px">@(Model?.UserName?.Substring(0,1).ToUpper() ?? "?")</div>
+                }
+            </div>
+            <div>
+                <div style="font-weight:700;font-size:17px;color:var(--text1)">@Model?.UserName</div>
+                <div style="color:var(--text3);font-size:14px">@Model?.Email</div>
+                @if (!string.IsNullOrEmpty(Model?.PhoneNumber))
+                {
+                    <div style="color:var(--text3);font-size:13px;margin-top:4px">📞 @Model.PhoneNumber</div>
+                }
+                @if (!string.IsNullOrEmpty(Model?.Address))
+                {
+                    <div style="color:var(--text3);font-size:13px">📍 @Model.Address</div>
+                }
+                <div style="margin-top:8px;display:flex;gap:10px">
+                    <span class="cust-badge badge-active">@ordersCount orders</span>
+                    <span class="cust-badge badge-inactive">@(Model?.Reviews?.Count ?? 0) reviews</span>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Delete" asp-route-id="@Model?.Id" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-actions" style="justify-content:center;margin-top:24px">
+                <a asp-action="Index" class="btn btn-ghost">← Cancel</a>
+                <button type="submit" class="btn btn-danger">✕ Yes, Delete Customer</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Orders";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
-    var orders = Model?.Items ?? new List<Perfum.Services.ViewModels.OrderVM.OrderVM>();
+    var orders = Model?.Items ?? new List<OrderVM>();
     var totalCount = Model?.TotalCount ?? 0;
     var activeCount = orders.Count(o => o.Status == Status.Active);
     var inactiveCount = orders.Count(o => o.Status == Status.Inactive);
@@ -12,7 +12,7 @@
     var expiredCount = orders.Count(o => o.Status == Status.Expired);
 }
 
-<link href="~/css/dashbord/order.css" rel="stylesheet" />
+<link href="~/css/Dashbord/order.css" rel="stylesheet" />
 
 <div class="order-page"  >
 

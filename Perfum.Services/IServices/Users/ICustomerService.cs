@@ -1,4 +1,4 @@
-﻿
+
 namespace Perfum.Services.IServices.Users;
 
 public interface ICustomerService
@@ -8,6 +8,7 @@ public interface ICustomerService
 
     // --------------------- Read ---------------------
     Task<PagedResult<CustomerVM, CustomersFilter, DashBoardCustomer>> GetAllAsync(CustomersFilter? filter);
+    //Task<Customer> GetAllAsync(Customer customer);
 
     Task<CustomerVM> GetByIdAsync(int id);
 
@@ -18,4 +19,5 @@ public interface ICustomerService
 
     // --------------------- Delete ---------------------
     Task<string> DeleteAsync(int id);
+
 }

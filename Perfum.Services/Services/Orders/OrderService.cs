@@ -1,6 +1,4 @@
 ﻿
-using Perfum.Domain.Models.Orders;
-using Perfum.Services.ViewModels.OrderVM;
 
 namespace Perfum.Services.Services.Orders;
 
@@ -12,15 +10,21 @@ public class OrderService : IOrderService
     private readonly IFileService _fileService;
     private readonly IMapper _mapper;
 
+    //by abdullah ali
+    private readonly AppDbContext _context;
+    private readonly IStripePaymentService _paymentService;
+
     #endregion
 
 
     #region CTORs
-    public OrderService(IRepositoryManager repositoryManager, IMapper mapper, IFileService fileService)
+    public OrderService(IRepositoryManager repositoryManager, IMapper mapper, IFileService fileService, AppDbContext context, IStripePaymentService paymentService)
     {
         _repositoryManager = repositoryManager;
         _mapper = mapper;
         _fileService = fileService;
+        _context = context;
+        _paymentService = paymentService;
     }
     #endregion
 
@@ -76,6 +80,58 @@ public class OrderService : IOrderService
         }
     }
 
+    // by abdullah ali
+    public async Task<Order> CreateOrdersAsync(OrderDTO orderDTO, string BuyerEmail)
+    {
+        var basket = await _repositoryManager.CustomerBasketRepositry.GetBasketAsync(orderDTO.basketId);
+
+        List<OrderItem> orderItems = new List<OrderItem>();
+
+        foreach (var item in basket.basketItems)
+        {
+            var Product = await _repositoryManager.ProductRepository.GetByIdAsync(item.Id);
+            var orderItem = new OrderItem
+            {
+                Id = Product.Id,
+                ProductName = Product.Name,
+                UnitPrice = (decimal)item.Price,
+                Quantity = item.Qunatity
+            };
+
+            orderItems.Add(orderItem);
+
+        }
+        var deliverMethod = await _context.DeliveryMethods.FirstOrDefaultAsync(m => m.Id == orderDTO.deliveryMethodId);
+
+        var subTotal = orderItems.Sum(m => m.UnitPrice * m.Quantity);
+
+        var ship = _mapper.Map<ShippingAddress>(orderDTO.shipAddress);
+
+        var ExisitOrder =
+            await _context.Orders
+            .Where(m => m.PaymentIntentId == basket.PaymentIntentId)
+            .FirstOrDefaultAsync();
+
+        if (ExisitOrder is not null)
+        {
+            _context.Orders.Remove(ExisitOrder);
+            await _paymentService
+                .CreateOrUpdatePaymentAsync(
+                basket.PaymentIntentId,
+                deliverMethod.Id
+                );
+        }
+
+        var order = new
+            Order(BuyerEmail, subTotal, ship, deliverMethod, orderItems, basket.PaymentIntentId);
+
+        await _context.Orders.AddAsync(order);
+        await _context.SaveChangesAsync();
+
+        await _repositoryManager.CustomerBasketRepositry.DeleteBasketAsync(orderDTO.basketId);
+        return order;
+
+    }
 
     // --------------------- Read ---------------------
     public async Task<PagedResult<OrderVM, OrderFilter, DashBoardOrder>> GetAllAsync()

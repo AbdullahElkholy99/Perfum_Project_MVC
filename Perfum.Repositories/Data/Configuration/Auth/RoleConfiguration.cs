@@ -33,3 +33,10 @@ public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole<int>>
         );
     }
 }
+public class UserConfiguration : IEntityTypeConfiguration<IdentityUser<int>>
+{
+    public void Configure(EntityTypeBuilder<IdentityUser<int>> builder)
+    {
+        builder.HasIndex(u => u.Email).IsUnique();
+    }
+}

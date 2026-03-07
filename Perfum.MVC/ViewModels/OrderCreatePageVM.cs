@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Perfum.Services.ViewModels.OrderItemVM;
-using Perfum.Services.ViewModels.OrderVM;
-
+﻿
 namespace Perfum.MVC.ViewModels
 {
     public class OrderCreatePageVM

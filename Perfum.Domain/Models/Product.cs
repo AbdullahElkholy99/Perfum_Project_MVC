@@ -34,4 +34,10 @@ public class Product
     public virtual List<Review> Reviews { get; set; } = new List<Review>();
 
 
+    //by Abdullah Ali
+    public decimal? NewPrice { get; set; }
+    public decimal? OldPrice { get; set; }
+    public double? Rating { get; set; }
+
+
 }

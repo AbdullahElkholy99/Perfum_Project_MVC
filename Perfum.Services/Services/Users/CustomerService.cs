@@ -6,127 +6,146 @@ namespace Perfum.Services.Services.Users;
 
 public class CustomerService : ICustomerService
 {
-
-    #region Fields 
+    #region Fields
 
     private readonly IRepositoryManager _repositoryManager;
     private readonly IFileService _fileService;
-
     private readonly IMapper _mapper;
+    private readonly UserManager<User> _userManager;
 
     #endregion
 
     #region CTORs
 
-    public CustomerService(IRepositoryManager repositoryManager, IMapper mapper, IFileService fileService)
+    public CustomerService(
+        IRepositoryManager repositoryManager,
+        IMapper mapper,
+        IFileService fileService,
+        UserManager<User> userManager)
     {
         _repositoryManager = repositoryManager;
         _mapper = mapper;
         _fileService = fileService;
+        _userManager = userManager;
     }
 
     #endregion
 
-    #region Method Handlers 
+    #region Method Handlers
+
     // --------------------- Create ---------------------
     public async Task<string> AddAsync(AddCustomerVM model)
     {
-        using var Transaction = _repositoryManager.CustomerRepository.BeginTransaction();
         try
         {
             if (model == null)
                 return "Fail";
 
-            var Customer = _mapper.Map<Customer>(model);
+            var customer = new Customer
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                Address = model.Address ?? string.Empty,
+                PhoneNumber = model.PhoneNumber,
+            };
 
-            if (Customer == null)
-                return "Fail";
+            // save image only if provided
+            if (model.ImageUrl != null && model.ImageUrl.Length > 0)
+            {
+                string path = await _fileService.SaveImageAsync(model.ImageUrl, "Images/Customer");
+                customer.ImagePath = path;
+            }
 
-            // save image
-            string path = await _fileService.SaveImageAsync(model.ImageUrl, "Images/Customer");
+            // UserManager inserts into AspNetUsers
+            var result = await _userManager.CreateAsync(customer, model.Password);
 
-            Customer.ImagePath = path;
+            if (!result.Succeeded)
+                return string.Join(", ", result.Errors.Select(e => e.Description));
 
-            await _repositoryManager.CustomerRepository.AddAsync(Customer);
+            // TPT: EF needs a row in Customers table with the same Id
+            // UserManager.CreateAsync does NOT do this automatically
+            // We must insert it manually via the repository
+            var existsInCustomers = await _repositoryManager.CustomerRepository
+                .GetTableNoTracking()
+                .AnyAsync(c => c.Id == customer.Id);
 
-            Transaction.Commit();
+            if (!existsInCustomers)
+            {
+                await _repositoryManager.CustomerRepository.AddAsync(customer);
+            }
+
+            // assign Customer role
+            await _userManager.AddToRoleAsync(customer, "Customer");
 
             return "Success";
         }
         catch (Exception ex)
         {
-            Transaction.Rollback();
-            return "Fail";
+            return $"Fail: {ex.Message}";
         }
     }
 
     // --------------------- Read ---------------------
-
     public async Task<PagedResult<CustomerVM, CustomersFilter, DashBoardCustomer>> GetAllAsync(CustomersFilter? filter)
     {
         try
         {
-            // get all Customers as no traking 
-            List<Customer>? Customers = await _repositoryManager.CustomerRepository.GetTableNoTracking().ToListAsync();
+            // DbSet<Customer> via EF TPH — joins AspNetUsers + Customers automatically
+            var customers = await _repositoryManager.CustomerRepository
+                .GetTableNoTracking()
+                .Include(c => c.Orders)
+                .Include(c => c.Reviews)
+                .ToListAsync();
 
-            //check for Customers
-            if (Customers == null)
-                return null;
+            var customerVMs = _mapper.Map<List<CustomerVM>>(customers ?? new List<Customer>());
 
-            // map from Customer to CustomerVM
-            var CustomerVM = _mapper.Map<List<CustomerVM>>(Customers);
-
-            //check 
-            if (CustomerVM == null)
-                return null;
-
-            //if(filter !=null){}
-
-
-            var result = new PagedResult<CustomerVM, CustomersFilter, DashBoardCustomer>()
+            return new PagedResult<CustomerVM, CustomersFilter, DashBoardCustomer>
             {
-                Items = CustomerVM,
-                DashboardVM = null,
-                TotalCount = CustomerVM.Count(),
-                Filter = filter
+                Items = customerVMs,
+                TotalCount = customerVMs.Count,
+                Filter = filter,
+                DashboardVM = new DashBoardCustomer
+                {
+                    CustomersCount = customerVMs.Count,
+                    BestCustomersCount = customerVMs.Count(c => c.Orders?.Count >= 5),
+                    NormalCustomersCount = customerVMs.Count(c => c.Orders?.Count is >= 1 and < 5),
+                    LowCustomersCount = customerVMs.Count(c => c.Orders == null || c.Orders.Count == 0)
+                }
             };
-
-            //return
-            return result;
         }
         catch (Exception ex)
         {
-            return null;
+            return new PagedResult<CustomerVM, CustomersFilter, DashBoardCustomer>
+            {
+                Items = new List<CustomerVM>(),
+                TotalCount = 0,
+                Filter = filter,
+                DashboardVM = null
+            };
         }
     }
-    //create function for get some info Customers statics
 
     public async Task<CustomerVM> GetByIdAsync(int id)
     {
         try
         {
-            // get Customer as traking 
-            var Customer = await _repositoryManager.CustomerRepository.GetByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
-            //check for Customer
-            if (Customer == null)
+            if (user == null)
                 return new CustomerVM();
 
-            // map from Customer to CustomerVM
-            var CustomerVM = _mapper.Map<CustomerVM>(Customer);
+            var customer = user as Customer;
+            if (customer == null)
+                return new CustomerVM();
 
-            // Get orders for customer
+            var customerVM = _mapper.Map<CustomerVM>(customer);
+
             var orders = _repositoryManager.OrderRepository.GetOrdersForCustomerAsync(id);
-            CustomerVM.Orders = orders.ToList<Order>();
+            customerVM.Orders = orders.ToList<Order>();
 
-            //check 
-            if (CustomerVM == null)
-                return new CustomerVM();
-
-            //return
-            return CustomerVM;
+            return customerVM ?? new CustomerVM();
         }
-        catch (Exception ex)
+        catch
         {
             return new CustomerVM();
         }
@@ -136,28 +155,19 @@ public class CustomerService : ICustomerService
     {
         try
         {
-            // get Customer as traking 
             var customer = await _repositoryManager.CustomerRepository.GetCustomerByEmailAsync(email);
 
-            //check for Customer
             if (customer == null)
                 return new CustomerVM();
 
-            // map from Customer to CustomerVM
-            var CustomerVM = _mapper.Map<CustomerVM>(customer);
+            var customerVM = _mapper.Map<CustomerVM>(customer);
 
-            // Get orders for customer
-            var orders =  _repositoryManager.OrderRepository.GetOrdersForCustomerAsync(customer.Id);
-            CustomerVM.Orders = orders.ToList<Order>();
+            var orders = _repositoryManager.OrderRepository.GetOrdersForCustomerAsync(customer.Id);
+            customerVM.Orders = orders.ToList<Order>();
 
-            //check 
-            if (CustomerVM == null)
-                return new CustomerVM();
-
-            //return
-            return CustomerVM;
+            return customerVM ?? new CustomerVM();
         }
-        catch (Exception ex)
+        catch
         {
             return new CustomerVM();
         }
@@ -166,29 +176,44 @@ public class CustomerService : ICustomerService
     // --------------------- Update ---------------------
     public async Task<string> UpdateAsync(int id, EditCustomerVM model)
     {
-        using var transaction = _repositoryManager.CustomerRepository.BeginTransaction();
         try
         {
-            var oldCustomer = await _repositoryManager.CustomerRepository.GetByIdAsync(id);
-            if (oldCustomer == null)
+            var customer = await _userManager.FindByIdAsync(id.ToString()) as Customer;
+
+            if (customer == null)
                 return "Fail";
 
-            _mapper.Map(model, oldCustomer);
+            customer.UserName = model.UserName;
+            customer.Email = model.Email;
+            customer.Address = model.Address;
+            customer.PhoneNumber = model.PhoneNumber;
 
+            // update image only if a new one is provided
             if (model.ImageUrl != null && model.ImageUrl.Length > 0)
             {
                 string path = await _fileService.SaveImageAsync(model.ImageUrl, "Images/Customer");
-                oldCustomer.ImagePath = path;
+                customer.ImagePath = path;
             }
 
-            await _repositoryManager.CustomerRepository.SaveChangesAsync();
-            transaction.Commit();
+            // update password only if provided
+            if (!string.IsNullOrWhiteSpace(model.Password))
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(customer);
+                var pwResult = await _userManager.ResetPasswordAsync(customer, token, model.Password);
+                if (!pwResult.Succeeded)
+                    return string.Join(", ", pwResult.Errors.Select(e => e.Description));
+            }
+
+            var result = await _userManager.UpdateAsync(customer);
+
+            if (!result.Succeeded)
+                return string.Join(", ", result.Errors.Select(e => e.Description));
+
             return "Success";
         }
-        catch
+        catch (Exception ex)
         {
-            transaction.Rollback();
-            return "Fail";
+            return $"Fail: {ex.Message}";
         }
     }
 
@@ -197,22 +222,30 @@ public class CustomerService : ICustomerService
     {
         try
         {
-            // get Customer as traking 
-            var removeCustomer = await _repositoryManager.CustomerRepository.GetByIdAsync(id);
+            // TPT: must remove from Customers table first (FK), then AspNetUsers
+            var customerRow = await _repositoryManager.CustomerRepository
+                .GetTableNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
 
-            //check for Customer
-            if (removeCustomer == null)
+            if (customerRow != null)
+                await _repositoryManager.CustomerRepository.DeleteAsync(customerRow);
+
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
                 return "Fail";
 
-            //save changes
-            await _repositoryManager.CustomerRepository.DeleteAsync(removeCustomer);
-            _fileService.DeleteImage(removeCustomer.ImagePath);
-            //return
+            _fileService.DeleteImage((user as Customer)?.ImagePath);
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+                return string.Join(", ", result.Errors.Select(e => e.Description));
+
             return "Success";
         }
         catch (Exception ex)
         {
-            return "Fail";
+            return $"Fail: {ex.Message}";
         }
     }
 

@@ -1,136 +1,241 @@
-﻿
-
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sillage — Categories</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Sillage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
     <link href="~/css/dashbord/dashboard.css" rel="stylesheet" />
+    <style>
+        /* DARK MODE — override dashboard.css vars */
+        [data-theme="dark"] {
+            --bg: #0f0c09 !important;
+            --bg2: #1a1410 !important;
+            --bg3: #231b13 !important;
+            --surface: #1e1710 !important;
+            --surface2: #261e15 !important;
+            --border: rgba(200,150,80,0.14) !important;
+            --text: #f0e8da !important;
+            --text2: #c8aa80 !important;
+            --text3: #8a6845 !important;
+            --accent: #e09a5a !important;
+            --accent2: #c8854a !important;
+            --gold: #e8c060 !important;
+            --rose: #d99090 !important;
+            --green: #90b894 !important;
+            --blue: #90a8d8 !important;
+            --shadow: rgba(0,0,0,0.4) !important;
+            --shadow2: rgba(0,0,0,0.6) !important;
+            --glow: rgba(224,154,90,0.1) !important;
+            --glow2: rgba(224,154,90,0.05) !important;
+        }
+
+            /* Dark: colour elements that use hardcoded colours in dashboard.css */
+            [data-theme="dark"] body {
+                background: var(--bg);
+                color: var(--text);
+            }
+
+            [data-theme="dark"] .sidebar {
+                background: #1a1410;
+                border-color: rgba(200,150,80,0.14);
+            }
+
+            [data-theme="dark"] .nav-bar {
+                background: #1a1410;
+                border-color: rgba(200,150,80,0.14);
+            }
+
+            [data-theme="dark"] .page-title {
+                color: var(--text);
+            }
+
+            [data-theme="dark"] .user-name {
+                color: var(--text2);
+            }
+
+            [data-theme="dark"] .navbar-icon:hover {
+                background: var(--bg2);
+            }
+
+            [data-theme="dark"] .navbar-user:hover {
+                background: var(--bg2);
+            }
+
+            [data-theme="dark"] .search-box input {
+                background: var(--bg2);
+                border-color: var(--border);
+                color: var(--text);
+            }
+
+            [data-theme="dark"] .nav-item a {
+                color: var(--text2);
+            }
+
+            [data-theme="dark"] .nav-item:hover {
+                background: var(--bg2);
+            }
+
+            [data-theme="dark"] .nav-item.active {
+                background: var(--glow);
+            }
+
+                [data-theme="dark"] .nav-item.active a {
+                    color: var(--accent);
+                }
+
+        /* ── Smooth transitions ── */
+        body, .sidebar, .nav-bar, .nav-item, .search-box input,
+        .mainDashboard, .surface, .btn, .mini-stat {
+            transition: background .3s, color .3s, border-color .3s;
+        }
+
+        /* ── Theme toggle pill state ── */
+        [data-theme="dark"] .toggle-pill {
+            background: var(--accent) !important;
+        }
+
+        [data-theme="dark"] .toggle-dot {
+            transform: translateX(16px);
+        }
+
+        /* ── Fix: pages with .order-page already have their own topbar,
+                      no extra top spacing needed ── */
+        .mainDashboard .order-page .topbar,
+        .mainDashboard .order-page {
+            margin-top: 0;
+        }
+    </style>
 </head>
 <body>
 
-    <header class="nav-bar">
-
-    <div class="navbar-left">
-        <h2 class="page-title">Dashboard</h2>
-    </div>
-
-    <div class="navbar-right">
-
-        <div class="search-box">
-            <input type="text" placeholder="Search...">
+    @* ── Navbar ── *@
+    <header class="nav-bar ps-5 ms-5">
+        <div class="navbar-left">
+            <h2 class="page-title">Sillage Dashboard</h2>
         </div>
-
-        <div class="navbar-icon">
-            🔔
+        <div class="navbar-right">
+            <div class="search-box">
+                <input type="text" placeholder="Search…" />
+            </div>
+            <div class="navbar-icon" title="Notifications">🔔</div>
+            <div class="navbar-user">
+                <img src="https://i.pravatar.cc/40" class="user-avatar" alt="Admin" />
+                <span class="user-name">Admin</span>
+            </div>
         </div>
+    </header>
 
-        <div class="navbar-user">
-            <img src="https://i.pravatar.cc/40" class="user-avatar">
-            <span class="user-name">Admin</span>
-        </div>
-
-    </div>
-
-</header>
-
-    <!-- ── Sidebar ── -->
+    @* ── Sidebar ── *@
     <aside class="sidebar">
 
         <div class="logo">
             <div class="logo-text">Sillage</div>
             <div class="logo-sub">Fragrance Studio</div>
         </div>
-            
+
+        @{
+            var ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+        }
+
         <div class="nav-section">
             <div class="nav-label">Overview</div>
-
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")">
-            <a asp-controller="Dashboard" asp-action="Index">
-                <span class="nav-icon">◈</span>
-                Dashboard
-            </a>
-        </div>
- 
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Analytics" ? "active" : "")">
-            <a asp-controller="Analytics" asp-action="Index">
-                    <span class="nav-icon">◇</span>
-                    Analytics
+            <div class="nav-item @(ctrl == "Dashboard" ? "active" : "")">
+                <a asp-controller="Dashboard" asp-action="Index">
+                    <span class="nav-icon">◈</span> Dashboard
                 </a>
             </div>
         </div>
 
-        <div class="nav-section" style="margin-top:12px">
+        <div class="nav-section" style="margin-top:14px">
             <div class="nav-label">Catalogue</div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Product" ? "active" : "")">
-            <a asp-controller="Product" asp-action="Index">
-                    <span class="nav-icon">✦</span>
-                    Products
+            <div class="nav-item @(ctrl == "Product" ? "active" : "")">
+                <a asp-controller="Product" asp-action="Index">
+                    <span class="nav-icon">✦</span> Products
                 </a>
             </div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Category" ? "active" : "")">
-            <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
-                 
-            </div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Ingredient" ? "active" : "")">
-            <a asp-controller="Ingredient" asp-action="Index">
-                    <span class="nav-icon">◎</span> Ingredients
-                </a>
-            </div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Collection" ? "active" : "")">
-            <a asp-controller="Collection" asp-action="Index">
-                    <span class="nav-icon">◎</span> Collections
+            <div class="nav-item @(ctrl == "Category" ? "active" : "")">
+                <a asp-controller="Category" asp-action="Index">
+                    <span class="nav-icon">⬡</span> Categories
                 </a>
             </div>
         </div>
-        <div class="nav-section" style="margin-top:12px">
+
+        <div class="nav-section" style="margin-top:14px">
             <div class="nav-label">Commerce</div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Order" ? "active" : "")">
-            <a asp-controller="Order" asp-action="Index">
-                <span class="nav-icon">▣</span> Orders 
-                    </a>
+            <div class="nav-item @(ctrl == "Order" ? "active" : "")">
+                <a asp-controller="Order" asp-action="Index">
+                    <span class="nav-icon">▣</span> Orders
+                </a>
             </div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "CustomerDashboard" ? "active" : "")">
-            <a asp-controller="CustomerDashboard" asp-action="Index">
+            <div class="nav-item @(ctrl == "CustomerDashBoard" ? "active" : "")">
+                <a asp-controller="CustomerDashBoard" asp-action="Index">
                     <span class="nav-icon">◯</span> Customers
-                    </a>
+                </a>
             </div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Marketing" ? "active" : "")">
-            <a asp-controller="Marketing" asp-action="Index">
+            <div class="nav-item @(ctrl == "Marketing" ? "active" : "")">
+                <a asp-controller="Marketing" asp-action="Index">
                     <span class="nav-icon">▷</span> Marketing
-                    </a>
+                </a>
             </div>
         </div>
+
         <div class="sidebar-bottom">
             <div class="theme-toggle" onclick="toggleTheme()">
                 <span id="themeLabel">Dark Mode</span>
-                <div class="toggle-pill" id="pill"><div class="toggle-dot"></div></div>
+                <div class="toggle-pill" id="pill">
+                    <div class="toggle-dot"></div>
+                </div>
             </div>
         </div>
+
     </aside>
 
-    <!-- ── Main ── -->
+    @* ── Main ── *@
     <main class="mainDashboard">
-
-        <div class="DashboardContent">
-            @RenderBody();
-        </div>
-
+        @RenderBody()
     </main>
 
-    <!-- ── Toast ── -->
+    @* ── Toast ── *@
     <div class="toast" id="toast">
         <div class="toast-dot"></div>
         <span id="toastMsg">Saved successfully</span>
     </div>
-    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/dashboard/dashboard.js"></script>
 
-    @await RenderSectionAsync("Scripts",required:false)
+    <script>
+        /* ── Theme ── */
+        function toggleTheme() {
+            var html  = document.documentElement;
+            var isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('themeLabel').textContent = isDark ? 'Dark Mode' : 'Light Mode';
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        /* Restore on load */
+        (function () {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                var l = document.getElementById('themeLabel');
+                if (l) l.textContent = 'Light Mode';
+            }
+        })();
+
+        /* ── Toast ── */
+        function showToast(msg) {
+            var t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg || 'Done';
+            t.classList.add('show');
+            setTimeout(function () { t.classList.remove('show'); }, 2500);
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

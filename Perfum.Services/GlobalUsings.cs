@@ -26,3 +26,16 @@ global using Perfum.Services.Services.Orders;
 global using Perfum.Services.ViewModels.Paginations;
 global using Perfum.Services.ViewModels.UserVM;
 
+global using Perfum.Domain.Models.Orders;
+global using Perfum.Services.ViewModels.OrderVM;
+
+global using Perfum.Services.ViewModels.OrderItemVM;
+
+global using Perfum.Repositories.Data;
+global using Perfum.Services.IServices.PaymentMethods;
+
+global using Perfum.Domain.Enums;
+
+global using Microsoft.AspNetCore.Http;
+
+

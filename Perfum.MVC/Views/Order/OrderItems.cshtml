@@ -3,12 +3,12 @@
     ViewData["Title"] = "Order Items";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
     var orderId   = ViewBag.OrderId as int? ?? 0;
-    var order     = ViewBag.Order as Perfum.Services.ViewModels.OrderVM.OrderVM;
-    var items     = Model ?? new List<Perfum.Services.ViewModels.OrderItemVM.OrderItemVM>();
+    var order     = ViewBag.Order as OrderVM;
+    var items     = Model ?? new List<OrderItemVM>();
     var grandTotal = items.Sum(i => i.UnitPrice * i.Quantity);
 }
 
-<link href="~/css/dashbord/order.css" rel="stylesheet" />
+<link href="~/css/Dashbord/order.css" rel="stylesheet" />
 
 <div class="order-page">
 
