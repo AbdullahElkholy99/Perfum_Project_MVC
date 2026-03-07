@@ -1,0 +1,383 @@
+﻿/* ════════════════════════════════════════
+   Store Management System — Auth Styles
+   ════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ── RESET ── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ── BODY ── */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #25252b;
+    padding: 20px;
+}
+
+/* ── CONTAINER ── */
+.container {
+    position: relative;
+    width: 850px;
+    height: 550px;
+    border: 2px solid #e46033;
+    box-shadow: 0 0 30px rgba(228, 96, 51, 0.5);
+    overflow: hidden;
+    border-radius: 10px;
+    background: #25252b;
+}
+
+/* ══════════════════════════════
+   CURVED SHAPES — Original Animation
+   ══════════════════════════════ */
+.curved-shape {
+    position: absolute;
+    right: 0;
+    top: -5px;
+    height: 600px;
+    width: 850px;
+    background: linear-gradient(45deg, #25252b, #e46033);
+    transform: rotate(10deg) skewY(40deg);
+    transform-origin: bottom right;
+    transition: 1.5s ease;
+    transition-delay: 1.6s;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.container.active .curved-shape {
+    transform: rotate(0deg) skewY(0deg);
+    transition-delay: 0.5s;
+}
+
+.curved-shape2 {
+    position: absolute;
+    left: 250px;
+    top: 100%;
+    height: 700px;
+    width: 850px;
+    background: #25252b;
+    border-top: 3px solid #e46033;
+    transform: rotate(0deg) skewY(0deg);
+    transform-origin: bottom left;
+    transition: 1.5s ease;
+    transition-delay: 0.5s;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.container.active .curved-shape2 {
+    transform: rotate(-11deg) skewY(-41deg);
+    transition-delay: 1.2s;
+}
+
+/* ══════════════════════════════
+   TOP LOGO — slides left ↔ right
+   ══════════════════════════════ */
+.top-logo {
+    position: absolute;
+    top: 25px;
+    right: 40px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.container.active .top-logo {
+    right: auto;
+    left: 40px;
+}
+
+.logo-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #e46033;
+    box-shadow: 0 5px 20px rgba(228, 96, 51, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    color: #e46033;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+    .logo-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.system-title {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    text-transform: uppercase;
+}
+
+/* ══════════════════════════════
+   FORM BOXES
+   ══════════════════════════════ */
+.form-box {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 55px;
+    z-index: 5;
+}
+
+    /* Login — left side */
+    .form-box.Login {
+        left: 0;
+    }
+
+        .form-box.Login .animation {
+            transform: translateX(0%);
+            transition: 0.7s ease;
+            opacity: 1;
+            transition-delay: calc(0.1s * var(--S));
+        }
+
+.container.active .form-box.Login .animation {
+    transform: translateX(-120%);
+    opacity: 0;
+    transition-delay: calc(0.1s * var(--D));
+}
+
+/* Register — right side */
+.form-box.Register {
+    right: 0;
+}
+
+    .form-box.Register .animation {
+        transform: translateX(120%);
+        transition: 0.7s ease;
+        opacity: 0;
+        filter: blur(10px);
+        transition-delay: calc(0.1s * var(--S));
+    }
+
+.container.active .form-box.Register .animation {
+    transform: translateX(0%);
+    opacity: 1;
+    filter: blur(0px);
+    transition-delay: calc(0.1s * var(--li));
+}
+
+.form-box h2 {
+    font-size: 28px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* ══════════════════════════════
+   INPUT BOX
+   ══════════════════════════════ */
+.input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 20px;
+}
+
+    .input-box input {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 15px;
+        color: #fff;
+        font-weight: 500;
+        border-bottom: 2px solid #fff;
+        padding-right: 45px;
+        padding-left: 5px;
+        transition: 0.5s;
+    }
+
+        .input-box input:focus,
+        .input-box input:valid {
+            border-bottom: 2px solid #e46033;
+        }
+
+    .input-box label {
+        position: absolute;
+        top: 50%;
+        left: 5px;
+        transform: translateY(-50%);
+        font-size: 15px;
+        color: #fff;
+        transition: 0.5s;
+        pointer-events: none;
+    }
+
+    .input-box input:focus ~ label,
+    .input-box input:valid ~ label {
+        top: -5px;
+        color: #e46033;
+        font-size: 13px;
+    }
+
+/* ── PASSWORD TOGGLE ── */
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 5px;
+    transition: 0.3s;
+    z-index: 2;
+}
+
+    .password-toggle:hover {
+        color: #e46033;
+    }
+
+/* ── BUTTON ── */
+.btn {
+    position: relative;
+    width: 100%;
+    height: 45px;
+    background: transparent;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    border: 2px solid #e46033;
+    color: #fff;
+    overflow: hidden;
+    z-index: 1;
+    margin-top: 5px;
+}
+
+    .btn::before {
+        content: "";
+        position: absolute;
+        height: 300%;
+        width: 100%;
+        background: linear-gradient(#25252b, #e46033, #25252b, #e46033);
+        top: -100%;
+        left: 0;
+        z-index: -1;
+        transition: 0.5s;
+    }
+
+    .btn:hover::before {
+        top: 0;
+    }
+
+/* ── REGISTER / SIGN-IN LINK ── */
+.regi-link {
+    font-size: 13px;
+    text-align: center;
+    margin: 14px 0 6px;
+    color: #fff;
+}
+
+    .regi-link a {
+        text-decoration: none;
+        color: #e46033;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .regi-link a:hover {
+            text-decoration: underline;
+        }
+
+/* ── ERROR MESSAGES ── */
+.error-message {
+    color: #ff6b6b;
+    font-size: 11px;
+    margin-top: 4px;
+    display: none;
+}
+
+.input-box.error input {
+    border-bottom: 2px solid #ff6b6b;
+}
+
+.input-box.error label {
+    color: #ff6b6b;
+}
+
+/* ── AUTOFILL FIX ── */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #fff !important;
+    -webkit-box-shadow: 0 0 0 1000px #25252b inset !important;
+    transition: background-color 5000s;
+}
+
+/* ══════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════ */
+@media (max-width: 900px) {
+    .container {
+        width: 95%;
+        max-width: 420px;
+        height: auto;
+        min-height: 520px;
+    }
+
+    .top-logo {
+        top: 15px;
+        right: 50%;
+        left: auto;
+        transform: translateX(50%);
+    }
+
+    .container.active .top-logo {
+        right: 50%;
+        left: auto;
+        transform: translateX(50%);
+    }
+
+    .logo-circle {
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+    }
+
+    .system-title {
+        font-size: 11px;
+    }
+
+    .form-box {
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        padding: 110px 30px 30px !important;
+    }
+
+    .curved-shape,
+    .curved-shape2 {
+        display: none;
+    }
+}

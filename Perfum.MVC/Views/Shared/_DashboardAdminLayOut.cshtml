@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sillage — Categories</title>
+    <title>Perfum — Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
     <link href="~/css/dashbord/dashboard.css" rel="stylesheet" />
 </head>
@@ -14,29 +14,29 @@
 
     <header class="nav-bar">
 
-    <div class="navbar-left">
-        <h2 class="page-title">Dashboard</h2>
-    </div>
-
-    <div class="navbar-right">
-
-        <div class="search-box">
-            <input type="text" placeholder="Search...">
+        <div class="navbar-left">
+            <div class="menu-btn" onclick="toggleSidebar()" style="margin:0 20px">☰</div>
+            <h2 class="page-title">Dashboard</h2>
         </div>
 
-        <div class="navbar-icon">
-            🔔
+        <div class="navbar-right">
+
+            <div class="search-box">
+                <input type="text" placeholder="Search...">
+            </div>
+
+            <div class="navbar-icon">
+                🔔
+            </div>
+
+            <div class="navbar-user">
+                <img src="https://i.pravatar.cc/40" class="user-avatar">
+                <span class="user-name">Admin</span>
+            </div>
+
         </div>
 
-        <div class="navbar-user">
-            <img src="https://i.pravatar.cc/40" class="user-avatar">
-            <span class="user-name">Admin</span>
-        </div>
-
-    </div>
-
-</header>
-
+    </header>
     <!-- ── Sidebar ── -->
     <aside class="sidebar">
 
@@ -55,12 +55,7 @@
             </a>
         </div>
  
-        @*     <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Analytics" ? "active" : "")">
-            <a asp-controller="Analytics" asp-action="Index">
-                    <span class="nav-icon">◇</span>
-                    Analytics
-                </a>
-            </div> *@
+       
         </div>
 
         <div class="nav-section" style="margin-top:12px">
@@ -75,16 +70,7 @@
             <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
                  
             </div>
-     @*    <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Ingredient" ? "active" : "")">
-            <a asp-controller="Ingredient" asp-action="Index">
-                    <span class="nav-icon">◎</span> Ingredients
-                </a>
-            </div>
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Collection" ? "active" : "")">
-            <a asp-controller="Collection" asp-action="Index">
-                    <span class="nav-icon">◎</span> Collections
-                </a>
-            </div> *@
+  
         </div>
         <div class="nav-section" style="margin-top:12px">
             <div class="nav-label">Commerce</div>

@@ -1189,8 +1189,7 @@ textarea.form-input {
     background: var(--border);
     border-radius: 3px
 }
-
-/* ===== Top Navbar ===== */
+/* ================================================================= Top Navbar ===== */
 /* ===== Navbar ===== */
 
 .nav-bar {
@@ -1204,6 +1203,9 @@ textarea.form-input {
     position: sticky;
     top: 0;
     z-index: 50;
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    transition: margin-left .3s ease, width .3s ease;
 }
 
 
@@ -1215,7 +1217,7 @@ textarea.form-input {
 }
 
 .page-title {
-    font-family: 'Cormorant Garamond',serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 26px;
     font-weight: 400;
     color: #2a1f14;
@@ -1238,7 +1240,7 @@ textarea.form-input {
     padding: 8px 12px;
     border-radius: 8px;
     border: 1px solid #ddd;
-    font-family: 'Jost',sans-serif;
+    font-family: 'Jost', sans-serif;
     font-size: 13px;
     outline: none;
     transition: 0.2s;
@@ -1294,6 +1296,156 @@ textarea.form-input {
 
 .user-name {
     font-size: 13px;
-    font-family: 'Jost',sans-serif;
+    font-family: 'Jost', sans-serif;
     color: #333;
+}
+
+
+/* ============================= */
+/* Responsive Design */
+/* ============================= */
+
+.menu-btn {
+    display: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+/* ===== Tablet ===== */
+
+@media (max-width:1200px) {
+
+    .stat-strip {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tree-panel {
+        order: 2;
+    }
+
+    .right-panel {
+        order: 1;
+    }
+}
+
+
+/* ===== Small Tablet ===== */
+
+@media (max-width:992px) {
+
+    .sidebar {
+        width: 200px;
+    }
+
+    .mainDashboard {
+        margin-left: 200px;
+        max-width: calc(100vw - 200px);
+        padding: 30px;
+    }
+
+    /* move navbar with sidebar */
+    .nav-bar {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+
+    .search-box input {
+        width: 160px;
+    }
+}
+
+
+/* ===== Mobile ===== */
+
+@media (max-width:768px) {
+
+    .menu-btn {
+        display: block;
+    }
+
+    /* Sidebar hidden */
+
+    .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        z-index: 200;
+        transition: transform .3s ease;
+    }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+    /* Main full width */
+
+    .mainDashboard {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    /* Navbar full width */
+
+    .nav-bar {
+        margin-left: 0;
+        width: 100%;
+        padding: 0 16px;
+    }
+
+    .page-title {
+        font-size: 20px;
+    }
+
+    .user-name {
+        display: none;
+    }
+
+    .search-box input {
+        width: 120px;
+    }
+
+    .stat-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .cat-grid {
+        grid-template-columns: repeat(auto-fill,minmax(150px,1fr));
+    }
+
+    .detail-body {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ===== Small Mobile ===== */
+
+@media (max-width:480px) {
+
+    .search-box {
+        display: none;
+    }
+
+    .navbar-right {
+        gap: 10px;
+    }
+
+    .cat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mini-stat {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
 }

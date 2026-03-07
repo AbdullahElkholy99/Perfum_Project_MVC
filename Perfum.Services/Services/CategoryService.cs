@@ -1,8 +1,4 @@
-﻿
-using Perfum.Services.ViewModels.Paginations;
-using static System.Net.WebRequestMethods;
-
-namespace Perfum.Services.Services;
+﻿namespace Perfum.Services.Services;
 
 public class CategoryService : ICategoryService
 {
@@ -63,6 +59,7 @@ public class CategoryService : ICategoryService
                 return null;
 
             var categoriesVM = _mapper.Map<List<CategoryVM>>(categories);
+
             if (categoriesVM == null)
                 return null;
 
@@ -74,7 +71,7 @@ public class CategoryService : ICategoryService
                 DashboardVM = null
             };
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             throw e;
         }
@@ -158,6 +155,6 @@ public class CategoryService : ICategoryService
         }
     }
 
-  
+
     #endregion
 }

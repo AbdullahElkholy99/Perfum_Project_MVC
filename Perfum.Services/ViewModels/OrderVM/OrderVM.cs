@@ -51,12 +51,13 @@ public record EditOrderVM
 
 // by abdullah ali
 
-public record OrderDTO
+public record CreateOrderPaymentVM
 {
-    public int deliveryMethodId { get; set; }
+    public string BuyerEmail { get; set; }
+    public int DeliveryMethodId { get; set; }
 
-    public string basketId { get; set; }
-    public ShipAddressDTO shipAddress { get; set; }
+    public string BasketId { get; set; }
+    public ShipAddressDTO ShipAddress { get; set; }
 }
 public record ShipAddressDTO
 {

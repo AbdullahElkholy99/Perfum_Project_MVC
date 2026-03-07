@@ -1,9 +1,3 @@
-using Perfum.MVC.Models;
-using Perfum.MVC.ViewModels;
-using Perfum.Services.ViewModels.Paginations;
-using System.Diagnostics;
-using static System.Net.WebRequestMethods;
-
 namespace Perfum.MVC.Controllers;
 
 public class CategoryController : Controller
@@ -16,15 +10,16 @@ public class CategoryController : Controller
     }
 
     // GET: /Category
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>? filterCategory)
     {
-        var filter = new CategoryFilter(); 
-        var result = await _serviceManager.CategoryService.GetAllAsync(filter)
+        //var filter = new CategoryFilter(); 
+        var result = await _serviceManager.CategoryService.GetAllAsync(filterCategory.Filter ?? new CategoryFilter())
+
                      ?? new PagedResult<CategoryVM, CategoryFilter, DashBoardCategory>
                      {
                          Items = new List<CategoryVM>(),
                          TotalCount = 0,
-                         Filter = filter,
+                         Filter = new CategoryFilter(),
                          DashboardVM = null
                      };
 

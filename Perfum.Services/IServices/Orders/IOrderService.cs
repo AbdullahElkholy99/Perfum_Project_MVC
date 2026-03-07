@@ -8,7 +8,7 @@ public interface IOrderService
     // --------------------- Create ---------------------
     Task<string> AddAsync(AddOrderVM model);
     //by abdullah ali
-    Task<Order> CreateOrdersAsync(OrderDTO orderDTO, string BuyerEmail);
+    Task<Order> CreateOrdersAsync(CreateOrderPaymentVM orderDTO, string BuyerEmail);
 
     // --------------------- Read ---------------------
     Task<PagedResult<OrderVM, OrderFilter, DashBoardOrder>> GetAllAsync();

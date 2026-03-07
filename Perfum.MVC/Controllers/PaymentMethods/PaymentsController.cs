@@ -1,17 +1,22 @@
-﻿using Stripe;
+﻿using Perfum.Domain.Models.Orders;
+using Perfum.Repositories.IRepository.MangerRepository;
 
 namespace Perfum.MVC.Controllers.PaymentMethods;
 
-[Route("api/[controller]")]
-[ApiController]
-
-public class PaymentsController : BaseController
+public class PaymentsController : Controller
 {
 
     const string endpointSecret = "whsec_28cc3dec50be3eaba23c0d5217e31f075148d84948bb1e7aa84452952a3a9461";
+    private readonly IServiceManager _serviceManager;
+    private readonly IRepositoryManager _repositoryManager;
+    private readonly IMapper _mapper;
 
-    public PaymentsController(IServiceManager serviceManager, IMapper mapper) : base(serviceManager, mapper)
-    { }
+    public PaymentsController(IServiceManager serviceManager, IMapper mapper, IRepositoryManager repositoryManager)
+    {
+        _serviceManager = serviceManager;
+        _mapper = mapper;
+        _repositoryManager = repositoryManager;
+    }
 
     //[Authorize]
     [HttpPost]
@@ -27,7 +32,7 @@ public class PaymentsController : BaseController
         return Json(() => new { Result = false });
     }
     [HttpPost]
-    public async Task<IActionResult> CreatePayment(int orderId)
+    public async Task<IActionResult> CreatePayment([FromBody] int orderId)
     {
         var order = await _serviceManager
             .StripePaymentService
@@ -38,39 +43,26 @@ public class PaymentsController : BaseController
             clientSecret = order.ClientSecret
         });
     }
-    //[HttpPost("webhook")]   
     [HttpPost]
-    public async Task<IActionResult> UpdateStatusWithStripe()
+    public async Task<IActionResult> CreatePaymentIntent([FromBody] CreateOrderPaymentVM model)
     {
-        var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-        try
-        {
-            //var stripeEvent = EventUtility.ConstructEvent(json,
-            //    Request.Headers["Stripe-Signature"], endpointSecret, throwOnApiVersionMismatch: false);
-            //PaymentIntent intent;
-            //Order orders;
-            //// Handle the event
-            //if (stripeEvent.Type == Events.PaymentIntentPaymentFailed)
-            //{
-            //    intent = stripeEvent.Data.Object as PaymentIntent;
-            //    orders = await _serviceManager.StripePaymentService.UpdateOrderFaild(intent.Id);
-            //}
-            //else if (stripeEvent.Type == Events.PaymentIntentSucceeded)
-            //{
-            //    intent = stripeEvent.Data.Object as PaymentIntent;
-            //    orders = await _serviceManager.StripePaymentService.UpdateOrderSuccess(intent.Id);
-            //}
-            //// ... handle other event types
-            //else
-            //{
-            //    Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
-            //}
+        var paymentIntent = await _serviceManager
+            .StripePaymentService
+            .CreatePaymentIntentAsync(model);
 
-            return Ok();
-        }
-        catch (StripeException e)
+        return Json(new
         {
-            return BadRequest();
-        }
+            clientSecret = paymentIntent.ClientSecret
+        });
+    }
+
+    public async Task<IActionResult> UpdateBasket([FromBody] CustomerBasket basket)
+    {
+        var result = await _repositoryManager
+            .CustomerBasketRepositry
+            .UpdateBasketAsync(basket);
+
+
+        return Json(result);
     }
 }

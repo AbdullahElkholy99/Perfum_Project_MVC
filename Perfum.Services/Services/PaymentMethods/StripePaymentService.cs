@@ -2,6 +2,7 @@
 using Perfum.Domain.Models.Orders;
 using Perfum.Repositories.Data;
 using Perfum.Services.IServices.PaymentMethods;
+using Perfum.Services.ViewModels.OrderVM;
 using Perfum.Services.ViewModels.PaymentMethodsVM;
 using Stripe;
 
@@ -126,6 +127,139 @@ public class StripePaymentService : IStripePaymentService
         await _repositoryManager.OrderRepository.UpdateAsync(order);
 
         return order;
+    }
+    // by abdullah ali
+    public async Task<Order> CreateOrdersAsync(CreateOrderPaymentVM orderDTO, string buyerEmail)
+    {
+        var basket = await _repositoryManager
+            .CustomerBasketRepositry
+            .GetBasketAsync(orderDTO.BasketId);
+
+        if (basket == null)
+            throw new Exception("Basket not found");
+
+        var orderItems = new List<OrderItem>();
+
+        foreach (var item in basket.basketItems)
+        {
+            var product = await _repositoryManager
+                .ProductRepository
+                .GetByIdAsync(item.Id);
+
+            if (product == null)
+                throw new Exception("Product not found");
+
+            var orderItem = new OrderItem
+            {
+                Id = product.Id,
+                ProductName = product.Name,
+                UnitPrice = (decimal)item.Price,
+                Quantity = item.Qunatity
+            };
+
+            orderItems.Add(orderItem);
+        }
+
+        var deliveryMethod = await _context
+            .DeliveryMethods
+            .FirstOrDefaultAsync(x => x.Id == orderDTO.DeliveryMethodId);
+
+        if (deliveryMethod == null)
+            throw new Exception("Delivery method not found");
+
+        var subTotal = orderItems.Sum(x => x.UnitPrice * x.Quantity);
+
+        var shipAddress = _mapper.Map<ShippingAddress>(orderDTO.ShipAddress);
+
+        var existOrder = await _context.Orders
+            .FirstOrDefaultAsync(x => x.PaymentIntentId == basket.PaymentIntentId);
+
+        if (existOrder != null)
+        {
+            _context.Orders.Remove(existOrder);
+
+            await CreateOrUpdatePaymentAsync(
+                basket.PaymentIntentId,
+                deliveryMethod.Id
+            );
+        }
+
+        var order = new Order(
+            buyerEmail,
+            subTotal,
+            shipAddress,
+            deliveryMethod,
+            orderItems,
+            basket.PaymentIntentId
+        );
+
+        await _context.Orders.AddAsync(order);
+        await _context.SaveChangesAsync();
+
+        await _repositoryManager
+            .CustomerBasketRepositry
+            .DeleteBasketAsync(orderDTO.BasketId);
+
+        return order;
+    }
+
+    public async Task<PaymentIntent> CreatePaymentIntentAsync(CreateOrderPaymentVM orderDTO)
+    {
+        var basket = await _repositoryManager
+            .CustomerBasketRepositry
+            .GetBasketAsync(orderDTO.BasketId);
+
+        if (basket == null)
+            throw new Exception("Basket not found");
+
+        double total = 0;
+
+        foreach (var item in basket.basketItems)
+        {
+            var product = await _repositoryManager
+                .ProductRepository
+                .GetByIdAsync(item.Id);
+
+            if (product == null)
+                throw new Exception("Product not found");
+
+            //total += product.Price * item.Qunatity;
+            total += product.Price * 1;
+        }
+
+        StripeConfiguration.ApiKey = _configuration["StripeSetting:SecretKey"];
+
+        var service = new PaymentIntentService();
+        PaymentIntent intent;
+
+        if (string.IsNullOrEmpty(basket.PaymentIntentId))
+        {
+            var options = new PaymentIntentCreateOptions
+            {
+                Amount = (long)(total * 100),
+                //Amount = (long)(0.5),
+                Currency = "egp",
+                PaymentMethodTypes = new List<string> { "card" }
+            };
+
+            intent = await service.CreateAsync(options);
+
+            basket.PaymentIntentId = intent.Id;
+            basket.ClientSecret = intent.ClientSecret;
+
+            await _repositoryManager.CustomerBasketRepositry.UpdateBasketAsync(basket);
+        }
+        else
+        {
+            var options = new PaymentIntentUpdateOptions
+            {
+                Amount = (long)(total * 100)
+            };
+
+            intent = await service.UpdateAsync(basket.PaymentIntentId, options);
+        }
+
+        return intent;
     }
 
 

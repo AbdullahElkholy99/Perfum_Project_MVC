@@ -85,9 +85,9 @@ public class OrderService : IOrderService
     }
 
     // by abdullah ali
-    public async Task<Order> CreateOrdersAsync(OrderDTO orderDTO, string BuyerEmail)
+    public async Task<Order> CreateOrdersAsync(CreateOrderPaymentVM orderDTO, string BuyerEmail)
     {
-        var basket = await _repositoryManager.CustomerBasketRepositry.GetBasketAsync(orderDTO.basketId);
+        var basket = await _repositoryManager.CustomerBasketRepositry.GetBasketAsync(orderDTO.BasketId);
 
         List<OrderItem> orderItems = new List<OrderItem>();
 
@@ -105,11 +105,11 @@ public class OrderService : IOrderService
             orderItems.Add(orderItem);
 
         }
-        var deliverMethod = await _context.DeliveryMethods.FirstOrDefaultAsync(m => m.Id == orderDTO.deliveryMethodId);
+        var deliverMethod = await _context.DeliveryMethods.FirstOrDefaultAsync(m => m.Id == orderDTO.DeliveryMethodId);
 
         var subTotal = orderItems.Sum(m => m.UnitPrice * m.Quantity);
 
-        var ship = _mapper.Map<ShippingAddress>(orderDTO.shipAddress);
+        var ship = _mapper.Map<ShippingAddress>(orderDTO.ShipAddress);
 
         var ExisitOrder =
             await _context.Orders
@@ -132,7 +132,7 @@ public class OrderService : IOrderService
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();
 
-        await _repositoryManager.CustomerBasketRepositry.DeleteBasketAsync(orderDTO.basketId);
+        await _repositoryManager.CustomerBasketRepositry.DeleteBasketAsync(orderDTO.BasketId);
         return order;
 
     }

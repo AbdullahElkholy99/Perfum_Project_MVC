@@ -1,4 +1,4 @@
-﻿@model LoginVM
+﻿@* @model LoginVM
 @{
     Layout = null;
 }
@@ -57,5 +57,130 @@
     <script src="~/js/Auth/login.js"></script>
 
 
+</body>
+</html> *@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Management System</title>
+
+    <!-- Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Styles -->
+    <link href="~/css/auth/authstyle.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Curved shapes (original animation) -->
+        <div class="curved-shape"></div>
+        <div class="curved-shape2"></div>
+
+        <!-- Logo — slides left ↔ right on switch -->
+        <div class="top-logo">
+            <div class="logo-circle">
+                <img src="./WhatsApp Image 2025-12-09 at 08.09.23.jpeg"
+                     alt="Logo"
+                     onerror="this.style.display='none';this.parentElement.textContent='ANA'">
+            </div>
+            <div class="system-title">Store Management System</div>
+        </div>
+
+        <!-- ══════════════════════════════
+             LOGIN FORM
+             ══════════════════════════════ -->
+        <div class="form-box Login">
+            <h2 class="animation" style="--D:0; --S:21">Login</h2>
+
+            <form id="loginForm" action="#">
+
+                <div class="input-box animation" style="--D:1; --S:22">
+                    <input type="text" id="loginUsername" required>
+                    <label>Username</label>
+                    <div class="error-message" id="loginUsernameError">Username is required</div>
+                </div>
+
+                <div class="input-box animation" style="--D:2; --S:23">
+                    <input type="password" id="loginPassword" required>
+                    <label>Password</label>
+                    <button type="button" class="password-toggle"
+                            onclick="togglePassword('loginPassword', this)">
+                        <i class="bx bx-hide"></i>
+                    </button>
+                    <div class="error-message" id="loginPasswordError">Password is required</div>
+                </div>
+
+                <div class="input-box animation" style="--D:3; --S:24">
+                    <button class="btn" type="submit">Login</button>
+                </div>
+
+                <div class="regi-link animation" style="--D:4; --S:25">
+                    <p>Don't have an account? <a href="#" class="SignUpLink">Sign Up</a></p>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- ══════════════════════════════
+             REGISTER FORM
+             ══════════════════════════════ -->
+        <div class="form-box Register">
+            <h2 class="animation" style="--li:17; --S:0">Register</h2>
+
+            <form id="registerForm" action="#">
+
+                <div class="input-box animation" style="--li:18; --S:1">
+                    <input type="text" id="regUsername" required>
+                    <label>Username</label>
+                    <div class="error-message" id="regUsernameError">Username must be at least 3 characters</div>
+                </div>
+
+                <div class="input-box animation" style="--li:19; --S:2">
+                    <input type="email" id="regEmail" required>
+                    <label>Email</label>
+                    <div class="error-message" id="regEmailError">Please enter a valid email</div>
+                </div>
+
+                <div class="input-box animation" style="--li:20; --S:3">
+                    <input type="password" id="regPassword" required>
+                    <label>Password</label>
+                    <button type="button" class="password-toggle"
+                            onclick="togglePassword('regPassword', this)">
+                        <i class="bx bx-hide"></i>
+                    </button>
+                    <div class="error-message" id="regPasswordError">Password must be at least 6 characters</div>
+                </div>
+
+                <div class="input-box animation" style="--li:21; --S:4">
+                    <input type="password" id="regConfirmPassword" required>
+                    <label>Confirm Password</label>
+                    <button type="button" class="password-toggle"
+                            onclick="togglePassword('regConfirmPassword', this)">
+                        <i class="bx bx-hide"></i>
+                    </button>
+                    <div class="error-message" id="regConfirmPasswordError">Passwords do not match</div>
+                </div>
+
+                <div class="input-box animation" style="--li:22; --S:5">
+                    <button class="btn" type="submit">Register</button>
+                </div>
+
+                <div class="regi-link animation" style="--li:23; --S:6">
+                    <p>Already have an account? <a href="#" class="SignInLink">Sign In</a></p>
+                </div>
+
+            </form>
+        </div>
+
+    </div><!-- /container -->
+    <!-- Script -->
+    <script src="~/js/auth/authscript.js"></script>
 </body>
 </html>

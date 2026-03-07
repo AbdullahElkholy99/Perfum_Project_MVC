@@ -1,4 +1,6 @@
-﻿
+﻿function toggleSidebar() {
+    document.querySelector(".sidebar").classList.toggle("open");
+}
         // ─ Data ─
     const ICONS = ['🌸','🌿','🌳','🔥','💎','🌙','☀️','❄️','🍋','🌹','🌺','🍂','🧴','🪐','🌊','✨'];
     const COLORS = ['#c8854a','#d4a844','#c97a7a','#7a9e7e','#7a90be','#a87ac8','#c8a07a','#7ab8c8','#8a8a8a','#d4704a'];

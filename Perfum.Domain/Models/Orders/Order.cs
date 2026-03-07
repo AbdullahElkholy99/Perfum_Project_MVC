@@ -37,6 +37,10 @@ public class Order
         return TotalPrice + deliveryMethod.Price;
     }
     public ShippingAddress shippingAddress { get; set; }
+    public Order()
+    {
+
+    }
     public Order(string buyerEmail, decimal subTotal, ShippingAddress shippingAddress, DeliveryMethod deliveryMethod, List<OrderItem> orderItems, string PaymentIntentId)
     {
         BuyerEmail = buyerEmail;

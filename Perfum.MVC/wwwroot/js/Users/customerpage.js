@@ -1,4 +1,12 @@
-﻿
+﻿let stripe;
+let cardElement;
+let basketId = localStorage.getItem("basketId") || crypto.randomUUID();
+
+localStorage.setItem("basketId", basketId);
+
+
+
+
 // ── DATA ──
 const CAT_COLORS={'Floral':'#c97a7a','Oriental':'#c8854a','Woody':'#7a9e7e','Fresh':'#7a90be','Fougère':'#a87ac8','Gourmand':'#d4a844'};
 const EMOJIS={'Floral':'🌸','Oriental':'🔥','Woody':'🌳','Fresh':'❄️','Fougère':'🌿','Gourmand':'🍂'};
@@ -52,7 +60,7 @@ function getFiltered(){
 
 function applyFilters(){
   const data=getFiltered();
-    document.getElementById('countLabel').textContent=`${data.length} fragrance${data.length !== 1 ? 's' : ''}`;
+    //document.getElementById('countLabel').textContent=`${data.length} fragrance${data.length !== 1 ? 's' : ''}`;
     const grid=document.getElementById('prodGrid');
     if(!data.length){grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:64px;color:var(--text3)"><div style="font-size:40px;margin-bottom:12px;opacity:.4">🔍</div><div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text2);margin-bottom:6px">No fragrances found</div><div style="font-size:12px">Try a different search or category</div></div>`;return;}
 
@@ -141,6 +149,7 @@ function showproduct(item) {
     console.log(item)
     //addToCart(id, 1);
 }
+
 let cart = [];
 let products = [];
 
@@ -159,9 +168,9 @@ function quickAdd(id, name, price, imageUrl, stock, size_Ml) {
     if (!products.find(x => x.id === id)) {
         products.push(product)
     }
-    console.log("-------------------- quickAdd")
-    console.log(products)
-    console.log("-------------------- ")
+    //console.log("-------------------- quickAdd")
+    //console.log(products)
+    //console.log("-------------------- ")
 
     addToCart(product, 1);
 }
@@ -171,30 +180,59 @@ function addToCart(product, qty = 1) {
     const id = product.id
     const p = products.find(x => x.id === id);
     //var response = await fetch()
-    console.log("-------------------- addToCart")
-    console.log(product)
-    console.log("-------------------- ")
+    //console.log("-------------------- addToCart")
+    //console.log(product)
+    //console.log("-------------------- ")
 
     if (!product || product.stock === 0) return;
 
     const existing = cart.find(x => x.id === id);
 
     if (existing) {
-        console.log(cart)
+        //console.log(cart)
         existing.qty = Math.min(existing.qty + qty, product.stock);
-        console.log(cart)
-        console.log("------------")
+        //console.log(cart)
+        //console.log("------------")
 
     }
     else {
         cart.push({ id, qty: Math.min(qty, product.stock) });
-        console.log(cart)
-        console.log("***********")
+        //console.log(cart)
+        //console.log("***********")
     }
 
     updateCartBadge(); renderCart();
      
     showToast(`"${p.name}" added to cart 🛒`);
+    saveBasket();
+
+}
+async function saveBasket() {
+
+    showToast(`"abdullah 🛒`);
+
+    const basket = {
+        id: basketId,
+        basketItems: cart.map(x => ({
+            id: x.id,
+            quantity: x.qty,
+            price: products.find(p => p.id === x.id)?.price
+
+        }))
+    };
+
+    var res = await fetch("/Payments/UpdateBasket", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(basket)
+  });
+
+    if (!res.ok) {
+        showToast(`"------------------- 🛒`);
+
+    }
 }
 function updateCartBadge() {
 
@@ -260,7 +298,6 @@ function changeCartQty(id,d){
     updateCartBadge();renderCart();
 }
 
-
 function getCartTotal(){return cart.reduce((s,x)=>{const p=products.find(pr=>pr.id===x.id);return s+(p?p.price*x.qty:0);},0);}
 function getCartShipping(){return getCartTotal()>=250?0:18;}
 function getCartDiscount(){return getCartTotal()>=400?Math.round(getCartTotal()*.05):0;}
@@ -268,9 +305,9 @@ function getCartDiscount(){return getCartTotal()>=400?Math.round(getCartTotal()*
 function openCart(){renderCart();document.getElementById('cartBg').classList.add('open');document.getElementById('cartDrawer').classList.add('open');}
 function closeCart(){document.getElementById('cartBg').classList.remove('open');document.getElementById('cartDrawer').classList.remove('open');}
 
-// ── CHECKOUT ──
- function openCheckout(){
-        closeCart();
+// ────────────────────────────── CHECKOUT ──
+function openCheckout(){
+    closeCart();
     renderCheckout();
     document.getElementById('checkoutOverlay').classList.add('open');
 }
@@ -292,6 +329,7 @@ function renderCoSteps(){
     </div>`).join('');
 }
 
+//done
 function renderCoRight(){
   const subtotal=getCartTotal(),shipping=getCartShipping(),discount=getCartDiscount(),total=subtotal+shipping-discount;
     document.getElementById('coRight').innerHTML=`
@@ -300,7 +338,9 @@ function renderCoRight(){
         const p = products.find(x => x.id === item.id); if (!p) return '';
         const col = CAT_COLORS[p.cat] || '#c8854a';
         return `<div class="co-item">
-        <div class="co-item-emoji" style="background:linear-gradient(135deg,${col}22,${col}08)">${EMOJIS[p.cat] || '🧴'}</div>
+        <div class="co-item-emoji" style="background:linear-gradient(135deg,${col}22,${col}08)">
+              <img src="${p.imageUrl}" style="width:40px;height:40px;object-fit:cover">
+        </div>
         <div><div class="co-item-name">${p.name}</div><div class="co-item-meta">${p.size} · Qty ${item.qty}</div></div>
         <div class="co-item-price">$${p.price * item.qty}</div>
       </div>`;
@@ -313,7 +353,7 @@ function renderCoRight(){
     <div class="co-trust">
         <div class="co-trust-item">🔒 Secure checkout</div>
         <div class="co-trust-item">📦 Tracked delivery</div>
-        <div class="co-trust-item">↩ 30-day returns</div>
+        <div class="co-trust-item">↩ 15-day returns</div>
     </div>`;
 }
 
@@ -324,146 +364,338 @@ function renderCoLeft(){
     else el.innerHTML=renderStep3();
 }
 
-function renderStep1(){
-  return`
+/*************Start renderStep 1  ************* */
+
+function renderStep1() {
+    return `
     <div class="co-section">
         <div class="co-section-title">Contact Information</div>
         <div class="form-grid">
-            <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="Amira Hassan" value="Amira Hassan" /></div>
-            <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" placeholder="amira@email.com" value="amira@email.com" /></div>
-            <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" placeholder="+20 10 1234 5678" /></div>
+
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input id="fullName" class="form-input" />
+                <div class="error-msg" id="fullName-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input id="email" class="form-input" type="email"/>
+                <div class="error-msg" id="email-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input id="phone" class="form-input" type="tel"/>
+                <div class="error-msg" id="phone-error"></div>
+            </div>
+
         </div>
     </div>
+
     <div class="co-section">
         <div class="co-section-title">Delivery Address</div>
         <div class="form-grid">
-            <div class="form-group"><label class="form-label">Address Line 1</label><input class="form-input" placeholder="123 Corniche El Nil" /></div>
-            <div class="form-group"><label class="form-label">Address Line 2</label><input class="form-input" placeholder="Apartment, suite, floor…" /></div>
+
+            <div class="form-group">
+                <label class="form-label">Street</label>
+                <input id="street" class="form-input"/>
+                <div class="error-msg" id="street-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">State</label>
+                <input id="state" class="form-input"/>
+                <div class="error-msg" id="state-error"></div>
+            </div>
+
             <div class="form-grid form-grid-2">
-                <div class="form-group"><label class="form-label">City</label><input class="form-input" placeholder="Cairo" value="Cairo" /></div>
-                <div class="form-group"><label class="form-label">Postal Code</label><input class="form-input" placeholder="11511" /></div>
+
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input id="city" class="form-input"/>
+                    <div class="error-msg" id="city-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Postal Code</label>
+                    <input id="zipCode" class="form-input"/>
+                    <div class="error-msg" id="zipCode-error"></div>
+                </div>
+
             </div>
-            <div class="form-group"><label class="form-label">Country</label>
-                <select class="form-input">
-                    <option>Egypt</option><option>UAE</option><option>Saudi Arabia</option><option>France</option><option>UK</option><option>USA</option><option>Germany</option><option>Japan</option>
-                </select>
-            </div>
+
         </div>
     </div>
-    <button class="place-order-btn" onclick="nextStep()" style="background:var(--accent)">Continue to Shipping →</button>`;
+
+    <button id="continueBtn" class="place-order-btn stop" disabled onclick="nextStep()" >
+        Continue →
+    </button>
+`;
 }
 
-function renderStep2(){
-  return`
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^[0-9+\s]{10,15}$/;
+
+function validateField(id, validator, message) {
+
+    const input = document.getElementById(id);
+    const error = document.getElementById(id + "-error");
+
+    if (!validator(input.value.trim())) {
+        input.classList.add("input-error");
+        error.textContent = message;
+        return false;
+    }
+
+    input.classList.remove("input-error");
+    error.textContent = "";
+    return true;
+}
+function validateForm() {
+
+    const v1 = validateField("fullName", v => v.length > 2, "Enter full name");
+    const v2 = validateField("email", v => emailRegex.test(v), "Invalid email");
+    const v3 = validateField("phone", v => phoneRegex.test(v), "Invalid phone number");
+
+    const v4 = validateField("street", v => v.length > 3, "Enter street");
+    const v5 = validateField("state", v => v.length > 2, "Enter state");
+    const v6 = validateField("city", v => v.length > 2, "Enter city");
+    const v7 = validateField("zipCode", v => v.length > 3, "Invalid zip");
+
+    const valid = v1 && v2 && v3 && v4 && v5 && v6 && v7;
+
+    const btn = document.getElementById("continueBtn");
+
+    btn.disabled = !valid;
+
+    if (valid) {
+        btn.classList.remove("stop");
+    } else {
+        btn.classList.add("stop");
+    }
+}
+document.addEventListener("input", function (e) {
+
+    if (e.target.classList.contains("form-input")) {
+        validateForm();
+    }
+
+});
+/*************End renderStep 1  ************* */
+
+
+/*************Start renderStep 2  ************* */
+let selectedShipping2 = 'standard';
+
+function renderStep2() {
+
+    const methods = [
+        { id: 'standard', label: 'DHL Standard', sub: '5–7 business days', price: 'Free' },
+        { id: 'express', label: 'FedEx Express', sub: '2–3 business days', price: '$18' },
+        { id: 'overnight', label: 'UPS Overnight', sub: 'Next business day', price: '$45' }
+    ];
+
+    return `
     <div class="co-section">
+
         <div class="co-section-title">Shipping Method</div>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
-            ${[
-                { id: 'standard', label: 'DHL Standard', sub: '5–7 business days', price: 'Free', selected: true },
-                { id: 'express', label: 'FedEx Express', sub: '2–3 business days', price: '$18', selected: false },
-                { id: 'overnight', label: 'UPS Overnight', sub: 'Next business day', price: '$45', selected: false },
-            ].map(m => `
-        <div class="pm-method ${m.selected ? 'selected' : ''}" onclick="selectShipping(this)" style="border-radius:12px;padding:18px;">
-          <div style="font-size:22px">${m.id === 'standard' ? '📦' : m.id === 'express' ? '🚀' : '⚡'}</div>
-          <div><div class="pm-method-name">${m.label}</div><div class="pm-method-sub">${m.sub}</div></div>
-          <div style="margin-left:auto;font-family:'Cormorant Garamond',serif;font-size:18px;color:${m.price === 'Free' ? 'var(--green)' : 'var(--text)'}">${m.price}</div>
-          <div class="pm-radio"></div>
-        </div>`).join('')}
+
+        <div class="shipping-list">
+
+            ${methods.map((m, i) => `
+
+            <div class="pm-method ${i === 0 ? 'selected' : ''}" 
+                 data-id="${m.id}" 
+                 onclick="selectShipping('${m.id}',this)">
+
+                <div class="pm-icon">
+                    ${m.id === 'standard' ? '📦' : m.id === 'express' ? '🚀' : '⚡'}
+                </div>
+
+                <div>
+                    <div class="pm-method-name">${m.label}</div>
+                    <div class="pm-method-sub">${m.sub}</div>
+                </div>
+
+                <div class="pm-price ${m.price === 'Free' ? 'free' : ''}">
+                    ${m.price}
+                </div>
+
+                <div class="pm-radio"></div>
+
+            </div>
+
+            `).join('')}
+
         </div>
+
+        <div id="shippingError" class="error-msg"></div>
+
     </div>
-    <div class="co-section">
-        <div class="co-section-title">Gift Options</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:13px;color:var(--text2)">
-                <input type="checkbox" style="accent-color:var(--accent);width:16px;height:16px;cursor:pointer"> Complimentary gift wrapping (+$0)
-            </label>
-            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:13px;color:var(--text2)">
-                <input type="checkbox" style="accent-color:var(--accent);width:16px;height:16px;cursor:pointer"> Include a handwritten note
-            </label>
-        </div>
+
+    <div class="co-actions">
+
+        <button class="btn-secondary" onclick="prevStep()">← Back</button>
+
+        <button id="continueBtn2"
+                class="place-order-btn"
+                onclick="validateStep2()">
+            Continue →
+        </button>
+
     </div>
-    <div style="display:flex;gap:12px;margin-top:8px;">
-        <button class="place-order-btn" onclick="prevStep()" style="background:var(--surface);color:var(--text2);border:1px solid var(--border);box-shadow:none;flex:0 0 auto;width:auto;padding:15px 24px;">← Back</button>
-        <button class="place-order-btn" onclick="nextStep()">Continue to Payment →</button>
-    </div>`;
+`;
 }
 
-function renderStep3(){
-  const total=getCartTotal()+getCartShipping()-getCartDiscount();
-    return`
-    <div class="co-section">
-        <div class="co-section-title">Payment Method</div>
-        <div class="payment-methods">
-            ${[
-                { id: 'card', icon: '💳', name: 'Credit / Debit Card', sub: 'Visa, Mastercard, Amex' },
-                { id: 'paypal', icon: '🅿', name: 'PayPal', sub: 'Pay via PayPal account' },
-                { id: 'apple', icon: '🍎', name: 'Apple Pay', sub: 'Touch ID or Face ID' },
-                { id: 'google', icon: '🔵', name: 'Google Pay', sub: 'Quick & secure' },
-            ].map(m => `
-        <div class="pm-method ${m.id === paymentMethod ? 'selected' : ''}" onclick="selectPayment('${m.id}',this)">
-          <div class="pm-method-icon">${m.icon}</div>
-          <div><div class="pm-method-name">${m.name}</div><div class="pm-method-sub">${m.sub}</div></div>
-          <div class="pm-radio"></div>
-        </div>`).join('')}
+function selectShipping(id, el) {
+
+    selectedShipping2 = id;
+
+    document.querySelectorAll(".pm-method")
+        .forEach(x => x.classList.remove("selected"));
+
+    el.classList.add("selected");
+
+    document.getElementById("shippingError").textContent = "";
+}
+
+function validateStep2() {
+
+    if (!selectedShipping2) {
+
+        document.getElementById("shippingError")
+            .textContent = "Please select a shipping method";
+
+        return;
+    }
+
+    nextStep();
+}
+/*************End renderStep 2 ************* */
+
+
+/*************Start renderStep 3 ************* */
+function renderStep3() {
+
+    const total = getCartTotal() + getCartShipping() - getCartDiscount();
+    const methods = [
+        { id: 'card', icon: 'fa-solid fa-credit-card', name: 'Credit / Debit Card', sub: 'Visa, Mastercard, Amex' },
+        { id: 'paypal', icon: 'fa-brands fa-cc-paypal', name: 'PayPal', sub: 'Pay via PayPal account' },
+        { id: 'stripe', icon: 'fa-brands fa-cc-stripe', name: 'Stripe Pay', sub: 'Quick' },
+        { id: 'google', icon: 'fa-brands fa-google-pay', name: 'Google Pay', sub: 'Quick & secure' }
+    ];
+
+    return `
+<div class="co-section">
+
+    <div class="co-section-title">Payment Method</div>
+
+    <div class="payment-methods">
+
+    ${methods.map(m => `
+
+        <div class="pm-method ${paymentMethod === m.id ? 'selected' : ''}"
+             onclick="selectPayment('${m.id}',this)">
+
+            <div class="pm-method-icon">
+                <i class="${m.icon}"></i>
+            </div>
+
+            <div class="pm-info">
+                <div class="pm-method-name">${m.name}</div>
+                <div class="pm-method-sub">${m.sub}</div>
+            </div>
+
+            <div class="pm-radio"></div>
+
         </div>
+
+    `).join('')}
+
+        </div>
+
         <div id="paymentFields"></div>
+        <div id="paymentError" class="error-msg"></div>
+
     </div>
-    <div class="co-section">
+
+    <div class="co-actions">
+
+        <button class="btn-secondary"
+                onclick="prevStep()">
+            ← Back
+        </button>
+
+        <button id="placeOrderBtn"
+                class="place-order-btn"
+                onclick="validatePayment()">
+
+            Place Order · $${total} 
+
+        </button>
+
+    </div>
+`;
+}
+/*
+ <div class="co-section">
+
         <div class="co-section-title">Promo Code</div>
-        <div style="display:flex;gap:10px;">
-            <input class="form-input" placeholder="Enter promo code…" style="flex:1;" id="promoInput" />
-            <button style="padding:12px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='var(--bg2)'" onclick="applyPromo()">Apply</button>
+
+        <div class="promo-box">
+
+            <input id="promoInput"
+                   class="form-input"
+                   placeholder="Enter promo code…" />
+
+            <button class="promo-btn"
+                    onclick="applyPromo()">
+                Apply
+            </button>
+
         </div>
+
     </div>
-    <div style="display:flex;gap:12px;margin-top:8px;">
-        <button class="place-order-btn" onclick="prevStep()" style="background:var(--surface);color:var(--text2);border:1px solid var(--border);box-shadow:none;flex:0 0 auto;width:auto;padding:15px 24px;">← Back</button>
-        <button class="place-order-btn" onclick="placeOrder()">Place Order · $${total} 🔒</button>
-    </div>`;
-}
 
-function renderPaymentFields(){
-  const el=document.getElementById('paymentFields');if(!el)return;
-    if(paymentMethod==='card'){
-        el.innerHTML = `<div class="card-fields">
-      <div class="form-group" style="margin-bottom:14px;">
-        <label class="form-label">Card Number</label>
-        <div class="card-number-wrap">
-          <input class="form-input" placeholder="1234  5678  9012  3456" maxlength="19" oninput="formatCard(this)" />
-          <div class="card-icons">💳</div>
-        </div>
-      </div>
-      <div class="form-grid form-grid-2" style="gap:14px;">
-        <div class="form-group"><label class="form-label">Expiry Date</label><input class="form-input" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)" /></div>
-        <div class="form-group"><label class="form-label">CVV</label><input class="form-input" placeholder="•••" maxlength="4" type="password" /></div>
-      </div>
-      <div class="form-group" style="margin-top:14px;margin-bottom:0;"><label class="form-label">Cardholder Name</label><input class="form-input" placeholder="AMIRA HASSAN" /></div>
-    </div>`;
-  } else if(paymentMethod==='paypal'){
-        el.innerHTML = `<div class="card-fields" style="text-align:center;padding:28px;">
-      <div style="font-size:36px;margin-bottom:12px">🅿</div>
-      <div style="font-size:14px;color:var(--text2);margin-bottom:16px;">You'll be redirected to PayPal to complete your purchase securely.</div>
-      <div style="font-size:11px;color:var(--text3);letter-spacing:.06em">Logged in as: amira@email.com</div>
-    </div>`;
-  } else {
-        el.innerHTML = `<div class="card-fields" style="text-align:center;padding:28px;">
-      <div style="font-size:36px;margin-bottom:12px">${paymentMethod === 'apple' ? '🍎' : '🔵'}</div>
-      <div style="font-size:14px;color:var(--text2);margin-bottom:6px;">${paymentMethod === 'apple' ? 'Use Touch ID or Face ID to pay' : 'Authenticate with your Google account'}</div>
-      <div style="font-size:11px;color:var(--text3);letter-spacing:.06em">Ready to authenticate</div>
-    </div>`;
-  }
-}
+*/
 
+function validatePayment() {
+
+    if (!paymentMethod) {
+
+        document.getElementById("paymentError")
+            .textContent = "Please select a payment method";
+
+        return;
+    }
+
+    placeOrder();
+
+}
 function selectPayment(id,el){
     paymentMethod = id;
     document.querySelectorAll('.pm-method').forEach(x=>x.classList.remove('selected'));
     el.classList.add('selected');
+
+    document.getElementById("paymentError").textContent = "";
+
     renderPaymentFields();
 }
+/*************End renderStep 3 ************* */
 
-function selectShipping(el){
-        el.closest('.co-section').querySelectorAll('.pm-method').forEach(x => x.classList.remove('selected'));
+let selectedShipping;
+function selectShipping(id, el) {
+
+    selectedShipping = id;
+
+    el.closest('.co-section')
+        .querySelectorAll('.pm-method')
+        .forEach(x => x.classList.remove('selected'));
+
     el.classList.add('selected');
 }
+
 
 function applyPromo(){
   const val=document.getElementById('promoInput')?.value?.toUpperCase();
@@ -474,22 +706,308 @@ function applyPromo(){
 function formatCard(el){el.value = el.value.replace(/\D/g, '').replace(/(\d{4})/g, '$1 ').trim().slice(0, 19);}
 function formatExpiry(el){el.value = el.value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1 / $2').slice(0, 7);}
 
-function nextStep(){if(checkoutStep<3){checkoutStep++;renderCoSteps();renderCoLeft();if(checkoutStep===3)setTimeout(renderPaymentFields,50);}}
+function nextStep()
+{
+
+    if (checkoutStep < 3)
+    {
+
+        checkoutStep++;
+        renderCoSteps();
+        renderCoLeft();
+        if (checkoutStep === 3)
+            setTimeout(renderPaymentFields, 50);
+    }
+}
 function prevStep(){if(checkoutStep>1){checkoutStep--;renderCoSteps();renderCoLeft();}}
 
-function placeOrder(){
-  const orderId='#'+Math.floor(5300+Math.random()*200);
-    document.getElementById('successOrderId').textContent=orderId;
-    closeCheckout();
-    cart=[];updateCartBadge();
-    document.getElementById('successScreen').classList.add('open');
-    checkoutStep=1;
-}
 
-function continueShopping(){
+function continueShopping() {
         document.getElementById('successScreen').classList.remove('open');
     applyFilters();
 }
+
+
+// ─────────────────────────────────────────────
+// STRIPE SETUP
+// ─────────────────────────────────────────────
+
+let elements;
+
+function initStripe() {
+
+    stripe = Stripe("sk_test_51S6NTkGi2aZxBBEW0HQ5rkyS8GklPxY5XljZj4vZwpR9eir6g0PNBQOjI1bE7Kh4EgbowiLAyaC0A8FW7N3FmDRf00apkL3TCA");
+
+    elements = stripe.elements();
+
+    cardElement = elements.create("card", {
+        style: {
+            base: {
+                fontSize: "16px",
+                color: "#32325d"
+            }
+        }
+    });
+
+    cardElement.mount("#card-element");
+}
+
+
+// ─────────────────────────────────────────────
+// CREATE PAYMENT INTENT
+// ─────────────────────────────────────────────
+function validateCheckout() {
+
+    const fullName = document.querySelector("#fullName")?.value.trim();
+    const email = document.querySelector("#email")?.value.trim();
+    const city = document.querySelector("#city")?.value.trim();
+    const zipCode = document.querySelector("#zipCode")?.value.trim();
+    const street = document.querySelector("#street")?.value.trim();
+    const state = document.querySelector("#state")?.value.trim();
+
+    if (!fullName) {
+        alert("Full name is required");
+        return null;
+    }
+
+    if (!email || !email.includes("@")) {
+        alert("Valid email is required");
+        return null;
+    }
+
+    if (!city) {
+        alert("City is required");
+        return null;
+    }
+
+    if (!zipCode) {
+        alert("Zip code is required");
+        return null;
+    }
+
+    if (!street) {
+        alert("Street is required");
+        return null;
+    }
+
+    if (!state) {
+        alert("State is required");
+        return null;
+    }
+
+    return {
+        basketId: basketId,
+        deliveryMethodId: 1,
+        shipAddress: {
+            firstName: fullName,
+            buyerEmail: email,
+            city: city,
+            zipCode: zipCode,
+            street: street,
+            state: state
+        }
+    };
+}
+
+async function createPaymentIntent() {
+
+    //const model = {
+
+    //    basketId: basketId,
+
+    //    deliveryMethodId: 1,
+
+    //    shipAddress: {
+    //        firstName: document.querySelector("#fullName")?.value || "Ali",
+    //        BuyerEmail: document.querySelector("#email")?.value || "test",
+    //        city: document.querySelector("#city")?.value || "Cairo",
+    //        zipCode: document.querySelector("#zipCode")?.value || "11511",
+    //        street: document.querySelector("#street")?.value || "Corniche",
+    //        state: document.querySelector("#state")?.value || "Cairo"
+    //    }
+    //};
+
+    const model = validateCheckout();
+
+
+    const response = await fetch("/Payments/CreatePaymentIntent", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(model)
+
+    });
+
+    return await response.json();
+}
+
+
+
+
+// ─────────────────────────────────────────────
+// PLACE ORDER (PAYMENT)
+// ─────────────────────────────────────────────
+async function placeOrder() {
+
+    const model = {
+
+        basketId: basketId,
+
+        deliveryMethodId: selectedShipping,
+
+        shipAddress: {
+            firstName: "Customer",
+            lastName: "User",
+            city: "Cairo",
+            zipCode: "11511",
+            street: "Corniche",
+            state: "Cairo"
+        }
+    };
+
+    const response = await fetch("/Payments/CreatePaymentIntent", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(model)
+
+    });
+
+    const data = await response.json();
+
+    const result = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: {
+            card: cardElement
+        }
+    });
+
+    if (result.error) {
+        showToast(result.error.message);
+        return;
+    }
+
+    if (result.paymentIntent.status === "succeeded") {
+        showToast("Payment Successful 🎉");
+    }
+}
+
+
+// ─────────────────────────────────────────────
+// PAYMENT METHOD SELECT
+// ─────────────────────────────────────────────
+function renderPaymentFields() {
+
+    const el = document.getElementById('paymentFields');
+
+    if (paymentMethod === 'card') {
+
+        el.innerHTML = `
+        <div class="card-fields">
+
+            <label class="form-label">Card Details</label>
+
+            <div id="card-element"
+                 style="padding:12px;border:1px solid #ddd;border-radius:8px">
+            </div>
+
+            <div id="card-errors"
+                 style="color:red;margin-top:10px">
+            </div>
+
+        </div>
+        `;
+
+        stripe = Stripe("pk_test_YOUR_PUBLIC_KEY");
+
+        const elements = stripe.elements();
+
+        cardElement = elements.create("card", {
+            style: {
+                base: {
+                    fontSize: "16px",
+                    color: "#32325d"
+                }
+            }
+        });
+
+        cardElement.mount("#card-element");
+
+        cardElement.on("change", function (event) {
+
+            const displayError = document.getElementById("card-errors");
+
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            }
+            else {
+                displayError.textContent = "";
+            }
+
+        });
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ── WISHLIST ──
 function toggleWishlistItem(id){
@@ -518,3 +1036,6 @@ applyFilters();
 
 
 
+function toggleNav() {
+    document.getElementById("navLinks").classList.toggle("open");
+}
