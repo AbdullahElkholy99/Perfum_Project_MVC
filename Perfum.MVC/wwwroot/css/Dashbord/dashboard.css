@@ -62,7 +62,7 @@ body {
     min-height: 100vh;
 }
 
-/* ─ Sidebar ─ */
+/* ─────────────────────────────────────── Sidebar ─ */
 
 .sidebar{
     width:240px;
@@ -108,11 +108,10 @@ body {
 }
 
 .nav-label {
-    font-size: 9px;
+    font-size: 12px;
     letter-spacing: .25em;
     text-transform: uppercase;
     color: var(--text3);
-    padding: 0 12px;
     margin-bottom: 6px;
 }
 
@@ -123,7 +122,7 @@ body {
     padding: 10px 12px;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: .05em;
     color: var(--text2);
     transition: all .2s;
@@ -133,10 +132,10 @@ body {
     .nav-item a {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
+  
+        width: 100%;
         text-decoration: none;
-        font-size: 13px;
+        font-size: 14px;
         color: #6b6b6b;
         transition: all .2s ease;
     }
@@ -151,11 +150,18 @@ body {
         color: var(--accent);
     }
 
-.nav-icon {
+/*.nav-icon {
     font-size: 16px;
     width: 20px;
     text-align: center;
-}
+}*/
+    .nav-item i {
+        width: 18px;
+        font-size: 14px;
+        text-align: center;
+        opacity: .8;
+
+    }
 
 .sidebar-bottom {
     margin-top: auto;
@@ -210,12 +216,38 @@ body {
 .toggle-pill.on .toggle-dot {
     transform: translateX(16px);
 }
+/* logout button */
 
-/* ─ Main ─ */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: .05em;
+    color: #e54848;
+    background: rgba(229,72,72,.08);
+    border: 1px solid rgba(229,72,72,.15);
+    transition: .2s;
+}
+
+    .logout-btn i {
+        font-size: 14px;
+    }
+
+    .logout-btn:hover {
+        background: #e54848;
+        color: #fff;
+        border-color: #e54848;
+    }
+/* ───*********************************************************** Main ─ */
 .mainDashboard {
      flex: 1;
      margin-left:240px;
-    padding:  50px;
+    padding: 40px;
     max-width: calc(100vw - 240px);
 }
 
@@ -1228,8 +1260,9 @@ textarea.form-input {
 
 .navbar-right {
     display: flex;
+    gap: 10px;
     align-items: center;
-    gap: 18px;
+    margin-left: 32px;
 }
 
 
@@ -1448,4 +1481,74 @@ textarea.form-input {
         align-items: flex-start;
         gap: 10px;
     }
+}
+
+.nav-user {
+    position: relative;
+}
+
+.user-menu {
+    position: absolute;
+    right: 0;
+    top: 48px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 180px;
+    display: none;
+    flex-direction: column;
+    padding: 6px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.15);
+    animation: menuFade .18s ease;
+}
+
+    .user-menu a {
+        padding: 10px 12px;
+        text-decoration: none;
+        color: var(--text2);
+        font-size: 13px;
+        border-radius: 8px;
+        transition: .15s;
+    }
+
+        .user-menu a:hover {
+            background: var(--bg2);
+            color: var(--accent);
+        }
+
+    .user-menu hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 6px 4px;
+    }
+
+    .user-menu.show {
+        display: flex;
+    }
+
+@keyframes menuFade {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.nav-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text3);
+    transition: all .2s;
+    position: relative;
 }

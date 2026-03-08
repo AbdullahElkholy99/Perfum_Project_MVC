@@ -1,8 +1,9 @@
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace Perfum.MVC.Controllers;
 
-//[Authorize]
-
+[Authorize(Roles = "Admin")]
 public class ProductController : Controller
 {
     private readonly IServiceManager _serviceManager;

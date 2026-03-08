@@ -15,16 +15,6 @@
     <link href="~/css/auth/auth.css" rel="stylesheet" />
 </head>
 <body>
-    <nav>
-        <div class="nav-inner">
-            <a asp-controller="Home" asp-action="Index" style="text-decoration:none" class="nav-logo">Sill<span>age</span></a>
-            <div class="nav-links" style="margin-left:auto;display:flex;align-items:center;gap:24px;">
-                <a asp-controller="Home" asp-action="Index" style="text-decoration:none" class="nav-link">Home</a>
-                @await Html.PartialAsync("_AuthNavPartial")
-            </div>
-        </div>
-    </nav>
-
     <section class="hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
         <div style="width:100%;max-width:420px;padding:0 24px;">
             <h1 class="hero-title" style="font-size:28px;text-align:center;margin-bottom:8px;">Sign <em>In</em></h1>

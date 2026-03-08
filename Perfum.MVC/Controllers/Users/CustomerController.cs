@@ -1,6 +1,3 @@
-using Perfum.MVC.Models;
-using System.Diagnostics;
-
 namespace Perfum.MVC.Controllers;
 
 public class CustomerController : Controller

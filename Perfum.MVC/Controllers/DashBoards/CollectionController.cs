@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
+
 namespace Perfum.MVC.Controllers.DashBoards;
+
+[Authorize(Roles = "Admin")]
 
 public class CollectionController : Controller
 {

@@ -76,30 +76,12 @@
 
             </div>
 
-            @* div class="nav-toggle" onclick="toggleNav()">
+            <div class="nav-toggle" onclick="toggleNav()">
                 <i class="fas fa-bars"></i>
-            </div> *@
+            </div> 
         </div>
-        @*   <div class="nav-logo" onclick="scrollToShop()">Sill<span>age</span></div>
 
 
-    <div class="nav-links" id="navLinks">
-        <div class="nav-link active" onclick="setNavActive(this)">Boutique</div>
-        <div class="nav-link" onclick="setNavActive(this)">Collections</div>
-        <div class="nav-link" onclick="setNavActive(this)">Atelier</div>
-        <div class="nav-link" onclick="setNavActive(this)">Journal</div>
-    </div>
-    <div class="nav-actions">
-        <div class="auth-nav-block">
-            @await Html.PartialAsync("_AuthNavPartial")
-        </div>
-        <div class="nav-icon-btn theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">🌙</div>
-        <div class="nav-icon-btn" onclick="toggleWishlist()" title="Wishlist">🤍</div>
-        <div class="nav-icon-btn" onclick="openCart()" title="Cart">
-            🛒<span class="cart-badge" id="cartBadge" style="display:none">0</span>
-        </div>
-    </div>
-        *@
     </nav>
     @* ************************************************* End NAV  ***********@
 
@@ -461,6 +443,238 @@
 
     <div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg">Added to cart</span></div>
 
+
+
+
+
+    @* ************************************************* Start contuctsus  ***********@
+
+    <section class="contact-section" id="contactSection">
+
+        <!-- Background atmosphere (reuses your existing orb pattern) -->
+        <div class="contact-bg">
+            <div class="contact-orb contact-orb-1"></div>
+            <div class="contact-orb contact-orb-2"></div>
+            <div class="contact-orb contact-orb-3"></div>
+            <div class="contact-grain"></div>
+        </div>
+
+        <!-- ── Section Header ── -->
+        <div class="contact-header">
+            <div class="contact-eyebrow">
+                <div class="contact-eyebrow-line"></div>
+                <span>Get In Touch</span>
+                <div class="contact-eyebrow-line"></div>
+            </div>
+            <h2 class="contact-title">
+                Let's <em>Connect</em> &amp; Craft<br>Your Experience
+            </h2>
+            <p class="contact-subtitle">
+                Our atelier team is here to guide you — from finding your signature
+                scent to resolving any question with care and elegance.
+            </p>
+        </div>
+
+        <!-- ── Main Two-Column Layout ── -->
+        <div class="contact-body">
+
+            <!-- ── LEFT: Form Card ── -->
+            <div class="contact-form-card" id="contactFormCard">
+
+                <!-- Topic pill selector -->
+                <div class="contact-topics">
+                    <div class="ctopic active" data-topic="order" onclick="setContactTopic(this)">
+                        <i class="fa-solid fa-box"></i> Order Help
+                    </div>
+                    <div class="ctopic" data-topic="product" onclick="setContactTopic(this)">
+                        <i class="fa-solid fa-spray-can-sparkles"></i> Product Advice
+                    </div>
+                    <div class="ctopic" data-topic="shipping" onclick="setContactTopic(this)">
+                        <i class="fa-solid fa-truck"></i> Shipping
+                    </div>
+                    <div class="ctopic" data-topic="other" onclick="setContactTopic(this)">
+                        <i class="fa-regular fa-comment-dots"></i> Other
+                    </div>
+                </div>
+
+                <!-- Dynamic form intro -->
+                <div class="cform-intro">
+                    <div class="cform-intro-title" id="cformTitle">Order <span>Assistance</span></div>
+                    <p class="cform-intro-desc" id="cformDesc">Need help with an existing order? Share your details and we'll get back to you within 2 hours.</p>
+                </div>
+
+                <!-- Fields -->
+                <div class="cform-grid">
+                    <div class="cform-group">
+                        <label class="cform-label">First Name</label>
+                        <input class="cform-input" type="text" placeholder="Isabelle" id="cFirstName" />
+                    </div>
+                    <div class="cform-group">
+                        <label class="cform-label">Last Name</label>
+                        <input class="cform-input" type="text" placeholder="Savoir" id="cLastName" />
+                    </div>
+                    <div class="cform-group">
+                        <label class="cform-label">Email Address</label>
+                        <input class="cform-input" type="email" placeholder="you@example.com" id="cEmail" />
+                    </div>
+                    <div class="cform-group cform-group-order" id="cOrderGroup">
+                        <label class="cform-label">Order Number</label>
+                        <input class="cform-input" type="text" placeholder="#5312" id="cOrderNum" />
+                    </div>
+                    <div class="cform-group cform-full cform-group-product" id="cProductGroup" style="display:none">
+                        <label class="cform-label">Fragrance Family</label>
+                        <select class="cform-input">
+                            <option value="">Select your interest…</option>
+                            <option>Floral — Rose, Jasmine, Peony</option>
+                            <option>Woody — Oud, Sandalwood, Cedar</option>
+                            <option>Oriental — Amber, Musk, Spice</option>
+                            <option>Fresh — Citrus, Green, Marine</option>
+                            <option>Chypre — Oakmoss, Bergamot, Labdanum</option>
+                            <option>I'd love a personal recommendation</option>
+                        </select>
+                    </div>
+                    <div class="cform-group cform-full">
+                        <label class="cform-label" id="cMsgLabel">Your Message</label>
+                        <textarea class="cform-input cform-textarea" id="cMessage" placeholder="Describe your question or request…"></textarea>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button class="cform-submit" onclick="submitContactForm()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2L11 13" /><polyline points="22 2 15 22 11 13 2 9 22 2" /></svg>
+                    Send Message
+                </button>
+                <p class="cform-privacy">
+                    <i class="fa-solid fa-lock" style="font-size:10px"></i>
+                    Encrypted &amp; private. We typically respond within 2 hours on business days.
+                </p>
+
+                <!-- Success overlay -->
+                <div class="cform-success" id="cformSuccess">
+                    <div class="cform-success-ring">✓</div>
+                    <div class="cform-success-title">Message <em>Sent</em></div>
+                    <p class="cform-success-desc">Our atelier team will review your message and respond within 2 hours.</p>
+                    <div class="cform-success-ref" id="cformRef">#REF-2026-0000</div>
+                    <button class="cform-back-btn" onclick="resetContactForm()">← Send Another</button>
+                </div>
+            </div>
+
+            <!-- ── RIGHT: Info Panel ── -->
+            <div class="contact-info-panel">
+
+                <!-- Channel cards -->
+                <div class="cinfo-channels">
+                    <div class="cchannel" onclick="showContactToast('Opening email…')">
+                        <div class="cchannel-icon">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                        <div class="cchannel-body">
+                            <div class="cchannel-label">Email Us</div>
+                            <div class="cchannel-val">hello@sillage.com</div>
+                            <div class="cchannel-note">Response within 2 hours</div>
+                        </div>
+                        <div class="cchannel-badge cbadge-fast">Fast</div>
+                    </div>
+                    <div class="cchannel" onclick="showContactToast('Starting live chat…')">
+                        <div class="cchannel-icon">
+                            <i class="fa-regular fa-comment-dots"></i>
+                        </div>
+                        <div class="cchannel-body">
+                            <div class="cchannel-label">Live Chat</div>
+                            <div class="cchannel-val">Chat with us now</div>
+                            <div class="cchannel-note">Mon–Fri · 9AM–8PM CET</div>
+                        </div>
+                        <div class="cchannel-badge cbadge-live">
+                            <span class="cbadge-dot"></span>Live
+                        </div>
+                    </div>
+                    <div class="cchannel" onclick="showContactToast('Calling…')">
+                        <div class="cchannel-icon">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div class="cchannel-body">
+                            <div class="cchannel-label">Call Us</div>
+                            <div class="cchannel-val">+33 6 12 34 56 78</div>
+                            <div class="cchannel-note">Weekdays · 10AM–6PM CET</div>
+                        </div>
+                    </div>
+                    <div class="cchannel" onclick="showContactToast('Opening WhatsApp…')">
+                        <div class="cchannel-icon">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <div class="cchannel-body">
+                            <div class="cchannel-label">WhatsApp</div>
+                            <div class="cchannel-val">+33 7 88 12 34 56</div>
+                            <div class="cchannel-note">Quick questions &amp; order help</div>
+                        </div>
+                        <div class="cchannel-badge cbadge-fast">Fast</div>
+                    </div>
+                </div>
+
+                <!-- Hours card -->
+                <div class="cinfo-card">
+                    <div class="cinfo-card-title">
+                        <i class="fa-regular fa-clock"></i> Atelier Hours
+                    </div>
+                    <div class="cinfo-hours">
+                        <div class="cinfo-hour-row">
+                            <span class="chr-day">Monday – Friday</span>
+                            <span class="chr-time">9:00 – 20:00</span>
+                        </div>
+                        <div class="cinfo-hour-row">
+                            <span class="chr-day">Saturday</span>
+                            <span class="chr-time">10:00 – 18:00</span>
+                        </div>
+                        <div class="cinfo-hour-row">
+                            <span class="chr-day">Sunday</span>
+                            <span class="chr-time chr-closed">Closed</span>
+                        </div>
+                    </div>
+                    <div class="cinfo-tz">
+                        <span class="cinfo-tz-dot"></span>
+                        All times in Central European Time (CET)
+                    </div>
+                </div>
+
+                <!-- FAQ mini accordion -->
+                <div class="cinfo-card">
+                    <div class="cinfo-card-title">
+                        <i class="fa-regular fa-circle-question"></i> Quick Answers
+                    </div>
+                    <div class="cfaq-list">
+                        <div class="cfaq-item cfaq-open">
+                            <div class="cfaq-q" onclick="toggleCFaq(this.parentElement)">
+                                How long does shipping take?
+                                <i class="fa-solid fa-chevron-down cfaq-icon"></i>
+                            </div>
+                            <div class="cfaq-a">Standard delivery is 3–5 business days within Europe and 7–12 days internationally. Express (1–2 days) is available at checkout. Free shipping on orders over $250.</div>
+                        </div>
+                        <div class="cfaq-item">
+                            <div class="cfaq-q" onclick="toggleCFaq(this.parentElement)">
+                                Can I return a fragrance?
+                                <i class="fa-solid fa-chevron-down cfaq-icon"></i>
+                            </div>
+                            <div class="cfaq-a">Yes — hassle-free returns within 30 days for unused, sealed products. Open bottles can be exchanged within 14 days if you're unsatisfied.</div>
+                        </div>
+                        <div class="cfaq-item">
+                            <div class="cfaq-q" onclick="toggleCFaq(this.parentElement)">
+                                Do you offer free samples?
+                                <i class="fa-solid fa-chevron-down cfaq-icon"></i>
+                            </div>
+                            <div class="cfaq-a">Every order includes 2 complimentary samples. Our Discovery Kit (6 samples for $28) is fully redeemable against any future purchase.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    @* ************************************************* End contuctsus  *************@
+
+
+
+
+
     @* ************************************************* Start footer  ***********@
     <footer class="site-footer" id="footer">
 
@@ -576,7 +790,7 @@
         </div>
 
     </footer>
-    @* ************************************************* End footer  ***********@
+    @* ************************************************* End footer  *************@
 
 
     <script src="https://js.stripe.com/v3/"></script>

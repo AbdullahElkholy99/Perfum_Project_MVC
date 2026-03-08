@@ -23,8 +23,17 @@
             <div class="page-subtitle">@totalCount order@(totalCount == 1 ? "" : "s")</div>
         </div>
         <div class="topbar-actions">
-            <button class="btn btn-ghost" onclick="showToast('Orders exported')">⬇ Export</button>
-            <a asp-action="Create" class="btn btn-primary">✦ Add Order</a>
+
+            <button class="btn btn-ghost" onclick="showToast('Orders exported')">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                Export
+            </button>
+
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fa-solid fa-cart-plus"></i>
+                Add Order
+            </a>
+
         </div>
     </div>
 
@@ -41,24 +50,53 @@
     @* ── Stats ── *@
     <div class="stat-strip">
         <div class="mini-stat">
-            <div class="mini-icon ic-amber">🛒</div>
-            <div><div class="mini-val">@totalCount</div><div class="mini-label">Total Orders</div></div>
+            <div class="mini-icon ic-amber">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <div>
+                <div class="mini-val">@totalCount</div>
+                <div class="mini-label">Total Orders</div>
+            </div>
         </div>
+
         <div class="mini-stat">
-            <div class="mini-icon ic-sage">✅</div>
-            <div><div class="mini-val">@activeCount</div><div class="mini-label">Active</div></div>
+            <div class="mini-icon ic-sage">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <div class="mini-val">@activeCount</div>
+                <div class="mini-label">Active</div>
+            </div>
         </div>
+
         <div class="mini-stat">
-            <div class="mini-icon ic-gold">⏳</div>
-            <div><div class="mini-val">@pendingCount</div><div class="mini-label">Pending</div></div>
+            <div class="mini-icon ic-gold">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <div>
+                <div class="mini-val">@pendingCount</div>
+                <div class="mini-label">Pending</div>
+            </div>
         </div>
+
         <div class="mini-stat">
-            <div class="mini-icon ic-rose">⊘</div>
-            <div><div class="mini-val">@inactiveCount</div><div class="mini-label">Inactive</div></div>
+            <div class="mini-icon ic-rose">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </div>
+            <div>
+                <div class="mini-val">@inactiveCount</div>
+                <div class="mini-label">Inactive</div>
+            </div>
         </div>
+
         <div class="mini-stat">
-            <div class="mini-icon ic-dark">🕐</div>
-            <div><div class="mini-val">@expiredCount</div><div class="mini-label">Expired</div></div>
+            <div class="mini-icon ic-dark">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+                <div class="mini-val">@expiredCount</div>
+                <div class="mini-label">Expired</div>
+            </div>
         </div>
     </div>
 

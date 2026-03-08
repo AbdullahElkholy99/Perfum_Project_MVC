@@ -22,9 +22,16 @@ Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
                 <div class="pt-btn" onclick="setPeriod('90d',this)">90D</div>
                 <div class="pt-btn" onclick="setPeriod('1y',this)">1Y</div>
             </div>
-            <button class="btn btn-ghost" onclick="showToast('Report generated')">📊 Report</button>
-            <button class="btn btn-primary" onclick="showToast('Quick add opened')">✦ Quick Add</button>
-        </div>
+                <button class="btn btn-ghost" onclick="showToast('Report generated')">
+                    <i class="fa-solid fa-chart-column"></i>
+                    Report
+                </button>
+
+                <button class="btn btn-primary" onclick="showToast('Quick add opened')">
+                    <i class="fa-solid fa-plus"></i>
+                    Quick Add
+                </button>
+         </div>
     </div>
 
     <!-- KPI Strip -->
@@ -32,26 +39,37 @@ Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
 
     <!-- Quick Actions -->
     <div class="quick-actions">
-        <div class="qa-card" onclick="showToast('Opening orders…')">
-            <div class="qa-icon" style="background:linear-gradient(135deg,rgba(200,133,74,.15),rgba(200,133,74,.04))">📦</div>
-            <div class="qa-label">New Order</div>
-            <div class="qa-sub">Create manually</div>
-        </div>
-        <div class="qa-card" onclick="showToast('Opening products…')">
-            <div class="qa-icon" style="background:linear-gradient(135deg,rgba(122,158,126,.15),rgba(122,158,126,.04))">✦</div>
-            <div class="qa-label">Add Product</div>
-            <div class="qa-sub">To catalogue</div>
-        </div>
-        <div class="qa-card" onclick="showToast('Opening campaign editor…')">
-            <div class="qa-icon" style="background:linear-gradient(135deg,rgba(154,122,200,.15),rgba(154,122,200,.04))">📧</div>
-            <div class="qa-label">Campaign</div>
-            <div class="qa-sub">Email / SMS</div>
-        </div>
-        <div class="qa-card" onclick="showToast('Generating report…')">
-            <div class="qa-icon" style="background:linear-gradient(135deg,rgba(212,168,68,.15),rgba(212,168,68,.04))">📊</div>
-            <div class="qa-label">Export Data</div>
-            <div class="qa-sub">CSV / PDF</div>
-        </div>
+            <div class="qa-card" onclick="showToast('Opening orders…')">
+                <div class="qa-icon" style="background:linear-gradient(135deg,rgba(200,133,74,.15),rgba(200,133,74,.04))">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <div class="qa-label">New Order</div>
+                <div class="qa-sub">Create manually</div>
+            </div>
+
+            <div class="qa-card" onclick="showToast('Opening products…')">
+                <div class="qa-icon" style="background:linear-gradient(135deg,rgba(122,158,126,.15),rgba(122,158,126,.04))">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <div class="qa-label">Add Product</div>
+                <div class="qa-sub">To catalogue</div>
+            </div>
+
+            <div class="qa-card" onclick="showToast('Opening campaign editor…')">
+                <div class="qa-icon" style="background:linear-gradient(135deg,rgba(154,122,200,.15),rgba(154,122,200,.04))">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div class="qa-label">Campaign</div>
+                <div class="qa-sub">Email / SMS</div>
+            </div>
+
+            <div class="qa-card" onclick="showToast('Generating report…')">
+                <div class="qa-icon" style="background:linear-gradient(135deg,rgba(212,168,68,.15),rgba(212,168,68,.04))">
+                    <i class="fa-solid fa-chart-column"></i>
+                </div>
+                <div class="qa-label">Export Data</div>
+                <div class="qa-sub">CSV / PDF</div>
+            </div>
     </div>
 
     <!-- Revenue Chart + Donut -->
@@ -193,7 +211,7 @@ Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
             <div class="panel" style="animation:none">
                 <div class="panel-header">
                     <div>
-                        <div class="panel-title">⚠ Stock <span>Alerts</span></div>
+                            <div class="panel-title"><i class="fa-solid fa-triangle-exclamation"></i> Stock <span>Alerts</span></div>
                         <div class="panel-sub">Needs attention</div>
                     </div>
                     <div class="panel-action" onclick="showToast('Opening inventory…')">Manage →</div>
@@ -202,7 +220,7 @@ Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
             </div>
             <div class="panel" style="animation:none">
                 <div class="panel-header">
-                    <div class="panel-title">🔔 <span>Notifications</span></div>
+                        <div class="panel-title"><i class="fa-solid fa-bell"></i> <span>Notifications</span></div>
                     <div class="panel-action" onclick="markAllRead()">Mark all read</div>
                 </div>
                 <div id="notifPanel"></div>

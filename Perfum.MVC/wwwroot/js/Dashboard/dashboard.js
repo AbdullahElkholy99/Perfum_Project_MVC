@@ -347,3 +347,16 @@
     renderCards('all');
         renderColorSwatches('colorSwatches', editColor, c=>editColor=c);
         renderIconPicker('iconPicker', editIcon, ic=>editIcon=ic);
+
+//toggleUserMenu
+function toggleUserMenu() {
+    const menu = document.getElementById("userMenu");
+    menu.classList.toggle("show");
+}
+
+document.addEventListener("click", (e) => {
+    const menu = document.getElementById("userMenu");
+    if (!e.target.closest(".nav-user")) {
+        menu.classList.remove("show");
+    }
+});

@@ -29,7 +29,7 @@
 
         <div class="topbar-actions">
             <a asp-action="Create" class="btn btn-primary">
-                ✦ Add Category
+                <i class="fa-solid fa-plus"></i> Add Category
             </a>
         </div>
 
@@ -40,7 +40,7 @@
     <div class="toolbar">
 
         <div class="search-bar">
-            <span>⌕</span>
+            <span><i class="fa-solid fa-magnifying-glass"></i></span>
 
             <input id="searchInput"
                    placeholder="Search categories..."
@@ -85,23 +85,12 @@
 
                         <td>
 
-                            <a asp-action="Details"
-                               asp-route-id="@c.Id"
-                               class="btn btn-ghost btn-sm">
-                                Details
-                            </a>
+                           <div class="action-buttons">
 
-                            <a asp-action="Edit"
-                               asp-route-id="@c.Id"
-                               class="btn btn-ghost btn-sm">
-                                Edit
-                            </a>
-
-                            <a asp-action="Delete"
-                               asp-route-id="@c.Id"
-                               class="btn btn-danger btn-sm">
-                                Delete
-                            </a>
+                            <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Details</a>
+                            <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-danger btn-sm">Delete</a>
+                            </div> 
 
                         </td>
 

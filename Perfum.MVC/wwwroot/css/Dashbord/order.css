@@ -803,6 +803,15 @@ img {
 .prod-card:hover .btn-ghost {
     border-color: #999;
 }
-=======
+
+/********************** actions buttons*/
+
+/* container */
+.action-buttons{
+    display:flex;
+    gap:8px;
 }
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
+ 
+/********************** actions buttons*/
+
+

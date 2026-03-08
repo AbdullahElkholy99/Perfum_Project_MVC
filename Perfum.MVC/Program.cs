@@ -15,7 +15,7 @@ builder.Services
 //Auto Mapper 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-﻿#region Authentication
+#region Authentication
 
 builder.Services
     .AddAuthentication()
@@ -63,8 +63,8 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=Account}/{action=Login}/{id?}")
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Account}/{action=Login}/{id?}")
+    //pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.Run();

@@ -20,18 +20,66 @@
             <div class="page-subtitle">@totalCount product@(totalCount == 1 ? "" : "s")</div>
         </div>
         <div class="topbar-actions">
-            <button class="btn btn-ghost" onclick="showToast('Catalogue exported')">⬇ Export</button>
-            <button class="btn btn-ghost" onclick="showToast('Import ready')">⬆ Import</button>
-            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">✦ Add Product</a>
+
+            <button class="btn btn-ghost" onclick="showToast('Catalogue exported')">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                Export
+            </button>
+
+            <button class="btn btn-ghost" onclick="showToast('Import ready')">
+                <i class="fa-solid fa-file-arrow-up"></i>
+                Import
+            </button>
+
+            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
+                <i class="fa-solid fa-plus"></i>
+                Add Product
+            </a>
+
         </div>
     </div>
 
     @* ── Stats ── *@
     <div class="stat-strip">
-        <div class="mini-stat"><div class="mini-icon ic-amber">✨</div><div><div class="mini-val">@totalCount</div><div class="mini-label">Total Products</div></div></div>
-        <div class="mini-stat"><div class="mini-icon ic-sage">📦</div><div><div class="mini-val">@inStock</div><div class="mini-label">In Stock</div></div></div>
-        <div class="mini-stat"><div class="mini-icon ic-gold">⚠️</div><div><div class="mini-val">@lowStock</div><div class="mini-label">Low Stock</div></div></div>
-        <div class="mini-stat"><div class="mini-icon ic-rose">⊘</div><div><div class="mini-val">@outOfStock</div><div class="mini-label">Out of Stock</div></div></div>
+        <div class="mini-stat">
+            <div class="mini-icon ic-amber">
+                <i class="fa-solid fa-boxes-stacked"></i>
+            </div>
+            <div>
+                <div class="mini-val">@totalCount</div>
+                <div class="mini-label">Total Products</div>
+            </div>
+        </div>
+
+        <div class="mini-stat">
+            <div class="mini-icon ic-sage">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <div class="mini-val">@inStock</div>
+                <div class="mini-label">In Stock</div>
+            </div>
+        </div>
+
+        <div class="mini-stat">
+            <div class="mini-icon ic-gold">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <div class="mini-val">@lowStock</div>
+                <div class="mini-label">Low Stock</div>
+            </div>
+        </div>
+
+        <div class="mini-stat">
+            <div class="mini-icon ic-rose">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </div>
+            <div>
+                <div class="mini-val">@outOfStock</div>
+                <div class="mini-label">Out of Stock</div>
+            </div>
+        </div>
     </div>
 
     @* ── Toolbar ── *@

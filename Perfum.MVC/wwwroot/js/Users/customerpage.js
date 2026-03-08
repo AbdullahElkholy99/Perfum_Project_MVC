@@ -1271,3 +1271,141 @@ document.addEventListener("click", (e) => {
         menu.classList.remove("show");
     }
 });
+
+
+/***-*******************************start contuct us */
+/* ═══════════════════════════════════════════════════════
+CONTACT US SECTION — JavaScript
+Add this block to the bottom of customerpage.js
+═══════════════════════════════════════════════════════ */
+
+/* ── Topic config ── */
+const contactTopicConfig = {
+    order: {
+        title: 'Order <span>Assistance</span>',
+        desc: "Need help with an existing order? Share your details and we'll follow up within 2 hours.",
+        showOrderField: true, showProductField: false,
+        msgLabel: 'Describe Your Issue'
+    },
+    product: {
+        title: 'Fragrance <span>Advice</span>',
+        desc: 'Our specialists will craft a personalised recommendation just for you.',
+        showOrderField: false, showProductField: true,
+        msgLabel: 'Tell Us About Your Preferences'
+    },
+    shipping: {
+        title: 'Shipping <span>Enquiry</span>',
+        desc: "Questions about delivery, tracking, or customs? We'll sort it out quickly.",
+        showOrderField: true, showProductField: false,
+        msgLabel: 'Your Shipping Question'
+    },
+    other: {
+        title: 'Get in <span>Touch</span>',
+        desc: "Anything else on your mind? Our atelier team is always happy to help.",
+        showOrderField: false, showProductField: false,
+        msgLabel: 'Your Message'
+    }
+};
+
+function setContactTopic(el) {
+    document.querySelectorAll('.ctopic').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+
+    const topic = el.dataset.topic;
+    const cfg = contactTopicConfig[topic];
+
+    document.getElementById('cformTitle').innerHTML = cfg.title;
+    document.getElementById('cformDesc').textContent = cfg.desc;
+    document.getElementById('cMsgLabel').textContent = cfg.msgLabel;
+
+    const orderGroup = document.getElementById('cOrderGroup');
+    const productGroup = document.getElementById('cProductGroup');
+
+    orderGroup.style.display = cfg.showOrderField ? '' : 'none';
+    productGroup.style.display = cfg.showProductField ? '' : 'none';
+}
+
+/* ── Form submission ── */
+function submitContactForm() {
+    const name = document.getElementById('cFirstName').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const msg = document.getElementById('cMessage').value.trim();
+
+    if (!name) {
+        shakeContactField('cFirstName');
+        showToast('Please enter your name');
+        return;
+    }
+    if (!email || !email.includes('@')) {
+        shakeContactField('cEmail');
+        showToast('Please enter a valid email address');
+        return;
+    }
+    if (!msg) {
+        shakeContactField('cMessage');
+        showToast('Please write your message');
+        return;
+    }
+
+    // Generate reference number
+    const ref = '#REF-2026-' + Math.floor(Math.random() * 9000 + 1000);
+    document.getElementById('cformRef').textContent = ref;
+
+    // Show success overlay
+    document.getElementById('cformSuccess').classList.add('show');
+}
+
+function resetContactForm() {
+    document.getElementById('cformSuccess').classList.remove('show');
+    document.getElementById('cFirstName').value = '';
+    document.getElementById('cLastName').value = '';
+    document.getElementById('cEmail').value = '';
+    document.getElementById('cMessage').value = '';
+    const orderNum = document.getElementById('cOrderNum');
+    if (orderNum) orderNum.value = '';
+}
+
+function shakeContactField(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.borderColor = 'var(--rose)';
+    el.style.boxShadow = '0 0 0 3px rgba(201,122,122,.15)';
+    el.style.animation = 'cShake .35s ease-out';
+    setTimeout(() => {
+        el.style.borderColor = '';
+        el.style.boxShadow = '';
+        el.style.animation = '';
+    }, 800);
+}
+
+function showContactToast(msg) {
+    showToast(msg); // reuse your existing showToast / toast element
+}
+
+/* ── FAQ accordion ── */
+function toggleCFaq(item) {
+    const wasOpen = item.classList.contains('cfaq-open');
+    document.querySelectorAll('.cfaq-item').forEach(f => f.classList.remove('cfaq-open'));
+    if (!wasOpen) item.classList.add('cfaq-open');
+}
+
+/* ── Shake keyframe (inject once) ── */
+(function injectContactStyles() {
+    if (document.getElementById('contactShakeStyle')) return;
+    const s = document.createElement('style');
+    s.id = 'contactShakeStyle';
+    s.textContent = `
+        @keyframes cShake {
+            0%,100%{ transform: translateX(0) }
+            20%    { transform: translateX(-7px) }
+            60%    { transform: translateX(7px)  }
+            80%    { transform: translateX(-4px) }
+        }
+        @keyframes popIn {
+            from { transform: scale(0); }
+            to   { transform: scale(1); }
+        }
+    `;
+    document.head.appendChild(s);
+})();
+                /***-*******************************end contuct us */

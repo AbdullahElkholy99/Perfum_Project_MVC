@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
+
 namespace Perfum.MVC.Controllers;
+
+[Authorize(Roles = "Admin")]
 
 public class CategoryController : Controller
 {
