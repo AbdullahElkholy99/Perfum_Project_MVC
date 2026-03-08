@@ -1,7 +1,8 @@
-﻿@model PagedResult<ProductVM, ProductFilter, DashBoardProduct>
+@model PagedResult<ProductVM, ProductFilter, DashBoardProduct>
 @{
     ViewData["Title"] = "Home Page";
     Layout = null;
+    Model.Filter ??= new ProductFilter();
     var products = Model?.Items ?? new List<ProductVM>();
     var totalCount = Model?.TotalCount ?? 0;
     var inStock = products.Count(p => p.Stock > 10);
@@ -58,10 +59,30 @@
                     </div>
                 </div>
 
+<<<<<<< HEAD
             </div>
             <div class="nav-toggle" onclick="toggleNav()">
                 <i class="fas fa-bars"></i>
             </div>
+=======
+    <div class="nav-logo" onclick="scrollToShop()">Sill<span>age</span></div>
+
+
+    <div class="nav-links" id="navLinks">
+        <div class="nav-link active" onclick="setNavActive(this)">Boutique</div>
+        <div class="nav-link" onclick="setNavActive(this)">Collections</div>
+        <div class="nav-link" onclick="setNavActive(this)">Atelier</div>
+        <div class="nav-link" onclick="setNavActive(this)">Journal</div>
+    </div>
+    <div class="nav-actions">
+        <div class="auth-nav-block">
+            @await Html.PartialAsync("_AuthNavPartial")
+        </div>
+        <div class="nav-icon-btn theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">🌙</div>
+        <div class="nav-icon-btn" onclick="toggleWishlist()" title="Wishlist">🤍</div>
+        <div class="nav-icon-btn" onclick="openCart()" title="Cart">
+            🛒<span class="cart-badge" id="cartBadge" style="display:none">0</span>
+>>>>>>> 04918c5855757e9612ba90708551b5ee25632177
         </div>
     </nav>
     @* ************************************************* End NAV  ***********@
@@ -289,6 +310,9 @@
             {
                 var outOfStock = item.Stock == 0;
                 var lowStock = item.Stock < 10;
+                var imgSrc = string.IsNullOrEmpty(item.ImageUrl)
+                ? Url.Content("~/Images/product/default.png")
+                : Url.Content("~/" + item.ImageUrl.TrimStart('~', '/'));
 
                 <div class="prod-card"   
                      data-name="@item.Name"
@@ -311,7 +335,11 @@
                     </div>
 
                     <div class="card-banner">
+<<<<<<< HEAD
                         <img src="@Url.Content(item.ImageUrl)" alt="@item.Name"   />
+=======
+                        <img src="@imgSrc" alt="@item.Name" style="width:100%;height:100%;object-fit:cover;" />
+>>>>>>> 04918c5855757e9612ba90708551b5ee25632177
                     </div>
 
                     <div class="card-body">
@@ -325,9 +353,16 @@
                             </div>
                             <div style="display:flex;align-items:center;gap:8px">
                                 <button class="add-btn"
+<<<<<<< HEAD
                                         onclick="event.stopPropagation(); quickAdd(@item.Id,`@item.Name`,`@item.Price`,'@Url.Content(item.ImageUrl)',`@item.Stock`,`@item.Size_Ml`)"
                                         @(outOfStock ? "disabled" : "")
                                         title="@(outOfStock ? "Out of stock" : "Add to cart")">
+=======
+                                    @* onclick="event.stopPropagation(); quickAdd( @item.Id)" *@
+                                    onclick="event.stopPropagation(); quickAdd( @item.Id,`@item.Name`,`@item.Price`,'@imgSrc',`@item.Stock`,`@item.Size_Ml`)"
+                                    @(outOfStock ? "disabled" : "")
+                                    title="@(outOfStock ? "Out of stock" : "Add to cart")">
+>>>>>>> 04918c5855757e9612ba90708551b5ee25632177
                                     +
                                 </button>
                             </div>

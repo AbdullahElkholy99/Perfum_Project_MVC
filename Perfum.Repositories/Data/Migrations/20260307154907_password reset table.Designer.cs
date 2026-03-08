@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Perfum.Repositories.Data;
 
@@ -11,9 +12,11 @@ using Perfum.Repositories.Data;
 namespace Perfum.Repositories.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260307154907_password reset table")]
+    partial class passwordresettable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -311,15 +314,13 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DdeliveryMethodId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PaymentIntentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShippingAddressId")
-                        .HasColumnType("int");
+                    b.Property<string>("ShippingAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -327,13 +328,19 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("deliveryMethodId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("shippingAddressId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("DdeliveryMethodId");
+                    b.HasIndex("deliveryMethodId");
 
-                    b.HasIndex("ShippingAddressId");
+                    b.HasIndex("shippingAddressId");
 
                     b.ToTable("Orders");
                 });
@@ -385,7 +392,11 @@ namespace Perfum.Repositories.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -674,21 +685,21 @@ namespace Perfum.Repositories.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Perfum.Domain.Models.Orders.DeliveryMethod", "DdeliveryMethod")
+                    b.HasOne("Perfum.Domain.Models.Orders.DeliveryMethod", "deliveryMethod")
                         .WithMany()
-                        .HasForeignKey("DdeliveryMethodId");
+                        .HasForeignKey("deliveryMethodId");
 
-                    b.HasOne("Perfum.Domain.Models.Orders.ShippingAddress", "ShippingAddress")
+                    b.HasOne("Perfum.Domain.Models.Orders.ShippingAddress", "shippingAddress")
                         .WithMany()
-                        .HasForeignKey("ShippingAddressId")
+                        .HasForeignKey("shippingAddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
 
-                    b.Navigation("DdeliveryMethod");
+                    b.Navigation("deliveryMethod");
 
-                    b.Navigation("ShippingAddress");
+                    b.Navigation("shippingAddress");
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Orders.OrderItem", b =>

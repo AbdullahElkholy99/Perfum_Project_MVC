@@ -4,34 +4,34 @@ namespace Perfum.Services.ViewModels.Authentication;
 
 public record RegisterVM
 {
-    [Required(ErrorMessage = "اسم المستخدم مطلوب")]
+    [Required(ErrorMessage = "UserName is Required")]
     [StringLength(30, MinimumLength = 3,
-        ErrorMessage = "اسم المستخدم يجب أن يكون بين 3 و 30 حرف")]
+        ErrorMessage = "UserName Must be from 3 to 30 Letters")]
     public string UserName { get; set; }
 
-    [Required(ErrorMessage = "البريد الإلكتروني مطلوب")]
-    [EmailAddress(ErrorMessage = "صيغة البريد الإلكتروني غير صحيحة")]
+    [Required(ErrorMessage = "Email Is required")]
+    [EmailAddress(ErrorMessage = "Email Pattern Isn't Correct")]
     public string Email { get; set; }
 
-    [Required(ErrorMessage = "كلمة المرور مطلوبة")]
+    [Required(ErrorMessage = "Password Is required")]
     [DataType(DataType.Password)]
     [StringLength(100, MinimumLength = 6,
-        ErrorMessage = "كلمة المرور يجب أن تكون على الأقل 6 أحرف")]
+        ErrorMessage = "Password must be 6 letters at least")]
     //[RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$",
     //    ErrorMessage = "كلمة المرور يجب أن تحتوي على حرف كبير وصغير ورقم")]
     public string Password { get; set; }
 
-    [Required(ErrorMessage = "تأكيد كلمة المرور مطلوب")]
+    [Required(ErrorMessage = "Password Confirmation Required")]
     [DataType(DataType.Password)]
-    [Compare(nameof(Password), ErrorMessage = "يجب مطابقة كلمة المرور")]
+    [Compare(nameof(Password), ErrorMessage = "Password Must Match")]
     public string ConfirmPassword { get; set; }
 
-    [Required(ErrorMessage = "رقم الهاتف مطلوب")]
-    [Phone(ErrorMessage = "رقم الهاتف غير صحيح")]
+    [Required(ErrorMessage = "Phone Number is required")]
+    [Phone(ErrorMessage = "Pgone Number isnn't Correct")]
     public string PhoneNumber { get; set; }
 
-    [Required(ErrorMessage = "العنوان مطلوب")]
-    [StringLength(200, ErrorMessage = "العنوان لا يجب أن يتجاوز 200 حرف")]
+    [Required(ErrorMessage = "Address is required")]
+    [StringLength(200, ErrorMessage = "Address must be less than 200 letters")]
     public string Address { get; set; }
 
 }

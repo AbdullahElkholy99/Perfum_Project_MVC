@@ -1,4 +1,4 @@
-﻿
+
 namespace Perfum.Services.Services.Authentication;
 
 using Microsoft.AspNetCore.Http;
@@ -154,6 +154,7 @@ public class UserService : IUserService
         result.Result = checkPassword.Succeeded;
         result.UserName = user.UserName ?? "unkown";
         result.Id = user.Id;
+        result.ImagePath = user.ImagePath;
 
         if (checkPassword.Succeeded)
         {

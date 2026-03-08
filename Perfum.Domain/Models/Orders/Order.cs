@@ -50,8 +50,11 @@ public class Order
         OrderItems = orderItems;
         PaymentIntentId = paymentIntentId;
     }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 04918c5855757e9612ba90708551b5ee25632177
     // ----------- 
 
 }

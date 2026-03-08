@@ -28,6 +28,10 @@ builder.Services.PolicyService();
 
 #endregion
 
+// Email sending
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+
 // by abdullah ali
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
@@ -55,7 +59,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=Account}/{action=Register}/{id?}")
+    //pattern: "{controller=Account}/{action=Login}/{id?}")
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 

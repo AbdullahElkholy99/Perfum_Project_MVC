@@ -1,0 +1,62 @@
+@model VerifyCodeVM
+@{
+    Layout = null;
+    ViewData["Title"] = "Verify Code";
+}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Code — Sillage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="~/css/users/customerpage.css" rel="stylesheet" />
+    <link href="~/css/auth/auth.css" rel="stylesheet" />
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <a asp-controller="Home" asp-action="Index" class="nav-logo">Sill<span>age</span></a>
+            <div class="nav-links" style="margin-left:auto;">
+                <a asp-action="Login" asp-controller="Account" class="nav-link">Sign In</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+        <div style="width:100%;max-width:420px;padding:0 24px;">
+            <p style="text-align:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Step 1 of 2</p>
+            <h1 class="hero-title" style="font-size:28px;text-align:center;margin-bottom:8px;">Verify <em>Code</em></h1>
+            <p class="hero-sub" style="text-align:center;margin-bottom:16px;">We sent a 6-digit code to <strong>@Model.Email</strong>. Check your inbox (and spam folder).</p>
+            <p class="hero-sub" style="text-align:center;margin-bottom:32px;font-size:14px;color:var(--text3);">Enter the code below. After verification, you can enter your new password.</p>
+
+            <div asp-validation-summary="ModelOnly" class="auth-msg auth-error"></div>
+
+            <form asp-action="VerifyCode" asp-controller="Account" method="post" class="auth-form">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="Email" />
+
+                <div class="auth-input-wrap">
+                    <label asp-for="Code" class="auth-label">Verification Code</label>
+                    <input asp-for="Code" type="text" class="auth-input" placeholder="000000" maxlength="6" autocomplete="one-time-code" style="letter-spacing:8px;text-align:center;font-size:20px;" />
+                    <span asp-validation-for="Code" class="auth-validation"></span>
+                </div>
+
+                <button type="submit" class="hero-cta" style="width:100%;justify-content:center;margin-bottom:16px;">Verify</button>
+                <a asp-action="ForgotPassword" asp-controller="Account" class="auth-link" style="display:block;text-align:center;">Request a new code</a>
+            </form>
+        </div>
+    </section>
+
+    @* <footer>
+        <div class="footer-logo">Sillage</div>
+        <div class="footer-tagline">Luxury Fragrance Studio · Est. 2018</div>
+    </footer> *@
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>
