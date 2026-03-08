@@ -35,6 +35,12 @@
                 <div class="auth-msg auth-success">@TempData["RegisterSuccess"]</div>
             }
             <div asp-validation-summary="ModelOnly" class="auth-msg auth-error"></div>
+            @if (ViewBag.RequiresEmailConfirmation == true && Model != null)
+            {
+                <p style="margin-bottom:16px;">
+                    <a asp-action="VerifyEmailConfirmation" asp-controller="Account" asp-route-email="@Model.?Email" class="auth-link">Enter your verification code</a>
+                </p>
+            }
 
             <form asp-action="Login" asp-controller="Account" method="post" class="auth-form">
                 @Html.AntiForgeryToken()
@@ -59,7 +65,15 @@
                     <a asp-action="ForgotPassword" asp-controller="Account" class="auth-link">Forgot password?</a>
                 </div>
 
-                <button type="submit" class="hero-cta" style="width:100%;justify-content:center;margin-bottom:16px;">Sign In</button>
+                <button type="submit" class="hero-cta btn" style="width:100%;justify-content:center;margin-bottom:16px;">Sign In</button>
+            </form>
+
+            <form asp-action="GoogleLogin" asp-controller="Account" method="post" style="margin-top:8px;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="hero-cta btn" style="width:100%;justify-content:center;background-color:white;color:#444;border:1px solid #ddd;gap:8px;">
+                    <i class="fa-brands fa-google"></i>
+                    Continue with Google
+                </button>
             </form>
 
             <p class="auth-switch">

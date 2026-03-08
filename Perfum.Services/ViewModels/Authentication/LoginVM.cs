@@ -27,4 +27,5 @@ public record LoginResultVM
     public string? ImagePath { get; set; }
     public List<string> Roles { get; set; }
     public bool Result { get; set; }
+    public bool RequiresEmailConfirmation { get; set; }
 }

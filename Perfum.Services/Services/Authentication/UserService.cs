@@ -152,6 +152,7 @@ public class UserService : IUserService
         result.UserName = user.UserName ?? "unknown";
         result.Id = user.Id;
         result.ImagePath = user.ImagePath;
+        result.RequiresEmailConfirmation = signInResult.IsNotAllowed;
 
         if (signInResult.Succeeded)
         {

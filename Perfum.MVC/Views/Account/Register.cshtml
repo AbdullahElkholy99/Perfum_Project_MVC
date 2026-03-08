@@ -74,6 +74,14 @@
                 <button type="submit" class="hero-cta" style="width:100%;justify-content:center;margin-top:8px;margin-bottom:16px;">Create Account</button>
             </form>
 
+            <form asp-action="GoogleLogin" asp-controller="Account" method="post" style="margin-top:8px;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="hero-cta btn" style="width:100%;justify-content:center;background-color:white;color:#444;border:1px solid #ddd;gap:8px;">
+                    <i class="fa-brands fa-google"></i>
+                    Continue with Google
+                </button>
+            </form>
+
             <p class="auth-switch">
                 Already have an account? <a asp-action="Login" asp-controller="Account" class="auth-link">Sign In</a>
             </p>

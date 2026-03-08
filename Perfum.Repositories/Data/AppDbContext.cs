@@ -32,6 +32,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Admin> Admins { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
+    public DbSet<EmailConfirmationCode> EmailConfirmationCodes { get; set; }
 
     #endregion
 

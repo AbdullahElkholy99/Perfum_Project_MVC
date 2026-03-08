@@ -15,9 +15,17 @@ builder.Services
 //Auto Mapper 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-#region Authentication
+﻿#region Authentication
 
-builder.Services.AddAuthentication();
+builder.Services
+    .AddAuthentication()
+    .AddGoogle("Google", options =>
+    {
+        var googleAuthSection = builder.Configuration.GetSection("Authentication:Google");
+        options.ClientId = googleAuthSection["ClientId"]!;
+        options.ClientSecret = googleAuthSection["ClientSecret"]!;
+        options.Scope.Add("profile");
+    });
 
 builder.Services.IdentityService();
 builder.Services.PolicyService();
