@@ -70,7 +70,8 @@ public class AccountController : Controller
             Response.Cookies.Append("Role", roles[0], options);
 
 
-            // Redirect: Customer -> Home, Admin -> Customer controller
+            // Redirect: Customer -> Home
+            //Admin -> Customer controller
             if (roles.Contains("Admin"))
                 return RedirectToAction("Index", "Customer");
 
