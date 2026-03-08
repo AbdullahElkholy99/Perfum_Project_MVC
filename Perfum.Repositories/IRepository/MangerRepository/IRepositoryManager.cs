@@ -1,7 +1,4 @@
-﻿
-using Perfum.Repositories.IRepository.PaymentMethods;
-
-namespace Perfum.Repositories.IRepository.MangerRepository;
+﻿namespace Perfum.Repositories.IRepository.MangerRepository;
 
 public interface IRepositoryManager
 {
@@ -20,6 +17,6 @@ public interface IRepositoryManager
 
     #endregion
     #region Pyment MEthods : 
-    ICustomerBasketRepositry CustomerBasketRepositry { get; }
+    //ICustomerBasketRepositry CustomerBasketRepositry { get; }
     #endregion
 }

@@ -3,8 +3,10 @@
     var userName = ViewBag.UserName as string ?? "User";
     var email = ViewBag.Email as string ?? "";
     var imagePath = ViewBag.ImagePath as string;
-}
 
+    Layout = null;
+}
+@*
 <div class="row justify-content-center mt-4">
     <div class="col-md-8 col-lg-6">
         <h2 class="mb-4">My Profile</h2>
@@ -41,3 +43,1194 @@
         background: var(--bs-primary);
     }
 </style>
+ *@
+
+
+                        <!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sillage — My Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ── TOKENS ── */
+    :root[data-theme="light"] {
+      --bg: #f7f3ef;
+      --bg2: #ede7e0;
+      --bg3: #e3d9cf;
+      --surface: #ffffff;
+      --surface2: #faf7f4;
+      --border: rgba(160,130,100,0.16);
+      --border2: rgba(160,130,100,0.28);
+      --text: #2a1f14;
+      --text2: #6b5040;
+      --text3: #a08060;
+      --accent: #c8854a;
+      --accent2: #9b6b3a;
+      --gold: #d4a844;
+      --rose: #c97a7a;
+      --green: #7a9e7e;
+      --green-bg: rgba(122,158,126,.12);
+      --shadow: rgba(100,70,40,0.08);
+      --shadow2: rgba(100,70,40,0.16);
+      --glow: rgba(200,133,74,0.13);
+      --glow2: rgba(200,133,74,0.22);
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f0c09;
+      --bg2: #1a1410;
+      --bg3: #231b13;
+      --surface: #1e1710;
+      --surface2: #261e15;
+      --border: rgba(200,150,80,0.12);
+      --border2: rgba(200,150,80,0.22);
+      --text: #f0e8da;
+      --text2: #c8aa80;
+      --text3: #8a6845;
+      --accent: #e09a5a;
+      --accent2: #c8854a;
+      --gold: #e8c060;
+      --rose: #d99090;
+      --green: #90b894;
+      --green-bg: rgba(144,184,148,.1);
+      --shadow: rgba(0,0,0,0.3);
+      --shadow2: rgba(0,0,0,0.55);
+      --glow: rgba(224,154,90,0.1);
+      --glow2: rgba(224,154,90,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-weight: 300;
+      min-height: 100vh;
+      transition: background .4s, color .4s;
+      overflow-x: hidden;
+    }
+
+    /* ══════════ NAV ══════════ */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+    }
+    .nav-inner {
+      max-width: 1320px; margin: 0 auto;
+      padding: 0 32px;
+      height: 68px;
+      display: flex; align-items: center; gap: 28px;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; font-weight: 300;
+      letter-spacing: .22em; color: var(--accent);
+      cursor: pointer; flex-shrink: 0;
+    }
+    .nav-logo span { font-style: italic; }
+    .nav-breadcrumb {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 11px; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--text3);
+      margin-left: 16px;
+    }
+    .nav-breadcrumb-sep { opacity: .4; }
+    .nav-breadcrumb-cur { color: var(--accent); }
+    .nav-spacer { flex: 1; }
+    .nav-icon-btn {
+      width: 38px; height: 38px; border-radius: 9px;
+      border: 1px solid var(--border); background: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 15px; color: var(--text3);
+      transition: all .2s; position: relative;
+    }
+    .nav-icon-btn:hover { background: var(--bg2); color: var(--accent); border-color: var(--accent); }
+    .cart-badge {
+      position: absolute; top: -5px; right: -5px;
+      width: 17px; height: 17px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-size: 9px; display: flex; align-items: center; justify-content: center;
+      font-weight: 500;
+    }
+
+    /* ══════════ PAGE LAYOUT ══════════ */
+    .page-wrap {
+      max-width: 1320px; margin: 0 auto;
+      padding: 48px 32px 80px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ══════════ SIDEBAR ══════════ */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+    /* Profile card */
+    .profile-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      animation: fadeUp .6s ease-out both;
+    }
+    .profile-card-header {
+      height: 90px;
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      position: relative;
+      overflow: hidden;
+    }
+    .pch-orb {
+      position: absolute; border-radius: 50%; filter: blur(30px);
+    }
+    .pch-orb-1 { width: 120px; height: 120px; background: rgba(200,133,74,.2); top: -30px; left: -20px; }
+    .pch-orb-2 { width: 80px; height: 80px; background: rgba(212,168,68,.15); bottom: -10px; right: 20px; }
+
+    .profile-avatar-wrap {
+      position: absolute; bottom: -36px; left: 50%;
+      transform: translateX(-50%);
+    }
+    .profile-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--gold));
+      border: 3px solid var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 400;
+      color: #fff; letter-spacing: .05em;
+      box-shadow: 0 6px 20px rgba(200,133,74,.3);
+      cursor: pointer; transition: transform .25s;
+      position: relative;
+    }
+    .profile-avatar:hover { transform: scale(1.06); }
+    .avatar-edit {
+      position: absolute; bottom: 0; right: 0;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-size: 9px; display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--surface);
+    }
+
+    .profile-card-body { padding: 48px 24px 24px; text-align: center; }
+    .profile-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 400; letter-spacing: .04em;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .profile-email { font-size: 12px; color: var(--text3); letter-spacing: .05em; margin-bottom: 16px; }
+    .profile-tier {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: linear-gradient(135deg, rgba(212,168,68,.15), rgba(200,133,74,.1));
+      border: 1px solid rgba(212,168,68,.3);
+      border-radius: 99px; padding: 6px 14px;
+      font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .tier-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
+
+    /* Loyalty progress */
+    .loyalty-section { margin-top: 4px; }
+    .loyalty-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--text3);
+      letter-spacing: .06em; margin-bottom: 8px;
+    }
+    .loyalty-label span { color: var(--accent); font-weight: 400; }
+    .loyalty-bar {
+      height: 5px; background: var(--bg2);
+      border-radius: 99px; overflow: hidden; margin-bottom: 6px;
+    }
+    .loyalty-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      border-radius: 99px; width: 68%;
+      animation: barFill .9s ease-out .4s both;
+    }
+    @@keyframes barFill { from { width: 0 } }
+    .loyalty-next { font-size: 10px; color: var(--text3); letter-spacing: .04em; }
+
+    /* Sidebar nav */
+    .sidebar-nav {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: fadeUp .6s ease-out .1s both;
+    }
+    .snav-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px;
+      cursor: pointer; transition: all .2s;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--text2);
+      letter-spacing: .04em; position: relative;
+    }
+    .snav-item:last-child { border-bottom: none; }
+    .snav-item:hover { background: var(--bg2); color: var(--text); }
+    .snav-item.active {
+      background: var(--glow);
+      color: var(--accent);
+      border-right: 2px solid var(--accent);
+    }
+    .snav-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--bg2); display: flex; align-items: center;
+      justify-content: center; font-size: 14px; flex-shrink: 0;
+      transition: background .2s;
+    }
+    .snav-item.active .snav-icon { background: var(--glow2); }
+    .snav-badge {
+      margin-left: auto; font-size: 10px; font-weight: 500;
+      background: var(--accent); color: #fff;
+      padding: 2px 8px; border-radius: 99px; letter-spacing: .04em;
+    }
+    .snav-badge-neutral {
+      background: var(--bg3); color: var(--text3);
+    }
+
+    /* Sidebar quick stats */
+    .sidebar-stats {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      animation: fadeUp .6s ease-out .2s both;
+    }
+    .ss-item { text-align: center; }
+    .ss-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; color: var(--accent); line-height: 1;
+    }
+    .ss-label { font-size: 10px; color: var(--text3); letter-spacing: .1em; text-transform: uppercase; margin-top: 3px; }
+    .ss-divider { grid-column: 1/-1; height: 1px; background: var(--border); }
+
+    /* ══════════ MAIN CONTENT ══════════ */
+    .main-content { display: flex; flex-direction: column; gap: 24px; }
+
+    /* Section card */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      animation: fadeUp .6s ease-out both;
+    }
+    .section-card:nth-child(1) { animation-delay: .05s; }
+    .section-card:nth-child(2) { animation-delay: .12s; }
+    .section-card:nth-child(3) { animation-delay: .19s; }
+    .section-card:nth-child(4) { animation-delay: .26s; }
+
+    .card-head {
+      padding: 22px 28px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 300; letter-spacing: .04em;
+    }
+    .card-title span { font-style: italic; color: var(--accent); }
+    .card-action {
+      font-size: 11px; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--accent);
+      cursor: pointer; transition: color .2s;
+      display: flex; align-items: center; gap: 6px;
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 7px 14px; background: none;
+      font-family: 'Jost', sans-serif;
+    }
+    .card-action:hover { background: var(--glow); border-color: var(--accent); }
+
+    /* ── ORDERS ── */
+    .card-body { padding: 20px 28px; }
+
+    .order-item {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    .order-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .order-item:first-child { padding-top: 0; }
+
+    .order-thumb {
+      width: 56px; height: 56px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0; border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .order-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .order-info { min-width: 0; }
+    .order-name {
+      font-size: 14px; font-weight: 400; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .order-meta {
+      font-size: 11px; color: var(--text3); letter-spacing: .05em;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .order-meta-sep { opacity: .4; }
+    .order-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 99px;
+    }
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .os-delivered { background: var(--green-bg); color: var(--green); }
+    .os-delivered .status-dot { background: var(--green); }
+    .os-transit { background: rgba(212,168,68,.14); color: var(--gold); }
+    .os-transit .status-dot { background: var(--gold); animation: pulse 1.5s ease-in-out infinite; }
+    .os-processing { background: rgba(200,133,74,.12); color: var(--accent); }
+    .os-processing .status-dot { background: var(--accent); }
+    @@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:.6} }
+
+    .order-right { text-align: right; flex-shrink: 0; }
+    .order-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; color: var(--text); margin-bottom: 6px;
+    }
+    .order-reorder {
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--text3); cursor: pointer; transition: color .2s;
+      padding: 4px 10px; border-radius: 7px; border: 1px solid var(--border);
+      background: none; font-family: 'Jost', sans-serif;
+    }
+    .order-reorder:hover { color: var(--accent); border-color: var(--accent); background: var(--glow); }
+
+    /* ── WISHLIST ── */
+    .wishlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+      padding: 20px 28px;
+    }
+    .wish-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .28s cubic-bezier(.34,1.2,.64,1);
+      position: relative;
+    }
+    .wish-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px var(--shadow2); border-color: var(--border2); }
+    .wish-img {
+      height: 110px; background: linear-gradient(135deg, var(--bg2), var(--bg3));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; position: relative;
+    }
+    .wish-remove {
+      position: absolute; top: 7px; right: 7px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--text3); cursor: pointer;
+      opacity: 0; transition: all .2s;
+    }
+    .wish-card:hover .wish-remove { opacity: 1; }
+    .wish-remove:hover { background: rgba(201,122,122,.15); color: var(--rose); border-color: var(--rose); }
+    .wish-body { padding: 10px 12px 12px; }
+    .wish-name { font-size: 13px; font-weight: 400; color: var(--text); margin-bottom: 2px; }
+    .wish-price { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--accent); }
+    .wish-size { font-size: 10px; color: var(--text3); letter-spacing: .07em; }
+    .wish-add {
+      width: 100%; margin-top: 8px; padding: 8px;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 8px; font-size: 10px; letter-spacing: .14em;
+      text-transform: uppercase; cursor: pointer;
+      transition: all .2s; font-family: 'Jost', sans-serif;
+    }
+    .wish-add:hover { background: var(--accent2); }
+
+    /* ── PROFILE EDIT FORM ── */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-label {
+      font-size: 10px; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--text3);
+    }
+    .form-input {
+      padding: 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px; color: var(--text);
+      outline: none; transition: all .2s;
+      letter-spacing: .03em;
+    }
+    .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+    .form-input::placeholder { color: var(--text3); }
+    select.form-input { cursor: pointer; appearance: none; }
+    .form-section-divider {
+      grid-column: 1/-1; height: 1px;
+      background: var(--border); margin: 4px 0;
+    }
+    .form-section-label {
+      grid-column: 1/-1;
+      font-size: 9px; letter-spacing: .28em;
+      text-transform: uppercase; color: var(--accent);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .form-section-label::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, var(--border), transparent);
+    }
+
+    /* Password field */
+    .pw-wrap { position: relative; }
+    .pw-toggle {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%); cursor: pointer;
+      color: var(--text3); font-size: 13px; transition: color .2s;
+    }
+    .pw-toggle:hover { color: var(--accent); }
+
+    /* Save / cancel actions */
+    .form-actions {
+      display: flex; align-items: center;
+      gap: 12px; padding: 20px 28px;
+      border-top: 1px solid var(--border);
+    }
+    .btn-save {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; border-radius: 10px;
+      font-family: 'Jost', sans-serif;
+      font-size: 11px; letter-spacing: .18em;
+      text-transform: uppercase; cursor: pointer;
+      transition: all .28s; box-shadow: 0 5px 18px rgba(200,133,74,.28);
+    }
+    .btn-save:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(200,133,74,.38); }
+    .btn-cancel {
+      padding: 12px 22px;
+      background: none; color: var(--text3);
+      border: 1px solid var(--border); border-radius: 10px;
+      font-family: 'Jost', sans-serif;
+      font-size: 11px; letter-spacing: .18em;
+      text-transform: uppercase; cursor: pointer; transition: all .2s;
+    }
+    .btn-cancel:hover { background: var(--bg2); color: var(--text); }
+    .save-status {
+      margin-left: auto; font-size: 11px; color: var(--green);
+      letter-spacing: .06em; opacity: 0; transition: opacity .3s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .save-status.show { opacity: 1; }
+
+    /* ── SCENT PROFILE ── */
+    .scent-notes-wrap { padding: 20px 28px; }
+    .scent-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .scent-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 99px;
+      font-size: 11px; letter-spacing: .1em;
+      border: 1px solid var(--border);
+      cursor: pointer; transition: all .22s;
+      background: var(--surface2); color: var(--text2);
+      user-select: none;
+    }
+    .scent-tag:hover { border-color: var(--accent); color: var(--accent); }
+    .scent-tag.selected {
+      background: var(--glow); border-color: var(--accent); color: var(--accent);
+    }
+    .scent-tag .st-icon { font-size: 14px; }
+
+    .scent-intensity { margin-top: 8px; }
+    .si-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: var(--text3);
+      letter-spacing: .07em; margin-bottom: 8px;
+    }
+    .si-label span { color: var(--accent); }
+    .si-track {
+      display: flex; gap: 6px;
+    }
+    .si-step {
+      flex: 1; height: 6px; border-radius: 99px;
+      background: var(--bg3); cursor: pointer; transition: background .2s;
+    }
+    .si-step.on { background: var(--accent); }
+    .si-step:hover { background: var(--accent2); }
+
+    /* ── ADDRESSES ── */
+    .address-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; padding: 20px 28px;
+    }
+    .address-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px 20px;
+      position: relative; transition: border-color .2s;
+    }
+    .address-card:hover { border-color: var(--border2); }
+    .address-card.default { border-color: rgba(200,133,74,.35); }
+    .addr-default-badge {
+      position: absolute; top: 12px; right: 12px;
+      font-size: 9px; letter-spacing: .15em; text-transform: uppercase;
+      background: var(--glow); color: var(--accent);
+      border: 1px solid rgba(200,133,74,.25); border-radius: 99px;
+      padding: 3px 9px;
+    }
+    .addr-name { font-size: 14px; font-weight: 400; color: var(--text); margin-bottom: 6px; }
+    .addr-lines { font-size: 12px; line-height: 1.7; color: var(--text2); margin-bottom: 12px; }
+    .addr-actions { display: flex; gap: 8px; }
+    .addr-btn {
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--text3); cursor: pointer; transition: color .2s;
+      padding: 4px 10px; border-radius: 7px; border: 1px solid var(--border);
+      background: none; font-family: 'Jost', sans-serif;
+    }
+    .addr-btn:hover { color: var(--accent); border-color: var(--accent); }
+    .addr-btn-add {
+      background: var(--surface2); border: 1px dashed var(--border);
+      border-radius: 14px; padding: 18px 20px;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      cursor: pointer; transition: all .2s; color: var(--text3);
+      font-size: 12px; letter-spacing: .08em;
+    }
+    .addr-btn-add:hover { border-color: var(--accent); color: var(--accent); background: var(--glow); }
+    .addr-btn-add-icon { font-size: 24px; opacity: .5; }
+
+    /* ── NOTIFICATION TOGGLES ── */
+    .notif-list { padding: 6px 28px 22px; }
+    .notif-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--bg2); display: flex; align-items: center;
+      justify-content: center; font-size: 16px; flex-shrink: 0;
+    }
+    .notif-info { flex: 1; }
+    .notif-title { font-size: 13px; font-weight: 400; color: var(--text); margin-bottom: 2px; }
+    .notif-desc { font-size: 11px; color: var(--text3); letter-spacing: .03em; }
+
+    /* Toggle switch */
+    .toggle-wrap { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+    .toggle-wrap input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; cursor: pointer;
+      background: var(--bg3); border-radius: 99px;
+      border: 1px solid var(--border); transition: .28s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--text3);
+      left: 3px; bottom: 3px; transition: .28s;
+    }
+    .toggle-wrap input:checked + .toggle-slider { background: var(--accent); border-color: var(--accent); }
+    .toggle-wrap input:checked + .toggle-slider::before { transform: translateX(18px); background: #fff; }
+
+    /* ══════════ ANIMATIONS ══════════ */
+    @@keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════ TOAST ══════════ */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 20px;
+      font-size: 13px; color: var(--text);
+      box-shadow: 0 8px 32px var(--shadow2); z-index: 999;
+      display: flex; align-items: center; gap: 10px;
+      transform: translateY(80px); opacity: 0;
+      transition: all .38s cubic-bezier(.34,1.2,.64,1);
+      max-width: 300px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+    /* ══════════ SCROLLBAR ══════════ */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ══════════ RESPONSIVE ══════════ */
+    @@media (max-width: 1000px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .profile-card { grid-column: 1/-1; }
+    }
+    @@media (max-width: 700px) {
+      .page-wrap { padding: 24px 16px 60px; gap: 20px; }
+      .sidebar { grid-template-columns: 1fr; }
+      .card-body, .wishlist-grid, .scent-notes-wrap, .address-grid,
+      .notif-list, .form-actions { padding-left: 18px; padding-right: 18px; }
+      .card-head { padding: 18px 18px 14px; }
+      .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+      .address-grid { grid-template-columns: 1fr; }
+      .wishlist-grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-breadcrumb { display: none; }
+      .sidebar-stats { grid-template-columns: repeat(4, 1fr); }
+      .ss-divider { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ NAV ══════════ -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">Sill<span>age</span></div>
+      <div class="nav-breadcrumb">
+        <span>Boutique</span>
+        <span class="nav-breadcrumb-sep">›</span>
+        <span class="nav-breadcrumb-cur">My Profile</span>
+      </div>
+      <div class="nav-spacer"></div>
+      <div class="nav-icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</div>
+      <div class="nav-icon-btn" title="Wishlist">🤍</div>
+      <div class="nav-icon-btn" title="Cart">
+        🛒<span class="cart-badge">3</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════ PAGE ══════════ -->
+  <div class="page-wrap">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+
+      <!-- Profile Card -->
+      <div class="profile-card">
+        <div class="profile-card-header">
+          <div class="pch-orb pch-orb-1"></div>
+          <div class="pch-orb pch-orb-2"></div>
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" title="Change photo">
+              IS
+              <div class="avatar-edit"><i class="fas fa-pen"></i></div>
+            </div>
+          </div>
+        </div>
+        <div class="profile-card-body">
+          <div class="profile-name">Isabelle Savoir</div>
+          <div class="profile-email">isabelle@maison.com</div>
+          <div class="profile-tier">
+            <div class="tier-dot"></div>
+            Or Blanc — Gold Member
+          </div>
+          <div class="loyalty-section">
+            <div class="loyalty-label">
+              Loyalty Points <span>1,240 pts</span>
+            </div>
+            <div class="loyalty-bar"><div class="loyalty-fill"></div></div>
+            <div class="loyalty-next">760 pts until <em>Platine</em> status</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Navigation -->
+      <nav class="sidebar-nav">
+        <div class="snav-item active" onclick="showTab('orders', this)">
+          <div class="snav-icon">📦</div>
+          My Orders
+          <span class="snav-badge">3</span>
+        </div>
+        <div class="snav-item" onclick="showTab('wishlist', this)">
+          <div class="snav-icon">🤍</div>
+          Wishlist
+          <span class="snav-badge snav-badge-neutral">6</span>
+        </div>
+        <div class="snav-item" onclick="showTab('profile', this)">
+          <div class="snav-icon">✦</div>
+          Edit Profile
+        </div>
+        <div class="snav-item" onclick="showTab('scent', this)">
+          <div class="snav-icon">🌿</div>
+          Scent Profile
+        </div>
+        <div class="snav-item" onclick="showTab('addresses', this)">
+          <div class="snav-icon">📍</div>
+          Addresses
+        </div>
+        <div class="snav-item" onclick="showTab('notifications', this)">
+          <div class="snav-icon">🔔</div>
+          Notifications
+        </div>
+      </nav>
+
+      <!-- Quick Stats -->
+      <div class="sidebar-stats">
+        <div class="ss-item">
+          <div class="ss-num">14</div>
+          <div class="ss-label">Orders</div>
+        </div>
+        <div class="ss-item">
+          <div class="ss-num">6</div>
+          <div class="ss-label">Wishlist</div>
+        </div>
+        <div class="ss-divider"></div>
+        <div class="ss-item">
+          <div class="ss-num">$1.8k</div>
+          <div class="ss-label">Spent</div>
+        </div>
+        <div class="ss-item">
+          <div class="ss-num">1,240</div>
+          <div class="ss-label">Points</div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="main-content">
+
+      <!-- ── ORDERS TAB ── -->
+      <div class="section-card tab-panel" id="tab-orders">
+        <div class="card-head">
+          <div class="card-title">Recent <span>Orders</span></div>
+          <button class="card-action">View All <i class="fas fa-arrow-right" style="font-size:9px"></i></button>
+        </div>
+        <div class="card-body">
+
+          <div class="order-item">
+            <div class="order-thumb">🌹</div>
+            <div class="order-info">
+              <div class="order-name">Rose Obscura — Eau de Parfum</div>
+              <div class="order-meta">
+                <span>Order #5312</span>
+                <span class="order-meta-sep">·</span>
+                <span>Feb 28, 2026</span>
+                <span class="order-meta-sep">·</span>
+                <span class="order-status os-delivered"><span class="status-dot"></span>Delivered</span>
+              </div>
+            </div>
+            <div class="order-right">
+              <div class="order-price">$184</div>
+              <button class="order-reorder" onclick="showToast('Added to cart ✦')">Reorder</button>
+            </div>
+          </div>
+
+          <div class="order-item">
+            <div class="order-thumb">🌿</div>
+            <div class="order-info">
+              <div class="order-name">Forêt Noire — Discovery Set × 3</div>
+              <div class="order-meta">
+                <span>Order #5301</span>
+                <span class="order-meta-sep">·</span>
+                <span>Mar 3, 2026</span>
+                <span class="order-meta-sep">·</span>
+                <span class="order-status os-transit"><span class="status-dot"></span>In Transit</span>
+              </div>
+            </div>
+            <div class="order-right">
+              <div class="order-price">$76</div>
+              <button class="order-reorder" onclick="showToast('Tracking opened')">Track</button>
+            </div>
+          </div>
+
+          <div class="order-item">
+            <div class="order-thumb">🕯️</div>
+            <div class="order-info">
+              <div class="order-name">Ambre Soir — Luxury Candle 300g</div>
+              <div class="order-meta">
+                <span>Order #5289</span>
+                <span class="order-meta-sep">·</span>
+                <span>Mar 5, 2026</span>
+                <span class="order-meta-sep">·</span>
+                <span class="order-status os-processing"><span class="status-dot"></span>Processing</span>
+              </div>
+            </div>
+            <div class="order-right">
+              <div class="order-price">$95</div>
+              <button class="order-reorder" onclick="showToast('Order details opened')">Details</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── WISHLIST TAB ── -->
+      <div class="section-card tab-panel" id="tab-wishlist" style="display:none">
+        <div class="card-head">
+          <div class="card-title">My <span>Wishlist</span></div>
+          <button class="card-action" onclick="showToast('All items added to cart ✦')">Add All to Cart</button>
+        </div>
+        <div class="wishlist-grid">
+          <!-- cards -->
+          <div class="wish-card">
+            <div class="wish-img">🌸
+              <div class="wish-remove" onclick="event.stopPropagation();this.closest('.wish-card').style.opacity='.3'">✕</div>
+            </div>
+            <div class="wish-body">
+              <div class="wish-name">Sakura Dawn</div>
+              <div class="wish-price">$156</div>
+              <div class="wish-size">50 ML · EDP</div>
+              <button class="wish-add" onclick="showToast('Sakura Dawn added ✦')">+ Cart</button>
+            </div>
+          </div>
+          <div class="wish-card">
+            <div class="wish-img">🍂
+              <div class="wish-remove" onclick="event.stopPropagation();this.closest('.wish-card').style.opacity='.3'">✕</div>
+            </div>
+            <div class="wish-body">
+              <div class="wish-name">Automne Doré</div>
+              <div class="wish-price">$212</div>
+              <div class="wish-size">100 ML · EDP</div>
+              <button class="wish-add" onclick="showToast('Automne Doré added ✦')">+ Cart</button>
+            </div>
+          </div>
+          <div class="wish-card">
+            <div class="wish-img">🌊
+              <div class="wish-remove" onclick="event.stopPropagation();this.closest('.wish-card').style.opacity='.3'">✕</div>
+            </div>
+            <div class="wish-body">
+              <div class="wish-name">Mer Profonde</div>
+              <div class="wish-price">$178</div>
+              <div class="wish-size">75 ML · EDT</div>
+              <button class="wish-add" onclick="showToast('Mer Profonde added ✦')">+ Cart</button>
+            </div>
+          </div>
+          <div class="wish-card">
+            <div class="wish-img">🌙
+              <div class="wish-remove" onclick="event.stopPropagation();this.closest('.wish-card').style.opacity='.3'">✕</div>
+            </div>
+            <div class="wish-body">
+              <div class="wish-name">Nuit Étoilée</div>
+              <div class="wish-price">$248</div>
+              <div class="wish-size">100 ML · Parfum</div>
+              <button class="wish-add" onclick="showToast('Nuit Étoilée added ✦')">+ Cart</button>
+            </div>
+          </div>
+          <div class="wish-card">
+            <div class="wish-img">🌺
+              <div class="wish-remove" onclick="event.stopPropagation();this.closest('.wish-card').style.opacity='.3'">✕</div>
+            </div>
+            <div class="wish-body">
+              <div class="wish-name">Fleur de Lune</div>
+              <div class="wish-price">$134</div>
+              <div class="wish-size">50 ML · EDP</div>
+              <button class="wish-add" onclick="showToast('Fleur de Lune added ✦')">+ Cart</button>
+            </div>
+          </div>
+          <div class="wish-card">
+            <div class="wish-img">🪵
+              <div class="wish-remove" onclick="event.stopPropagation();this.closest('.wish-card').style.opacity='.3'">✕</div>
+            </div>
+            <div class="wish-body">
+              <div class="wish-name">Cèdre Blanc</div>
+              <div class="wish-price">$192</div>
+              <div class="wish-size">100 ML · EDP</div>
+              <button class="wish-add" onclick="showToast('Cèdre Blanc added ✦')">+ Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROFILE EDIT TAB ── -->
+      <div class="section-card tab-panel" id="tab-profile" style="display:none">
+        <div class="card-head">
+          <div class="card-title">Edit <span>Profile</span></div>
+        </div>
+        <div class="card-body" style="padding-bottom:0">
+          <div class="form-grid-2">
+            <div class="form-section-label" style="grid-column:1/-1">Personal Information</div>
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input class="form-input" type="text" value="Isabelle" placeholder="First name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input class="form-input" type="text" value="Savoir" placeholder="Last name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input class="form-input" type="email" value="isabelle@maison.com" placeholder="Email"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input class="form-input" type="tel" value="+33 6 12 34 56 78" placeholder="Phone"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              <input class="form-input" type="date" value="1990-04-12"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <select class="form-input">
+                <option>Prefer not to say</option>
+                <option selected>Female</option>
+                <option>Male</option>
+                <option>Non-binary</option>
+              </select>
+            </div>
+
+            <div class="form-section-divider"></div>
+            <div class="form-section-label" style="grid-column:1/-1">Security</div>
+
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <div class="pw-wrap">
+                <input class="form-input" type="password" placeholder="Enter current password" id="pw1" style="padding-right:40px"/>
+                <span class="pw-toggle" onclick="togglePw('pw1',this)"><i class="fas fa-eye"></i></span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <div class="pw-wrap">
+                <input class="form-input" type="password" placeholder="New password" id="pw2" style="padding-right:40px"/>
+                <span class="pw-toggle" onclick="togglePw('pw2',this)"><i class="fas fa-eye"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" onclick="saveProfile()">Save Changes</button>
+          <button class="btn-cancel">Cancel</button>
+          <div class="save-status" id="saveStatus"><i class="fas fa-check-circle"></i> Saved successfully</div>
+        </div>
+      </div>
+
+      <!-- ── SCENT PROFILE TAB ── -->
+      <div class="section-card tab-panel" id="tab-scent" style="display:none">
+        <div class="card-head">
+          <div class="card-title">My Scent <span>Profile</span></div>
+          <button class="card-action" onclick="showToast('Recommendations updated ✦')">Get Recs</button>
+        </div>
+        <div class="scent-notes-wrap">
+          <div class="form-label" style="margin-bottom:10px">Favourite Fragrance Families</div>
+          <div class="scent-row" id="scentFamilies">
+            <div class="scent-tag selected" onclick="toggleTag(this)"><span class="st-icon">🌹</span>Floral</div>
+            <div class="scent-tag" onclick="toggleTag(this)"><span class="st-icon">🌲</span>Woody</div>
+            <div class="scent-tag selected" onclick="toggleTag(this)"><span class="st-icon">🍂</span>Oriental</div>
+            <div class="scent-tag" onclick="toggleTag(this)"><span class="st-icon">🌊</span>Fresh</div>
+            <div class="scent-tag selected" onclick="toggleTag(this)"><span class="st-icon">🌿</span>Green</div>
+            <div class="scent-tag" onclick="toggleTag(this)"><span class="st-icon">🍋</span>Citrus</div>
+            <div class="scent-tag" onclick="toggleTag(this)"><span class="st-icon">🪵</span>Chypre</div>
+            <div class="scent-tag" onclick="toggleTag(this)"><span class="st-icon">🕯️</span>Gourmand</div>
+          </div>
+
+          <div class="form-label" style="margin-bottom:10px; margin-top:22px">Favourite Notes</div>
+          <div class="scent-row">
+            <div class="scent-tag selected" onclick="toggleTag(this)">Oud</div>
+            <div class="scent-tag selected" onclick="toggleTag(this)">Rose Absolute</div>
+            <div class="scent-tag" onclick="toggleTag(this)">Bergamot</div>
+            <div class="scent-tag selected" onclick="toggleTag(this)">Amber</div>
+            <div class="scent-tag" onclick="toggleTag(this)">Vetiver</div>
+            <div class="scent-tag" onclick="toggleTag(this)">Jasmine</div>
+            <div class="scent-tag selected" onclick="toggleTag(this)">Sandalwood</div>
+            <div class="scent-tag" onclick="toggleTag(this)">Neroli</div>
+            <div class="scent-tag" onclick="toggleTag(this)">Musk</div>
+            <div class="scent-tag" onclick="toggleTag(this)">Iris</div>
+          </div>
+
+          <div class="form-label" style="margin-bottom:10px; margin-top:22px">Preferred Season</div>
+          <div class="scent-row">
+            <div class="scent-tag" onclick="toggleTag(this)">🌸 Spring</div>
+            <div class="scent-tag selected" onclick="toggleTag(this)">☀️ Summer</div>
+            <div class="scent-tag selected" onclick="toggleTag(this)">🍂 Autumn</div>
+            <div class="scent-tag" onclick="toggleTag(this)">❄️ Winter</div>
+          </div>
+
+          <div class="scent-intensity" style="margin-top:24px">
+            <div class="si-label">Preferred Intensity <span id="intensityLabel">Medium</span></div>
+            <div class="si-track" id="siTrack">
+              <div class="si-step" onclick="setIntensity(1)"></div>
+              <div class="si-step" onclick="setIntensity(2)"></div>
+              <div class="si-step on" onclick="setIntensity(3)"></div>
+              <div class="si-step" onclick="setIntensity(4)"></div>
+              <div class="si-step" onclick="setIntensity(5)"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);letter-spacing:.06em;margin-top:5px">
+              <span>Light</span><span>Strong</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" onclick="showToast('Scent profile saved ✦')">Save Profile</button>
+          <button class="btn-cancel">Reset</button>
+        </div>
+      </div>
+
+      <!-- ── ADDRESSES TAB ── -->
+      <div class="section-card tab-panel" id="tab-addresses" style="display:none">
+        <div class="card-head">
+          <div class="card-title">My <span>Addresses</span></div>
+        </div>
+        <div class="address-grid">
+          <div class="address-card default">
+            <div class="addr-default-badge">Default</div>
+            <div class="addr-name">Isabelle Savoir</div>
+            <div class="addr-lines">
+              12 Rue de la Paix<br>
+              Apartment 4B<br>
+              75001 Paris, France
+            </div>
+            <div class="addr-actions">
+              <button class="addr-btn" onclick="showToast('Edit address opened')">Edit</button>
+              <button class="addr-btn" onclick="showToast('Address deleted')">Remove</button>
+            </div>
+          </div>
+          <div class="address-card">
+            <div class="addr-name">Office — Maison Savoir</div>
+            <div class="addr-lines">
+              45 Avenue Montaigne<br>
+              75008 Paris, France
+            </div>
+            <div class="addr-actions">
+              <button class="addr-btn" onclick="showToast('Set as default')">Set Default</button>
+              <button class="addr-btn" onclick="showToast('Edit address opened')">Edit</button>
+              <button class="addr-btn" onclick="showToast('Address deleted')">Remove</button>
+            </div>
+          </div>
+          <div class="addr-btn-add" onclick="showToast('Add address form opened')">
+            <div class="addr-btn-add-icon">＋</div>
+            Add New Address
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NOTIFICATIONS TAB ── -->
+      <div class="section-card tab-panel" id="tab-notifications" style="display:none">
+        <div class="card-head">
+          <div class="card-title">Notification <span>Preferences</span></div>
+        </div>
+        <div class="notif-list">
+          <div class="notif-item">
+            <div class="notif-icon">📦</div>
+            <div class="notif-info">
+              <div class="notif-title">Order & Shipping Updates</div>
+              <div class="notif-desc">Track your orders in real-time from dispatch to delivery</div>
+            </div>
+            <label class="toggle-wrap"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon">✦</div>
+            <div class="notif-info">
+              <div class="notif-title">New Arrivals & Collections</div>
+              <div class="notif-desc">Be the first to discover new fragrances and seasonal launches</div>
+            </div>
+            <label class="toggle-wrap"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon">🎁</div>
+            <div class="notif-info">
+              <div class="notif-title">Exclusive Offers & Promotions</div>
+              <div class="notif-desc">Member-only discounts, gift-with-purchase, and seasonal sales</div>
+            </div>
+            <label class="toggle-wrap"><input type="checkbox"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon">💛</div>
+            <div class="notif-info">
+              <div class="notif-title">Wishlist Restocks</div>
+              <div class="notif-desc">Get notified when a wishlisted item is back in stock</div>
+            </div>
+            <label class="toggle-wrap"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon">📖</div>
+            <div class="notif-info">
+              <div class="notif-title">The Sillage Journal</div>
+              <div class="notif-desc">Stories from the atelier, perfumer diaries, and fragrance guides</div>
+            </div>
+            <label class="toggle-wrap"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="notif-item">
+            <div class="notif-icon">🔐</div>
+            <div class="notif-info">
+              <div class="notif-title">Security Alerts</div>
+              <div class="notif-desc">Sign-in activity and account change notifications</div>
+            </div>
+            <label class="toggle-wrap"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" onclick="showToast('Notification preferences saved ✦')">Save Preferences</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-dot"></div>
+    <span id="toastMsg">Saved</span>
+  </div>
+
+  <script>
+    /* ── THEME ── */
+    let dark = false;
+    function toggleTheme() {
+      dark = !dark;
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      document.getElementById('themeBtn').textContent = dark ? '☀️' : '🌙';
+    }
+
+    /* ── TAB SWITCHING ── */
+    function showTab(id, navEl) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('tab-' + id).style.display = 'block';
+      document.querySelectorAll('.snav-item').forEach(n => n.classList.remove('active'));
+      navEl.classList.add('active');
+    }
+
+    /* ── TOAST ── */
+    let toastTimer;
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    /* ── PASSWORD TOGGLE ── */
+    function togglePw(id, icon) {
+      const inp = document.getElementById(id);
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      icon.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    }
+
+    /* ── SAVE PROFILE ── */
+    function saveProfile() {
+      const s = document.getElementById('saveStatus');
+      s.classList.add('show');
+      showToast('Profile saved successfully ✦');
+      setTimeout(() => s.classList.remove('show'), 3000);
+    }
+
+    /* ── SCENT TAGS ── */
+    function toggleTag(el) {
+      el.classList.toggle('selected');
+    }
+
+    /* ── INTENSITY ── */
+    const intensityNames = ['', 'Very Light', 'Light', 'Medium', 'Strong', 'Intense'];
+    function setIntensity(n) {
+      document.querySelectorAll('.si-step').forEach((s, i) => {
+        s.classList.toggle('on', i < n);
+      });
+      document.getElementById('intensityLabel').textContent = intensityNames[n];
+    }
+  </script>
+</body>
+</html>
+

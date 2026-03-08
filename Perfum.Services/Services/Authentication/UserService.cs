@@ -131,7 +131,6 @@ public class UserService : IUserService
 
     public async Task<LoginResultVM> IsAuthenticate(LoginVM model)
     {
-        // Check if email is confirmed
         var result = new LoginResultVM
         {
             Result = false,
@@ -141,29 +140,26 @@ public class UserService : IUserService
 
         var user = await _userManager.FindByEmailAsync(model.Email);
         if (user == null)
-        {
             return result;
-        }
 
-        // Attempt sign in
-        var checkPassword = await _signInManager.CheckPasswordSignInAsync(
+        var signInResult = await _signInManager.PasswordSignInAsync(
             user,
             model.Password,
-            model.RememberMe);
+            model.RememberMe,
+            false);
 
-        result.Result = checkPassword.Succeeded;
-        result.UserName = user.UserName ?? "unkown";
+        result.Result = signInResult.Succeeded;
+        result.UserName = user.UserName ?? "unknown";
         result.Id = user.Id;
         result.ImagePath = user.ImagePath;
 
-        if (checkPassword.Succeeded)
+        if (signInResult.Succeeded)
         {
             var roles = await _userManager.GetRolesAsync(user);
             result.Roles = roles.ToList();
         }
 
         return result;
-
     }
 
     public async Task<List<User>> GetAllUsersForSpecificRoleAsync(List<string> roles)

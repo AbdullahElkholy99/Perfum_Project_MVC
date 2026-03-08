@@ -35,6 +35,13 @@ public class ProductController : Controller
             return NotFound();
         return View(product);
     }
+    public async Task<IActionResult> DetailsById(int id)
+    {
+        var product = await _serviceManager.ProductService.GetByIdAsync(id);
+        if (product == null || product.Id == 0)
+            return NotFound();
+        return Json(product);
+    }
     public async Task<IActionResult> AddToCart(int id)
     {
         var product = await _serviceManager.ProductService.GetByIdAsync(id);

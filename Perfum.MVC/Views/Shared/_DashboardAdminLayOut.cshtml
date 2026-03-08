@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfum — Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — Sillage</title>
@@ -141,7 +145,31 @@
 </head>
 <body>
 
-    @* ── Navbar ── *@
+    <header class="nav-bar">
+
+        <div class="navbar-left">
+            <div class="menu-btn" onclick="toggleSidebar()" style="margin:0 20px">☰</div>
+            <h2 class="page-title">Dashboard</h2>
+        </div>
+
+        <div class="navbar-right">
+
+            <div class="search-box">
+                <input type="text" placeholder="Search...">
+            </div>
+
+            <div class="navbar-icon">
+                🔔
+            </div>
+
+            <div class="navbar-user">
+                <img src="https://i.pravatar.cc/40" class="user-avatar">
+                <span class="user-name">Admin</span>
+            </div>
+        </div>
+    </header>
+
+      @* ── Navbar ──  *@
     <header class="nav-bar ps-5 ms-5">
         <div class="navbar-left">
             <div class="menu-btn" onclick="toggleSidebar()" style="margin:0 20px">☰</div>
@@ -152,10 +180,15 @@
                 <input type="text" placeholder="Search…" />
             </div>
             <div class="navbar-icon" title="Notifications">🔔</div>
+            <div class="navbar-user">
+                <img src="https://i.pravatar.cc/40" class="user-avatar" alt="Admin" />
+                <span class="user-name">Admin</span>
+            </div>
             @await Html.PartialAsync("_AuthNavPartial")
         </div>
-    </header>
+    </header>  
 
+    <!-- ── Sidebar ── -->
     @* ── Sidebar ── *@
     <aside class="sidebar">
 
@@ -170,9 +203,12 @@
 
         <div class="nav-section">
             <div class="nav-label">Overview</div>
+
+            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")">
             <div class="nav-item @(ctrl == "Dashboard" ? "active" : "")">
                 <a asp-controller="Dashboard" asp-action="Index">
-                    <span class="nav-icon">◈</span> Dashboard
+                    <span class="nav-icon">◈</span>
+                    Dashboard
                 </a>
             </div>
         </div>
@@ -184,10 +220,15 @@
                     <span class="nav-icon">✦</span> Products
                 </a>
             </div>
+        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Category" ? "active" : "")">
+            <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
+                 
+            </div>
             <div class="nav-item @(ctrl == "Category" ? "active" : "")">
                 <a asp-controller="Category" asp-action="Index">
                     <span class="nav-icon">⬡</span> Categories
                 </a>
+            </div> 
             </div>
         </div>
 
