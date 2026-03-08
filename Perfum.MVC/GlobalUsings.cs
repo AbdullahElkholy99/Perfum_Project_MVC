@@ -1,4 +1,4 @@
-﻿global using AutoMapper;
+global using AutoMapper;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Mvc;
 global using Perfum.Domain.Models;
@@ -23,6 +23,7 @@ global using Perfum.Services.ViewModels.Paginations;
 global using Perfum.Domain.Models.Orders;
 
 global using Perfum.MVC.Models;
+global using Perfum.MVC.Services;
 global using Perfum.Services.ViewModels.UserVM;
 global using System.Diagnostics;
 

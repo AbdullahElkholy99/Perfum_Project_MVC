@@ -1,17 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-<<<<<<< HEAD
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfum — Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
-=======
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — Sillage</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
     <link href="~/css/dashbord/dashboard.css" rel="stylesheet" />
     <style>
         /* DARK MODE — override dashboard.css vars */
@@ -112,37 +105,46 @@
         .mainDashboard .order-page {
             margin-top: 0;
         }
+
+        /* ── Auth dropdown in dashboard navbar ── */
+        .navbar-right .auth-nav-dropdown { display: flex; align-items: center; }
+        .navbar-right .auth-dropdown { position: relative; }
+        .navbar-right .auth-trigger {
+            display: flex; align-items: center; gap: 8px; padding: 4px 8px;
+            border-radius: 8px; cursor: pointer; transition: 0.2s;
+            border: none; background: none; font-size: 13px; color: #333;
+            font-family: 'Jost', sans-serif;
+        }
+        .navbar-right .auth-trigger:hover { background: #f6f6f6; }
+        [data-theme="dark"] .navbar-right .auth-trigger { color: var(--text2); }
+        [data-theme="dark"] .navbar-right .auth-trigger:hover { background: var(--bg2); }
+        .navbar-right .auth-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .navbar-right .auth-initial {
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            background: var(--accent); color: #fff; font-size: 14px; font-weight: 500;
+        }
+        .navbar-right .auth-menu {
+            position: absolute; right: 0; top: 100%; margin-top: 4px; min-width: 160px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+            box-shadow: var(--shadow2); padding: 6px 0; z-index: 100;
+        }
+        .navbar-right .auth-menu-item {
+            display: block; width: 100%; padding: 10px 16px; text-align: left;
+            border: none; background: none; cursor: pointer; font-size: 13px; color: var(--text);
+            text-decoration: none; transition: 0.2s;
+        }
+        .navbar-right .auth-menu-item:hover { background: var(--bg2); }
+        .navbar-right .auth-links { display: flex; gap: 12px; align-items: center; }
+        .navbar-right .auth-link { font-size: 13px; color: var(--text3); text-decoration: none; }
+        .navbar-right .auth-link:hover { color: var(--accent); }
     </style>
 </head>
 <body>
 
-<<<<<<< HEAD
-    <header class="nav-bar">
-
-        <div class="navbar-left">
-            <div class="menu-btn" onclick="toggleSidebar()" style="margin:0 20px">☰</div>
-            <h2 class="page-title">Dashboard</h2>
-        </div>
-
-        <div class="navbar-right">
-
-            <div class="search-box">
-                <input type="text" placeholder="Search...">
-            </div>
-
-            <div class="navbar-icon">
-                🔔
-            </div>
-
-            <div class="navbar-user">
-                <img src="https://i.pravatar.cc/40" class="user-avatar">
-                <span class="user-name">Admin</span>
-            </div>
-
-=======
     @* ── Navbar ── *@
     <header class="nav-bar ps-5 ms-5">
         <div class="navbar-left">
+            <div class="menu-btn" onclick="toggleSidebar()" style="margin:0 20px">☰</div>
             <h2 class="page-title">Sillage Dashboard</h2>
         </div>
         <div class="navbar-right">
@@ -150,20 +152,11 @@
                 <input type="text" placeholder="Search…" />
             </div>
             <div class="navbar-icon" title="Notifications">🔔</div>
-            <div class="navbar-user">
-                <img src="https://i.pravatar.cc/40" class="user-avatar" alt="Admin" />
-                <span class="user-name">Admin</span>
-            </div>
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
+            @await Html.PartialAsync("_AuthNavPartial")
         </div>
     </header>
 
-<<<<<<< HEAD
-    </header>
-    <!-- ── Sidebar ── -->
-=======
     @* ── Sidebar ── *@
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
     <aside class="sidebar">
 
         <div class="logo">
@@ -177,23 +170,11 @@
 
         <div class="nav-section">
             <div class="nav-label">Overview</div>
-<<<<<<< HEAD
-
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")">
-            <a asp-controller="Dashboard" asp-action="Index">
-                <span class="nav-icon">◈</span>
-                Dashboard
-            </a>
-        </div>
- 
-       
-=======
             <div class="nav-item @(ctrl == "Dashboard" ? "active" : "")">
                 <a asp-controller="Dashboard" asp-action="Index">
                     <span class="nav-icon">◈</span> Dashboard
                 </a>
             </div>
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
         </div>
 
         <div class="nav-section" style="margin-top:14px">
@@ -203,19 +184,11 @@
                     <span class="nav-icon">✦</span> Products
                 </a>
             </div>
-<<<<<<< HEAD
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Category" ? "active" : "")">
-            <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
-                 
-            </div>
-  
-=======
             <div class="nav-item @(ctrl == "Category" ? "active" : "")">
                 <a asp-controller="Category" asp-action="Index">
                     <span class="nav-icon">⬡</span> Categories
                 </a>
             </div>
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
         </div>
 
         <div class="nav-section" style="margin-top:14px">

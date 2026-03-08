@@ -1,4 +1,4 @@
-﻿@model PagedResult<ProductVM, ProductFilter, DashBoardProduct>
+@model PagedResult<ProductVM, ProductFilter, DashBoardProduct>
 @{
     ViewData["Title"] = "Home Page";
 
@@ -45,6 +45,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         <div class="nav-link" onclick="setNavActive(this)">Journal</div>
     </div>
     <div class="nav-actions">
+        <div class="auth-nav-block">
+            @await Html.PartialAsync("_AuthNavPartial")
+        </div>
         <div class="nav-icon-btn theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">🌙</div>
         <div class="nav-icon-btn" onclick="toggleWishlist()" title="Wishlist">🤍</div>
         <div class="nav-icon-btn" onclick="openCart()" title="Cart">

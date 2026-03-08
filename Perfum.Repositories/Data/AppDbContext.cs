@@ -1,4 +1,4 @@
-﻿namespace Perfum.Repositories.Data;
+namespace Perfum.Repositories.Data;
 
 //  Add-Migration init -o "Data/Migrations"
 public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
@@ -31,6 +31,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     public DbSet<Admin> Admins { get; set; }
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
 
     #endregion
 
