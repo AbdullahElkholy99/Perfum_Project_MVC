@@ -305,7 +305,8 @@ public class AccountController : Controller
         var codeHash = PasswordResetService.HashCode(model.Code);
 
         var record = await _dbContext.EmailConfirmationCodes
-            .Where(x => x.UserId == user.Id && !x.Used && x.ExpiresAtUtc > DateTime.UtcNow)
+            .Where(x => x.UserId == user.Id &&
+            !x.Used && x.ExpiresAtUtc > DateTime.UtcNow)
             .OrderByDescending(x => x.Id)
             .FirstOrDefaultAsync();
 

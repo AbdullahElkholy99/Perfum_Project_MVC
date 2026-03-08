@@ -154,9 +154,9 @@ public class UserService : IUserService
         result.ImagePath = user.ImagePath;
         result.RequiresEmailConfirmation = signInResult.IsNotAllowed;
 
-        var Roles = await _userManager.GetRolesAsync(user);
-        if (Roles != null)
-            result.Roles = Roles.ToList();
+        //var Roles = await _userManager.GetRolesAsync(user);
+        //if (Roles != null)
+        //    result.Roles = Roles.ToList();
 
         if (signInResult.Succeeded)
         {
