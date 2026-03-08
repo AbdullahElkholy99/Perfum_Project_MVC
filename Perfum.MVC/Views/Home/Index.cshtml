@@ -19,53 +19,68 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="~/css/users/customerpage.css" rel="stylesheet" />
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
- 
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+
 </head>
 <body>
     @* ************************************************* Start NAV  ***********@
 
     <!-- ── NAV ── -->
+  
     <nav>
         <div class="nav-inner">
             <div class="nav-logo" onclick="scrollToShop()">Sill<span>age</span></div>
             <div class="nav-links" id="navLinks">
-                <div class="nav-link active" id="hero" onclick="setNavActive(this)">Products</div>
-                <div class="nav-link " onclick="setNavActive(this)">Footer</div>
+                <div class="nav-link active" onclick="setNavActive(this)">
+                    <a href="#"> Home</a>
+                 </div>
+                <div class="nav-link  " onclick="setNavActive(this)">
+                    <a href="#shopSection"> Products</a>
+                 </div>
+                <div class="nav-link " onclick="setNavActive(this)">
+                    <a href="#footer"> Footer</a>
+                    
+                </div>
             </div>
             <div class="nav-actions">
                 <div class="nav-icon-btn theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn"><i class="fa-solid fa-moon"></i></div>
                 <div class="nav-icon-btn" onclick="toggleWishlist()" title="Wishlist"><i class="fa-regular fa-heart"></i></div>
                 <div class="nav-icon-btn" onclick="openCart()" title="Cart">
-                    <i class="fa-solid fa-cart-arrow-down"></i><span class="cart-badge" id="cartBadge" style="display:none">0</span>
+                    <i class="fa-solid fa-cart-arrow-down"></i>
+                    <span class="cart-badge" id="cartBadge" style="display:none">0</span>
                 </div>
                 <!-- User Settings -->
                 <div class="nav-user">
-                    <div class="nav-icon-btn" onclick="toggleUserMenu()" title="Account"><i class="fa-solid fa-user-gear"></i></div>
+                    <div class="nav-icon-btn" onclick="toggleUserMenu()" title="Account">
+                        <i class="fa-solid fa-user-gear"></i>
+
+                    </div>
 
                     <div class="user-menu" id="userMenu">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <a href="/Account/Profile">Profile</a>
-                            <a href="/Orders">Orders</a>
+                            <a asp-controller="Account" asp-action="Profile"><i class="fa-solid fa-address-card"></i> Profile</a>
                             <hr>
-                            <a href="/Account/Logout">Logout</a>
+                            <a asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
                         }
                         else
                         {
-                            <a href="/Account/Login">Login</a>
-                            <a href="/Account/Register">Register</a>
+                            <a asp-controller="Account" asp-action="Login"><i class="fa-solid fa-arrow-right-to-bracket"></i> Login</a>
+                            <a asp-asp-controller="Account" asp-action="Register">
+                                <i class="fa-solid fa-person-circle-plus"></i>
+                                Register
+                            </a>
                         }
                     </div>
                 </div>
 
-<<<<<<< HEAD
             </div>
-            <div class="nav-toggle" onclick="toggleNav()">
+
+            @* div class="nav-toggle" onclick="toggleNav()">
                 <i class="fas fa-bars"></i>
-            </div>
-=======
-    <div class="nav-logo" onclick="scrollToShop()">Sill<span>age</span></div>
+            </div> *@
+        </div>
+        @*   <div class="nav-logo" onclick="scrollToShop()">Sill<span>age</span></div>
 
 
     <div class="nav-links" id="navLinks">
@@ -82,12 +97,13 @@
         <div class="nav-icon-btn" onclick="toggleWishlist()" title="Wishlist">🤍</div>
         <div class="nav-icon-btn" onclick="openCart()" title="Cart">
             🛒<span class="cart-badge" id="cartBadge" style="display:none">0</span>
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
         </div>
+    </div>
+        *@
     </nav>
     @* ************************************************* End NAV  ***********@
 
-   @* ************************************************* Start hero section  ***********@
+    @* ************************************************* Start hero section  ***********@
     <section class="hero" id="hero">
 
         <!-- Atmospheric background -->
@@ -275,14 +291,14 @@
             </div>
         </div>
 
-     
+
     </section>
 
     <!-- ── MARQUEE BAND ── -->
     <div class="marquee-band" style="margin-top:-60px">
         <div class="marquee-track" id="marqueeTrack"></div>
     </div>
-@* ************************************************* End Of Hero Section  ***********@
+    @* ************************************************* End Of Hero Section  ***********@
 
     @* ************************************************* Start SHOP  ***********@
     <section class="shop" id="shopSection">
@@ -314,7 +330,7 @@
                 ? Url.Content("~/Images/product/default.png")
                 : Url.Content("~/" + item.ImageUrl.TrimStart('~', '/'));
 
-                <div class="prod-card"   
+                <div class="prod-card"
                      data-name="@item.Name"
                      data-price="@item.Price"
                      onclick="openProductModal(@item.Id)">
@@ -331,15 +347,11 @@
                     <div class="card-wishlist"
                          onclick="event.stopPropagation();toggleWishlistItem(@item.Id)"
                          title="Wishlist">
-                        🤍
+                        <i class="fa-regular fa-heart"></i>
                     </div>
 
                     <div class="card-banner">
-<<<<<<< HEAD
-                        <img src="@Url.Content(item.ImageUrl)" alt="@item.Name"   />
-=======
-                        <img src="@imgSrc" alt="@item.Name" style="width:100%;height:100%;object-fit:cover;" />
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
+                        <img src="@imgSrc" alt="@item.Name" />
                     </div>
 
                     <div class="card-body">
@@ -353,17 +365,10 @@
                             </div>
                             <div style="display:flex;align-items:center;gap:8px">
                                 <button class="add-btn"
-<<<<<<< HEAD
                                         onclick="event.stopPropagation(); quickAdd(@item.Id,`@item.Name`,`@item.Price`,'@Url.Content(item.ImageUrl)',`@item.Stock`,`@item.Size_Ml`)"
                                         @(outOfStock ? "disabled" : "")
                                         title="@(outOfStock ? "Out of stock" : "Add to cart")">
-=======
-                                    @* onclick="event.stopPropagation(); quickAdd( @item.Id)" *@
-                                    onclick="event.stopPropagation(); quickAdd( @item.Id,`@item.Name`,`@item.Price`,'@imgSrc',`@item.Stock`,`@item.Size_Ml`)"
-                                    @(outOfStock ? "disabled" : "")
-                                    title="@(outOfStock ? "Out of stock" : "Add to cart")">
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
-                                    +
+                                    <i class="fa-solid fa-circle-plus"></i>
                                 </button>
                             </div>
                         </div>
@@ -372,8 +377,8 @@
             }
         </div>
         @* End Display All Products *@
-        
-        
+
+
         @* Start pagination *@
         <div class="pagination">
             <div class="page-info" id="pageInfo"></div>
@@ -406,12 +411,12 @@
                 <div class="pm-section-title">Details</div>
                 <div class="pm-details-row" id="pmDetails" style="margin-bottom:22px;"></div>
                 <div class="pm-qty-row">
-                   @*  <div class="qty-ctrl">
+                    @*  <div class="qty-ctrl">
                         <button class="qty-btn" onclick="changeModalQty(-1)">−</button>
                         <div class="qty-val" id="modalQtyVal">1</div>
                         <button class="qty-btn" onclick="changeModalQty(1)">+</button>
                     </div> *@
-                    <button class="pm-add-btn" id="pmAddBtn" >Add to Cart — <span id="pmTotal"></span></button>
+                    <button class="pm-add-btn" id="pmAddBtn">Add to Cart — <span id="pmTotal"></span></button>
                 </div>
             </div>
         </div>
@@ -427,7 +432,7 @@
         <div class="cart-items" id="cartItems"></div>
         <div class="cart-footer" id="cartFooter"></div>
     </div>
- 
+
 
     <!-- ── CHECKOUT OVERLAY ── -->
     <div class="checkout-overlay" id="checkoutOverlay">
@@ -457,8 +462,8 @@
     <div class="toast" id="toast"><div class="toast-dot"></div><span id="toastMsg">Added to cart</span></div>
 
     @* ************************************************* Start footer  ***********@
-    <footer class="site-footer">
-   
+    <footer class="site-footer" id="footer">
+
         <!-- ── Main Grid ── -->
         <div class="footer-main">
 
@@ -575,7 +580,14 @@
 
 
     <script src="https://js.stripe.com/v3/"></script>
+    <script>
+          window.isLoggedIn = @User.Identity.IsAuthenticated.ToString().ToLower();
+          window.customerId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+
+          console.log("isLoggedIn:", window.isLoggedIn);
+          console.log("customerId:", window.customerId);
+    </script>
     <script src="~/js/users/customerpage.js"></script>
-   
+
 </body>
 </html>

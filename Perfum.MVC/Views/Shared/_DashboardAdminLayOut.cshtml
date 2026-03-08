@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfum — Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
-=======
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — Sillage</title>
@@ -148,7 +145,6 @@
 </head>
 <body>
 
-<<<<<<< HEAD
     <header class="nav-bar">
 
         <div class="navbar-left">
@@ -173,10 +169,7 @@
         </div>
     </header>
 
-   @*   ── Navbar ── 
-=======
-    @* ── Navbar ── *@
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
+      @* ── Navbar ──  *@
     <header class="nav-bar ps-5 ms-5">
         <div class="navbar-left">
             <div class="menu-btn" onclick="toggleSidebar()" style="margin:0 20px">☰</div>
@@ -187,22 +180,16 @@
                 <input type="text" placeholder="Search…" />
             </div>
             <div class="navbar-icon" title="Notifications">🔔</div>
-<<<<<<< HEAD
             <div class="navbar-user">
                 <img src="https://i.pravatar.cc/40" class="user-avatar" alt="Admin" />
                 <span class="user-name">Admin</span>
             </div>
-=======
             @await Html.PartialAsync("_AuthNavPartial")
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
         </div>
-    </header> *@
+    </header>  
 
-<<<<<<< HEAD
     <!-- ── Sidebar ── -->
-=======
     @* ── Sidebar ── *@
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
     <aside class="sidebar">
 
         <div class="logo">
@@ -216,22 +203,14 @@
 
         <div class="nav-section">
             <div class="nav-label">Overview</div>
-<<<<<<< HEAD
 
             <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")">
-=======
             <div class="nav-item @(ctrl == "Dashboard" ? "active" : "")">
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
                 <a asp-controller="Dashboard" asp-action="Index">
                     <span class="nav-icon">◈</span>
                     Dashboard
                 </a>
             </div>
-<<<<<<< HEAD
-       
-          
-=======
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
         </div>
 
         <div class="nav-section" style="margin-top:14px">
@@ -241,23 +220,16 @@
                     <span class="nav-icon">✦</span> Products
                 </a>
             </div>
-<<<<<<< HEAD
         <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Category" ? "active" : "")">
             <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
                  
             </div>
-  
-=======
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
             <div class="nav-item @(ctrl == "Category" ? "active" : "")">
                 <a asp-controller="Category" asp-action="Index">
                     <span class="nav-icon">⬡</span> Categories
                 </a>
-<<<<<<< HEAD
             </div> 
-=======
             </div>
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
         </div>
 
         <div class="nav-section" style="margin-top:14px">

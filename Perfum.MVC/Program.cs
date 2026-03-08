@@ -1,7 +1,3 @@
-
-
-using StackExchange.Redis;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -33,12 +29,12 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Smtp
 builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
 
 // by abdullah ali
-builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-{
-    var configuration = builder.Configuration.GetConnectionString("Redis");
+//builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+//{
+//    var configuration = builder.Configuration.GetConnectionString("Redis");
 
-    return ConnectionMultiplexer.Connect(configuration);
-});
+//    return ConnectionMultiplexer.Connect(configuration);
+//});
 
 var app = builder.Build();
 

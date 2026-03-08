@@ -88,6 +88,12 @@ nav {
     width:80%;
 }
 
+    .nav-inner a {
+        text-decoration: none;
+        color: var(--text3);
+        font-size:14px;
+    }
+
 .nav-logo {
     font-family: 'Cormorant Garamond',serif;
     font-size: 24px;
@@ -332,7 +338,6 @@ nav {
 }
 
 /* NAV TOGGLE */
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
 .nav-toggle {
     display: none;
     font-size: 20px;

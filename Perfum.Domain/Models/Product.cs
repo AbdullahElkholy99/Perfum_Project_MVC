@@ -12,7 +12,7 @@ public class Product
     public string? Descreption { get; set; }
 
     [Required]
-    public double Price { get; set; }
+    public decimal Price { get; set; }
 
     [Required]
     public double Size_Ml { get; set; }

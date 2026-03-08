@@ -26,7 +26,6 @@ public class Order
 
     // By Abdullah Ali
     public DeliveryMethod? DdeliveryMethod { get; set; }
-    public string PaymentIntentId { get; set; }
     public string? ClientSecret { get; set; }
     public string? BuyerEmail { get; set; }
     public decimal GetTotal()
@@ -40,7 +39,7 @@ public class Order
     }
     public Order(int customerId, string buyerEmail, decimal subTotal,
         ShippingAddress shippingAddress, DeliveryMethod deliveryMethod,
-        List<OrderItem> orderItems, string paymentIntentId)
+        List<OrderItem> orderItems)
     {
         CustomerId = customerId;
         BuyerEmail = buyerEmail;
@@ -48,13 +47,7 @@ public class Order
         ShippingAddress = shippingAddress;
         DdeliveryMethod = deliveryMethod;
         OrderItems = orderItems;
-        PaymentIntentId = paymentIntentId;
     }
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 04918c5855757e9612ba90708551b5ee25632177
-    // ----------- 
 
 }

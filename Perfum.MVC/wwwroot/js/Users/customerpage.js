@@ -1,25 +1,4 @@
 ﻿
-
-
-// ── DATA ──
-const CAT_COLORS={'Floral':'#c97a7a','Oriental':'#c8854a','Woody':'#7a9e7e','Fresh':'#7a90be','Fougère':'#a87ac8','Gourmand':'#d4a844'};
-const EMOJIS={'Floral':'🌸','Oriental':'🔥','Woody':'🌳','Fresh':'❄️','Fougère':'🌿','Gourmand':'🍂'};
-
-const PRODUCTS=[
-    {id:1,name:"Nuit d'Ambre",cat:'Oriental',size:'50ml',price:210,stock:24,rating:4.8,reviews:142,tagline:'A deep amber reverie threaded with labdanum and tonka bean.',top:['Cardamom','Pepper','Saffron'],heart:['Rose','Oud','Labdanum'],base:['Amber','Benzoin','Vanilla'],badge:''},
-    {id:2,name:'Rose Sauvage',cat:'Floral',size:'100ml',price:185,stock:8,rating:4.9,reviews:218,tagline:'A wild rose caught between morning dew and warm earth.',top:['Bergamot','Geranium','Lychee'],heart:['Rose','Peony','Magnolia'],base:['Musk','Sandalwood','Cedarwood'],badge:'low'},
-    {id:3,name:'Bois Sacré',cat:'Woody',size:'75ml',price:340,stock:31,rating:4.7,reviews:89,tagline:'Sacred cedarwood veiled in incense and soft leather.',top:['Lemon','Juniper','Grapefruit'],heart:['Cedar','Vetiver','Iris'],base:['Oakmoss','Musk','Amber'],badge:''},
-    {id:4,name:'Oud Mystère',cat:'Oriental',size:'50ml',price:520,stock:15,rating:5.0,reviews:76,tagline:'An enigmatic veil of oud rising through amber smoke.',top:['Saffron','Rose','Cinnamon'],heart:['Oud','Labdanum','Neroli'],base:['Amber','Patchouli','Musk'],badge:''},
-    {id:5,name:'Sakura Lumière',cat:'Floral',size:'50ml',price:195,stock:6,rating:4.6,reviews:103,tagline:'A fleeting sakura blossom lifted by spring rain.',top:['Yuzu','Cherry Blossom','Bergamot'],heart:['Peony','Magnolia','Violet'],base:['White Musk','Cashmere Wood','Sandalwood'],badge:'new'},
-    {id:6,name:'Forêt Noire',cat:'Woody',size:'100ml',price:285,stock:19,rating:4.4,reviews:64,tagline:'Deep pine forest resin pierced by cold mountain air.',top:['Pine','Eucalyptus','Aldehydes'],heart:['Fir Balsam','Cedar','Labdanum'],base:['Vetiver','Tobacco','Oakmoss'],badge:''},
-    {id:7,name:'Citrus Élite',cat:'Fresh',size:'75ml',price:145,stock:42,rating:4.3,reviews:187,tagline:'A burst of golden citrus over vibrant marine accord.',top:['Bergamot','Grapefruit','Lemon'],heart:['Neroli','Marine','Jasmine'],base:['Musk','Driftwood','Amber'],badge:''},
-    {id:8,name:'Encens Royal',cat:'Oriental',size:'50ml',price:410,stock:9,rating:4.8,reviews:51,tagline:'Ceremonial incense swirled with gold-dusted resins.',top:['Frankincense','Pepper','Elemi'],heart:['Myrrh','Rose','Labdanum'],base:['Oud','Sandalwood','Patchouli'],badge:''},
-    {id:9,name:'Iris Blanc',cat:'Floral',size:'100ml',price:165,stock:22,rating:4.5,reviews:96,tagline:'Cool orris root dusted with soft violet and clean musk.',top:['Violet Leaf','Aldehydes','Bergamot'],heart:['Iris','Ylang Ylang','Jasmine'],base:['Musk','Amber','Cedarwood'],badge:''},
-    {id:10,name:'Praline Noir',cat:'Gourmand',size:'50ml',price:175,stock:13,rating:4.6,reviews:72,tagline:'Dark praline folded into vetiver and smoked birch.',top:['Caramel','Praline','Black Pepper'],heart:['Chocolate','Tobacco','Jasmine'],base:['Birch','Vanilla','Musk'],badge:'new'},
-    {id:11,name:'Lavande Étoile',cat:'Fougère',size:'100ml',price:125,stock:55,rating:4.2,reviews:134,tagline:'Classic lavender laced with oakmoss and coumarin.',top:['Lavender','Bergamot','Petitgrain'],heart:['Geranium','Sage','Rose'],base:['Oakmoss','Coumarin','Musk'],badge:''},
-    {id:12,name:'Aqua Marina',cat:'Fresh',size:'75ml',price:135,stock:28,rating:4.1,reviews:92,tagline:'Oceanic ozonic freshness over a cedar-driftwood base.',top:['Sea Spray','Ozonic','Citrus'],heart:['Aquatic','Violet','Marine'],base:['Cedar','Musk','Driftwood'],badge:''},
-];
-
 let wishlist=new Set();
 let catFilter='all';
 let modalProduct=null;
@@ -27,33 +6,8 @@ let modalQty=1;
 let checkoutStep=1;
 let dark=false;
 
-// ── FILTER / SORT / RENDER ──
-function getCategories(){return['all',...new Set(PRODUCTS.map(p=>p.cat))];}
-
-//function buildFilterRow(){
-//    document.getElementById('filterRow').innerHTML = getCategories().map(c => `
-//    <div class="fchip ${c === catFilter ? 'on' : ''}" onclick="setCat('${c}',this)">${c === 'all' ? 'All' : c}</div>`).join('');
-//}
-function setCat(c,el){catFilter = c;document.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on'));el.classList.add('on');applyFilters();}
-
-function getFiltered(){
-  const q=document.getElementById('shopSearch').value.toLowerCase().trim();
-    const sort=document.getElementById('sortSel').value;
-  let data=PRODUCTS.filter(p=>{
-    const mc=catFilter==='all'||p.cat===catFilter;
-    const mq=!q||p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)||[...p.top,...p.heart,...p.base].some(n=>n.toLowerCase().includes(q));
-    return mc&&mq;
-  });
-  if(sort==='price-asc')data.sort((a,b)=>a.price-b.price);
-  else if(sort==='price-desc')data.sort((a,b)=>b.price-a.price);
-  else if(sort==='rating')data.sort((a,b)=>b.rating-a.rating);
-  else if(sort==='name')data.sort((a,b)=>a.name.localeCompare(b.name));
-    return data;
-}
-
-// ── PRODUCT MODAL ──
+// ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── ── PRODUCT MODAL  Done ──
 async function openProductModal(id) {
-
 
     var response = await fetch(`Product/DetailsById/${id}`);
 
@@ -64,17 +18,13 @@ async function openProductModal(id) {
     var product = await response.json();
     if (!product) return;
 
-    console.log(product)
 
- 
-   
     document.getElementById("pmHeroImg").src = product.imageUrl;
     document.getElementById('pmCat').textContent = `${product.categoryName} - ${product.size_Ml} ML`;
     document.getElementById('pmName').textContent = product.name;
     document.getElementById('pmTagline').textContent = product.descreption;
     document.getElementById('pmPrice').textContent = `${product.price} $ - `;
     document.getElementById('pmSize').textContent = `${product.size_Ml} ML`;
-    //document.getElementById('modalQtyVal').textContent=1;
     document.getElementById('pmTotal').textContent = `${product.price}`;
  
     document.getElementById('pmDetails').innerHTML = [
@@ -111,7 +61,6 @@ async function openProductModal(id) {
 
     });
 }
-
 function closeProductModal(force){
      if(force===true||force?.target===document.getElementById('modalBg'))
       document.getElementById('modalBg').classList.remove('open');
@@ -131,7 +80,6 @@ function addFromModal(){
 }
 function showproduct(item) {
     console.log(item)
-    //addToCart(id, 1);
 }
 
 // ------------------------------------------ Start Cart Code : -------------------------------------
@@ -140,7 +88,10 @@ let basketId = localStorage.getItem("basketId") || crypto.randomUUID();
 
 localStorage.setItem("basketId", basketId);
 
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+const currentCustomer = window.customerId || "guest";
+
+cart = cart.filter(x => x.customerId === currentCustomer);
 let products = [];
 
 // ── CART ──
@@ -150,11 +101,11 @@ function quickAdd(id, name, price, imageUrl, stock, size_Ml) {
     const product = {
         id: id,
         name: name,
-        price: price,
         imageUrl: imageUrl,
+
+        price: price,
         stock: stock,
         size: size_Ml,
-
     }
     if (!products.find(x => x.id === id)) {
         products.push(product)
@@ -162,12 +113,46 @@ function quickAdd(id, name, price, imageUrl, stock, size_Ml) {
     addToCart(product, 1);
 }
 
+//function addToCart(product, qty = 1) {
+
+//    const id = product.id
+//    const p = products.find(x => x.id === id);
+
+//    if (!product || product.stock === 0) return;
+
+//    const existing = cart.find(x => x.id === id);
+
+//    if (existing) {
+//        existing.qty = Math.min(existing.qty + qty, product.stock);
+//    }
+//    else {
+//        cart.push({
+//            id: product.id,
+//            qty: Math.min(qty, product.stock),
+//            name: product.name,
+//            price: product.price,
+//            image: product.imageUrl,
+//            size: product.size,
+//            cat: product.cat,
+//            customerId: window.customerId
+//        });
+//    }
+
+//    localStorage.setItem("cart", JSON.stringify(cart));
+
+//    updateCartBadge();
+//    renderCart();
+
+//    showToast(`"${p.name}" added to cart 🛒`);
+//}
 function addToCart(product, qty = 1) {
 
-    const id = product.id
+    const id = product.id;
     const p = products.find(x => x.id === id);
 
     if (!product || product.stock === 0) return;
+
+const currentCustomer = window.customerId || "guest";
 
     const existing = cart.find(x => x.id === id);
 
@@ -175,44 +160,29 @@ function addToCart(product, qty = 1) {
         existing.qty = Math.min(existing.qty + qty, product.stock);
     }
     else {
-        cart.push({ id, qty: Math.min(qty, product.stock), name: product.name, image: product.imageUrl });
+        cart.push({
+            id: product.id,
+            qty: Math.min(qty, product.stock),
+            name: product.name,
+            price: product.price,
+            image: product.imageUrl,
+            size: product.size,
+            cat: product.cat,
+            customerId: currentCustomer
+        });
     }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
 
     updateCartBadge();
     renderCart();
-     
+
     showToast(`"${p.name}" added to cart 🛒`);
 }
-async function saveBasket() {
 
- 
-    const basket = {
-        id: basketId,
-        basketItems: cart.map(x => ({
-            id: x.id,
-            quantity: x.qty,
-            price: products.find(p => p.id === x.id)?.price,
-            name: x.name,
-            image: x.image
-        }))
-    };
-
-    var res = await fetch("/CustomerBasket/UpdateBasket", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(basket)
-     });
-
-    if (!res.ok) {
-        showToast(`"------------------- 🛒`);
-    }
-}
 function updateCartBadge() {
 
     const n = cart.reduce((s, x) => s + x.qty, 0);
-
     const badge = document.getElementById('cartBadge');
 
     badge.style.display = n ? 'flex' : 'none';
@@ -222,22 +192,33 @@ function updateCartBadge() {
 
 // i understand it 
 function renderCart() {
+
+    //if (window.customerId !== cart.customerId) {
+    //    showToast("You Have Empty  ");
+
+    //    return;
+    //}
+
     const el = document.getElementById('cartItems');
     const footer = document.getElementById('cartFooter');
     document.getElementById('cartCount').textContent = cart.length ? `(${cart.reduce((s, x) => s + x.qty, 0)} items)` : '';
     if (!cart.length) {
-        el.innerHTML = `<div class="cart-empty"><div class="ce-icon">🛒</div><div class="ce-title">Your cart is empty</div><div class="ce-sub">Add Perfum to begin</div></div>`;
+        el.innerHTML = `<div class="cart-empty"><div class="ce-icon"> <i class="fa-solid fa-cart-arrow-down"></div><div class="ce-title">Your cart is empty</div><div class="ce-sub">Add Perfum to begin</div></div>`;
         footer.innerHTML = `<button class="continue-btn" onclick="closeCart()">Continue Shopping</button>`;
         return;
     }
 
     // render perfums onto my cart 
     el.innerHTML = cart.map(item => {
-        const p = products.find(x => x.id === item.id); if (!p) return '';
-        const col = CAT_COLORS[p.cat] || '#c8854a';
+        let p = item;
+
+        let img = p.image.replace(/^~\//, "/");
+
+        if (!p) return '';
+        const col = '#c8854a';
         return `<div class="cart-item">
-        <div class="ci-emoji" style="background:linear-gradient(135deg,${col}22,${col}08)">
-              <img src="${p.imageUrl}" style="width:40px;height:40px;object-fit:cover">
+        <div class="ci-emoji" >
+              <img src="/${p.image}" style="width:40px;height:40px;object-fit:cover">
         </div>
         <div class="ci-info">
             <div class="ci-name">${p.name}</div>
@@ -268,8 +249,7 @@ function renderCart() {
     <button class="continue-btn" onclick="closeCart()">Continue Shopping</button>`
         ;
 }
-
-// i understand it 
+ // i understand it 
 function removeFromCart(id) {
     cart = cart.filter(x => x.id !== id);
     updateCartBadge();
@@ -286,7 +266,9 @@ function changeCartQty(id,d){
 }
 
 // i understand it 
-function getCartTotal(){return cart.reduce((s,x)=>{const p=products.find(pr=>pr.id===x.id);return s+(p?p.price*x.qty:0);},0);}
+function getCartTotal() {
+    return cart.reduce((s, x) => s + x.price * x.qty, 0);
+}
 
 // i understand it 
 function getCartShipping(){return getCartTotal()>=250?0:18;}
@@ -308,8 +290,17 @@ function closeCart() {
 
 // ────────────────────────────── CHECKOUT ──
 function openCheckout() {
-    // this function save perfums into redis
-    saveBasket();
+
+    if (!isLoggedIn) {
+        showToast("Please login first 🔐");
+
+        setTimeout(() => {
+            window.location.href = "/Account/Login";
+        }, 1000);
+
+        return;
+    }
+
 
     closeCart();
     renderCheckout();
@@ -341,7 +332,7 @@ function renderCoRight(){
     <div class="co-right-title">Order Summary</div>
     ${cart.map(item => {
         const p = products.find(x => x.id === item.id); if (!p) return '';
-        const col = CAT_COLORS[p.cat] || '#c8854a';
+        const col =  '#c8854a';
         return `<div class="co-item">
         <div class="co-item-emoji" style="background:linear-gradient(135deg,${col}22,${col}08)">
               <img src="${p.imageUrl}" style="width:40px;height:40px;object-fit:cover">
@@ -571,20 +562,6 @@ function selectShipping(id,title, el) {
 
     document.getElementById("shippingError").textContent = "";
 }
-//let selectedShipping;
-//function selectShipping(id, el) {
-
-//    selectedShipping = id;
-//    console.log("**************selectedShipping id******************")
-//    console.log(selectedShipping)
-//    console.log("********************************")
-
-//    el.closest('.co-section')
-//        .querySelectorAll('.pm-method')
-//        .forEach(x => x.classList.remove('selected'));
-
-//    el.classList.add('selected');
-//}
 function validateStep2() {
 
     if (!selectedShipping2) {
@@ -702,11 +679,7 @@ function validatePayment() {
 function selectPayment(id,title,el){
     paymentMethod = title;
     paymentMethodId = id;
-    //console.log("=======  inside selectPayment")
-    //console.log(paymentMethod)
-    //console.log(paymentMethodId)
-    //console.log("=======  end selectPayment")
-
+ 
     document.querySelectorAll('.pm-method').forEach(x=>x.classList.remove('selected'));
     el.classList.add('selected');
 
@@ -769,6 +742,26 @@ initStripe();
 // ─────────────────────────────────────────────
 // CREATE PAYMENT INTENT
 // ─────────────────────────────────────────────
+async function createPaymentIntent() {
+
+    const model = customerInfo;
+
+    const response = await fetch("/Payments/CreatePaymentIntent", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(model)
+
+    });
+
+    return await response.json();
+}
+
+
 function validateCheckout() {
 
     const fullName = document.querySelector("#fullName")?.value.trim();
@@ -826,46 +819,6 @@ function validateCheckout() {
     };
 }
 
-async function createPaymentIntent() {
-
-    //const model = {
-
-    //    basketId: basketId,
-
-    //    deliveryMethodId: 1,
-
-    //    shipAddress: {
-    //        firstName: document.querySelector("#fullName")?.value || "Ali",
-    //        BuyerEmail: document.querySelector("#email")?.value || "test",
-    //        city: document.querySelector("#city")?.value || "Cairo",
-    //        zipCode: document.querySelector("#zipCode")?.value || "11511",
-    //        street: document.querySelector("#street")?.value || "Corniche",
-    //        state: document.querySelector("#state")?.value || "Cairo"
-    //    }
-    //};
-
-    const model = customerInfo;
-
-    console.log("********************************")
-    console.log(model)
-    console.log("********************************")
-
-    const response = await fetch("/Payments/CreatePaymentIntent", {
-
-        method: "POST",
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify(model)
-
-    });
-
-    return await response.json();
-}
-
-
 
 // ─────────────────────────────────────────────
 // PLACE ORDER (PAYMENT)
@@ -875,11 +828,18 @@ async function placeOrder() {
         showToast("Enter card details");
         return;
     }
-    const model = customerInfo;
+    //const model = customerInfo;
 
-    //console.log("**************placeOrder******************")
-    //console.log(model)
-    //console.log("********************************")
+    const model = {
+        buyerEmail: customerInfo.buyerEmail,
+        deliveryMethodId: customerInfo.deliveryMethodId,
+        shipAddress: customerInfo.shipAddress,
+        customerId: window.customerId,
+        basketItems: cart.map(x => ({
+            id: x.id,
+            quantity: x.qty
+        }))
+    };
 
     const response = await fetch("/Payments/CreatePaymentIntent", {
 
@@ -892,17 +852,13 @@ async function placeOrder() {
         body: JSON.stringify(model)
 
     });
-    console.log("responseresponse")
-    console.log(response)
-
+  
     if (!response.ok) {
         showToast("Payment failed");
         return;
     }
 
     const data = await response.json();
-    console.log("datadata")
-    console.log(data)
 
     if (!stripe) {
         showToast("Stripe not initialized");
@@ -914,8 +870,6 @@ async function placeOrder() {
             card: cardElement
         }
     });
-    console.log("resultresult")
-    console.log(result)
 
     if (result.error) {
         showToast(result.error.message);
@@ -930,9 +884,9 @@ async function placeOrder() {
         localStorage.removeItem("cart");
 
         cart = [];
-        setTimeout(() => {
+        //setTimeout(() => {
             window.location.href = "/Home/Index";
-        }, 1200);
+        //}, 1200);
     }
 
 }
@@ -942,8 +896,6 @@ async function placeOrder() {
 // PAYMENT METHOD SELECT
 // ─────────────────────────────────────────────
 function renderPaymentFields() {
-    console.log("------------< renderPaymentFields")
-    console.log("------------< paymentMethod", paymentMethod)
 
     const el = document.getElementById("paymentFields");
 
@@ -964,7 +916,6 @@ function renderPaymentFields() {
 
         </div>
         `;
-        console.log("------------<  el.innerHTML", el.innerHTML)
 
         // إزالة القديم
         if (cardElement) {
@@ -999,51 +950,6 @@ function renderPaymentFields() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // ── WISHLIST ──
 function toggleWishlistItem(id){
   if(wishlist.has(id))wishlist.delete(id);else wishlist.add(id);
@@ -1065,16 +971,10 @@ function scrollToShop(){document.getElementById('shopSection').scrollIntoView({ 
 function setNavActive(el){document.querySelectorAll('.nav-link').forEach(x => x.classList.remove('active'));el.classList.add('active');}
 function showToast(msg){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
-
-
-
 function toggleNav() {
     document.getElementById("navLinks").classList.toggle("open");
 }
 
-
-
- 
 
 // --------------------------- Footer :
 function subscribeNewsletter() {
@@ -1174,6 +1074,15 @@ showPage(1);
 
 ////////////////// Fiters
 document.addEventListener("DOMContentLoaded", function () {
+    cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    renderCart();
+    updateCartBadge();
+
+
+
+
+
 
     /* ── MIST LINES ── */
     const mistContainer = document.getElementById('mistLines');
@@ -1246,7 +1155,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-
+    /******************************************************/
 
     const cards = document.querySelectorAll(".prod-card");
     const searchInput = document.getElementById("shopSearch");

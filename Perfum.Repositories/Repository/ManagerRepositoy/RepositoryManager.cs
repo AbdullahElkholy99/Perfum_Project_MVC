@@ -1,9 +1,4 @@
-﻿
-using Perfum.Repositories.IRepository.PaymentMethods;
-using Perfum.Repositories.Repository.PaymentMethods;
-using StackExchange.Redis;
-
-namespace Perfum.Repositories.Repository.ManagerRepositoy;
+﻿namespace Perfum.Repositories.Repository.ManagerRepositoy;
 
 public sealed class RepositoryManager : IRepositoryManager
 {
@@ -16,10 +11,11 @@ public sealed class RepositoryManager : IRepositoryManager
     private readonly ICustomerRepository _customerRepository;
 
     #region Payment Methods 
-    private readonly ICustomerBasketRepositry _customerBasketRepositry;
+    //private readonly ICustomerBasketRepositry _customerBasketRepositry;
 
     #endregion
-    public RepositoryManager(AppDbContext context, IConnectionMultiplexer redis)
+    //public RepositoryManager(AppDbContext context, IConnectionMultiplexer redis)
+    public RepositoryManager(AppDbContext context)
     {
         _context = context;
         _categoryRepository = new CategoryRepository(_context);
@@ -36,7 +32,7 @@ public sealed class RepositoryManager : IRepositoryManager
         #endregion
 
         #region Peyment Methods 
-        _customerBasketRepositry = new CustomerBasketRepositry(redis);
+        //_customerBasketRepositry = new CustomerBasketRepositry(redis);
 
         #endregion  
     }
@@ -60,7 +56,7 @@ public sealed class RepositoryManager : IRepositoryManager
     #endregion
 
     #region  Peyment Methods 
-    public ICustomerBasketRepositry CustomerBasketRepositry => _customerBasketRepositry;
+    //public ICustomerBasketRepositry CustomerBasketRepositry => _customerBasketRepositry;
 
     #endregion
 
