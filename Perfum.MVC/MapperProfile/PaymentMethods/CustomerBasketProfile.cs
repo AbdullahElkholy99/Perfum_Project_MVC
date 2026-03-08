@@ -1,5 +1,4 @@
-﻿using Perfum.Domain.Models.Orders;
-using Perfum.Services.ViewModels.PaymentMethodsVM;
+﻿using Perfum.Services.ViewModels.PaymentMethodsVM;
 
 namespace Perfum.MVC.MapperProfile.PaymentMethods;
 
@@ -10,5 +9,6 @@ public class CustomerBasketProfile : Profile
     {
         //Category source = > CategoryVM des
         CreateMap<CustomerBasket, CustomerBasketVM>().ReverseMap();
+        CreateMap<ShippingAddress, ShipAddressDTO>().ReverseMap();
     }
 }

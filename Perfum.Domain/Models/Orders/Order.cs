@@ -9,9 +9,6 @@ public class Order
     [Key]
     public int Id { get; set; }
 
-    [Required]
-    public string ShippingAddress { get; set; }
-
     public DateTime? Date { get; set; } = DateTime.Now;
 
     public Status Status { get; set; }
@@ -28,33 +25,33 @@ public class Order
     public virtual Customer Customer { get; set; }
 
     // By Abdullah Ali
-    public DeliveryMethod? deliveryMethod { get; set; }
+    public DeliveryMethod? DdeliveryMethod { get; set; }
     public string PaymentIntentId { get; set; }
     public string? ClientSecret { get; set; }
     public string? BuyerEmail { get; set; }
     public decimal GetTotal()
     {
-        return TotalPrice + deliveryMethod.Price;
+        return TotalPrice + DdeliveryMethod.Price;
     }
-    public ShippingAddress shippingAddress { get; set; }
+    public ShippingAddress ShippingAddress { get; set; }
     public Order()
     {
 
     }
-    public Order(string buyerEmail, decimal subTotal, ShippingAddress shippingAddress, DeliveryMethod deliveryMethod, List<OrderItem> orderItems, string PaymentIntentId)
+    public Order(int customerId, string buyerEmail, decimal subTotal,
+        ShippingAddress shippingAddress, DeliveryMethod deliveryMethod,
+        List<OrderItem> orderItems, string paymentIntentId)
     {
+        CustomerId = customerId;
         BuyerEmail = buyerEmail;
         TotalPrice = subTotal;
-        shippingAddress = shippingAddress;
-        this.deliveryMethod = deliveryMethod;
-        this.OrderItems = orderItems;
-        this.PaymentIntentId = PaymentIntentId;
+        ShippingAddress = shippingAddress;
+        DdeliveryMethod = deliveryMethod;
+        OrderItems = orderItems;
+        PaymentIntentId = paymentIntentId;
     }
 
-    public Order()
-    {
-        
-    }
+
     // ----------- 
 
 }

@@ -95,7 +95,7 @@ public class OrderService : IOrderService
                 Id = Product.Id,
                 ProductName = Product.Name,
                 UnitPrice = (decimal)item.Price,
-                Quantity = item.Qunatity
+                Quantity = item.Quantity
             };
 
             orderItems.Add(orderItem);
@@ -123,7 +123,7 @@ public class OrderService : IOrderService
         }
 
         var order = new
-            Order(BuyerEmail, subTotal, ship, deliverMethod, orderItems, basket.PaymentIntentId);
+            Order(1, BuyerEmail, subTotal, ship, deliverMethod, orderItems, basket.PaymentIntentId);
 
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();

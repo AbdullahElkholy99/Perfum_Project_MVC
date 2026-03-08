@@ -60,3 +60,14 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.Run();
+
+/*
+Stripe Card :
+4242 4242 4242 4242
+12 / 34
+6124120
+
+--------------
+Login Admin: 
+
+ */

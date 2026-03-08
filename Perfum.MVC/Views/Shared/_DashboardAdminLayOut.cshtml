@@ -1,17 +1,14 @@
 ﻿<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfum — Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
-=======
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] — Sillage</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
     <link href="~/css/dashbord/dashboard.css" rel="stylesheet" />
     <style>
         /* DARK MODE — override dashboard.css vars */
@@ -116,7 +113,6 @@
 </head>
 <body>
 
-<<<<<<< HEAD
     <header class="nav-bar">
 
         <div class="navbar-left">
@@ -138,9 +134,10 @@
                 <img src="https://i.pravatar.cc/40" class="user-avatar">
                 <span class="user-name">Admin</span>
             </div>
+        </div>
+    </header>
 
-=======
-    @* ── Navbar ── *@
+   @*   ── Navbar ── 
     <header class="nav-bar ps-5 ms-5">
         <div class="navbar-left">
             <h2 class="page-title">Sillage Dashboard</h2>
@@ -154,16 +151,10 @@
                 <img src="https://i.pravatar.cc/40" class="user-avatar" alt="Admin" />
                 <span class="user-name">Admin</span>
             </div>
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
         </div>
-    </header>
+    </header> *@
 
-<<<<<<< HEAD
-    </header>
     <!-- ── Sidebar ── -->
-=======
-    @* ── Sidebar ── *@
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
     <aside class="sidebar">
 
         <div class="logo">
@@ -177,23 +168,15 @@
 
         <div class="nav-section">
             <div class="nav-label">Overview</div>
-<<<<<<< HEAD
 
-        <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")">
-            <a asp-controller="Dashboard" asp-action="Index">
-                <span class="nav-icon">◈</span>
-                Dashboard
-            </a>
-        </div>
- 
-       
-=======
-            <div class="nav-item @(ctrl == "Dashboard" ? "active" : "")">
+            <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Dashboard" ? "active" : "")">
                 <a asp-controller="Dashboard" asp-action="Index">
-                    <span class="nav-icon">◈</span> Dashboard
+                    <span class="nav-icon">◈</span>
+                    Dashboard
                 </a>
             </div>
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
+       
+          
         </div>
 
         <div class="nav-section" style="margin-top:14px">
@@ -203,19 +186,16 @@
                     <span class="nav-icon">✦</span> Products
                 </a>
             </div>
-<<<<<<< HEAD
         <div class="nav-item @(ViewContext.RouteData.Values["controller"].ToString() == "Category" ? "active" : "")">
             <a asp-controller="Category" asp-action="Index"><span class="nav-icon">⬡</span>  Categories</a>
                  
             </div>
   
-=======
             <div class="nav-item @(ctrl == "Category" ? "active" : "")">
                 <a asp-controller="Category" asp-action="Index">
                     <span class="nav-icon">⬡</span> Categories
                 </a>
-            </div>
->>>>>>> a0e17aee421b797fe9df6629c85fd5fd51faea90
+            </div> 
         </div>
 
         <div class="nav-section" style="margin-top:14px">

@@ -32,8 +32,8 @@ public class CustomerBasketRepositry : ICustomerBasketRepositry
             .StringSetAsync(
                 basket.Id,
             JsonSerializer.Serialize(basket),
-            TimeSpan.FromDays(3))
-            ;
+            TimeSpan.FromDays(3));
+
         if (_basket)
         {
             return await GetBasketAsync(basket.Id);

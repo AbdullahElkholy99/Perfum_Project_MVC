@@ -1,9 +1,4 @@
-﻿using Perfum.Domain.Enums;
-using Perfum.Domain.Models.Orders;
-using Perfum.Repositories.Data;
-using Perfum.Services.IServices.PaymentMethods;
-using Perfum.Services.ViewModels.OrderVM;
-using Perfum.Services.ViewModels.PaymentMethodsVM;
+﻿using Perfum.Services.ViewModels.PaymentMethodsVM;
 using Stripe;
 
 namespace Perfum.Services.Services.PaymentMethods;
@@ -62,7 +57,7 @@ public class StripePaymentService : IStripePaymentService
         {
             var option = new PaymentIntentCreateOptions
             {
-                Amount = (long)basket.basketItems.Sum(m => m.Qunatity * (m.Price * 100)) + (long)(shippingPrice * 100),
+                Amount = (long)basket.basketItems.Sum(m => m.Quantity * (m.Price * 100)) + (long)(shippingPrice * 100),
 
                 Currency = "USD",
                 PaymentMethodTypes = new List<string> { "card", "paymob", "paypal" }
@@ -75,7 +70,7 @@ public class StripePaymentService : IStripePaymentService
         {
             var option = new PaymentIntentUpdateOptions
             {
-                Amount = (long)basket.basketItems.Sum(m => m.Qunatity * (m.Price * 100)) + (long)(shippingPrice * 100),
+                Amount = (long)basket.basketItems.Sum(m => m.Quantity * (m.Price * 100)) + (long)(shippingPrice * 100),
             };
             await paymentIntentService.UpdateAsync(basket.PaymentIntentId, option);
         }
@@ -151,16 +146,17 @@ public class StripePaymentService : IStripePaymentService
 
             var orderItem = new OrderItem
             {
-                Id = product.Id,
+                ProductId = product.Id,
                 ProductName = product.Name,
                 UnitPrice = (decimal)item.Price,
-                Quantity = item.Qunatity
+                Quantity = item.Quantity
             };
 
             orderItems.Add(orderItem);
         }
 
-        var deliveryMethod = await _context
+        var deliveryMethod =
+            await _context
             .DeliveryMethods
             .FirstOrDefaultAsync(x => x.Id == orderDTO.DeliveryMethodId);
 
@@ -185,6 +181,7 @@ public class StripePaymentService : IStripePaymentService
         }
 
         var order = new Order(
+            1,
             buyerEmail,
             subTotal,
             shipAddress,
@@ -205,6 +202,8 @@ public class StripePaymentService : IStripePaymentService
 
     public async Task<PaymentIntent> CreatePaymentIntentAsync(CreateOrderPaymentVM orderDTO)
     {
+
+
         var basket = await _repositoryManager
             .CustomerBasketRepositry
             .GetBasketAsync(orderDTO.BasketId);
@@ -223,8 +222,7 @@ public class StripePaymentService : IStripePaymentService
             if (product == null)
                 throw new Exception("Product not found");
 
-            //total += product.Price * item.Qunatity;
-            total += product.Price * 1;
+            total += product.Price * item.Quantity;
         }
 
         StripeConfiguration.ApiKey = _configuration["StripeSetting:SecretKey"];
@@ -257,7 +255,14 @@ public class StripePaymentService : IStripePaymentService
             };
 
             intent = await service.UpdateAsync(basket.PaymentIntentId, options);
+
         }
+
+
+        var saveOrder = await CreateOrdersAsync(orderDTO, orderDTO.BuyerEmail);
+
+        if (saveOrder is null)
+            throw new Exception("can not save order");
 
         return intent;
     }
