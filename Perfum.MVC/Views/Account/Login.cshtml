@@ -1,4 +1,4 @@
-@model LoginVM
+@* @model LoginVM
 @{
     Layout = null;
     ViewData["Title"] = "Sign In";
@@ -11,8 +11,8 @@
     <title>Sign In — Sillage</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="~/css/users/customerpage.css" rel="stylesheet" />
-    <link href="~/css/auth/auth.css" rel="stylesheet" />
+    <link href="~/css/auth/login.css" rel="stylesheet" />
+
 </head>
 <body>
     <section class="hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
@@ -75,5 +75,322 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>
+ *@
+
+
+
+@model LoginVM
+@{
+    Layout = null;
+    ViewData["Title"] = "Sign In";
+}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Sillage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="~/css/auth/login.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div class="login-page">
+
+        <!-- ══════════════════════════════════
+             LEFT — Brand / Visual Panel
+        ══════════════════════════════════ -->
+        <div class="login-brand">
+            <!-- Atmosphere -->
+            <div class="lb-orb lb-orb-1"></div>
+            <div class="lb-orb lb-orb-2"></div>
+            <div class="lb-orb lb-orb-3"></div>
+            <div class="lb-grain"></div>
+            <div class="lb-mist" id="lbMist"></div>
+            <div class="lb-rule"></div>
+
+            <!-- Main content -->
+            <div class="lb-content">
+                <div class="lb-logo">
+                    Sill<em>age</em>
+                    <span class="lb-logo-sub">Luxury Fragrance Studio</span>
+                </div>
+
+                <!-- Bottle SVG illustration -->
+                <div class="lb-bottle">
+                    <svg width="130" height="280" viewBox="0 0 160 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="lbBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#c8854a" stop-opacity=".20" />
+                                <stop offset="30%" stop-color="rgba(255,245,235,1)" stop-opacity=".90" />
+                                <stop offset="70%" stop-color="rgba(255,248,240,1)" stop-opacity=".95" />
+                                <stop offset="100%" stop-color="#c8854a" stop-opacity=".30" />
+                            </linearGradient>
+                            <linearGradient id="lbCapGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#9b6b3a" />
+                                <stop offset="50%" stop-color="#d4a844" />
+                                <stop offset="100%" stop-color="#9b6b3a" />
+                            </linearGradient>
+                            <linearGradient id="lbLiquidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#d4a844" stop-opacity=".55" />
+                                <stop offset="100%" stop-color="#c8854a" stop-opacity=".80" />
+                            </linearGradient>
+                            <clipPath id="lbBodyClip">
+                                <rect x="24" y="118" width="112" height="200" rx="14" />
+                            </clipPath>
+                            <filter id="lbGlow">
+                                <feGaussianBlur stdDeviation="4" result="blur" />
+                                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Cap -->
+                        <rect x="56" y="18" width="48" height="52" rx="6" fill="url(#lbCapGrad)" />
+                        <rect x="60" y="22" width="40" height="44" rx="4" fill="url(#lbCapGrad)" opacity=".55" />
+                        <rect x="54" y="66" width="52" height="4" rx="2" fill="#9b6b3a" opacity=".5" />
+                        <!-- Neck -->
+                        <rect x="62" y="70" width="36" height="50" rx="4" fill="rgba(255,235,210,.7)" />
+                        <rect x="58" y="112" width="44" height="8" rx="4" fill="url(#lbCapGrad)" opacity=".65" />
+                        <!-- Body -->
+                        <rect x="24" y="118" width="112" height="200" rx="14" fill="url(#lbBodyGrad)" stroke="rgba(212,168,68,.30)" stroke-width="1" />
+                        <!-- Liquid -->
+                        <rect x="24" y="200" width="112" height="118" fill="url(#lbLiquidGrad)" clip-path="url(#lbBodyClip)" opacity=".42" />
+                        <ellipse cx="80" cy="200" rx="50" ry="5" fill="rgba(255,220,150,.38)" opacity=".8" />
+                        <!-- Label -->
+                        <rect x="38" y="148" width="84" height="90" rx="8" fill="white" opacity=".68" />
+                        <text x="80" y="176" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="11" fill="#2a1f14" opacity=".75" letter-spacing="1.5">SILLAGE</text>
+                        <line x1="50" y1="181" x2="110" y2="181" stroke="rgba(200,133,74,.45)" stroke-width=".8" />
+                        <text x="80" y="197" text-anchor="middle" font-family="Jost,sans-serif" font-size="7" fill="#6b5040" opacity=".65" letter-spacing="2.5">PARFUM</text>
+                        <text x="80" y="216" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="18" fill="#c8854a" opacity=".88" font-style="italic">Obscura</text>
+                        <text x="80" y="228" text-anchor="middle" font-family="Jost,sans-serif" font-size="6" fill="#a08060" opacity=".55" letter-spacing="3">100 ML · EDP</text>
+                        <!-- Glass reflections -->
+                        <rect x="32" y="130" width="6" height="160" rx="3" fill="white" opacity=".22" />
+                        <rect x="42" y="130" width="2" height="140" rx="1" fill="white" opacity=".10" />
+                        <!-- Base -->
+                        <rect x="20" y="314" width="120" height="10" rx="5" fill="url(#lbCapGrad)" opacity=".55" />
+                        <rect x="16" y="320" width="128" height="6" rx="3" fill="#9b6b3a" opacity=".38" />
+                    </svg>
+                </div>
+
+                <p class="lb-tagline">
+                    A trail of memory left<br>in every room you grace.
+                </p>
+
+                <div class="lb-dots">
+                    <div class="lb-dot"></div>
+                    <div class="lb-dot"></div>
+                    <div class="lb-dot"></div>
+                </div>
+            </div>
+
+            <!-- Trust badges at bottom -->
+            <div class="lb-badges">
+                <div class="lb-badge"><div class="lb-badge-dot"></div>47+ Fragrances</div>
+                <div class="lb-badge"><div class="lb-badge-dot"></div>Free Samples</div>
+                <div class="lb-badge"><div class="lb-badge-dot"></div>Est. 2018</div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             RIGHT — Form Panel
+        ══════════════════════════════════ -->
+        <div class="login-form-panel">
+
+            <!-- Back link -->
+            <a href="/" class="auth-back">
+                <i class="fa-solid fa-arrow-left"></i> Back to Boutique
+            </a>
+
+            <!-- Theme toggle -->
+            <div class="auth-theme-btn" onclick="toggleAuthTheme()" id="authThemeBtn" title="Toggle theme">
+                <i class="fa-solid fa-moon"></i>
+            </div>
+
+            <div class="login-form-wrap">
+
+                <!-- Header -->
+                <div class="auth-eyebrow">
+                    <div class="auth-eyebrow-line"></div>
+                    <span>Welcome Back</span>
+                    <div class="auth-eyebrow-line"></div>
+                </div>
+                <h1 class="auth-title">Sign <em>In</em></h1>
+                <p class="auth-subtitle">Continue your journey into the world of Sillage.</p>
+
+                <!-- Server messages -->
+                @if (TempData["RegisterSuccess"] != null)
+                {
+                    <div class="auth-msg auth-success">
+                        <i class="fa-solid fa-circle-check"></i>
+                        @TempData["RegisterSuccess"]
+                    </div>
+                }
+                <div asp-validation-summary="ModelOnly" class="auth-msg auth-error"></div>
+
+                <!-- Email verification link -->
+                @if (ViewBag.RequiresEmailConfirmation == true && Model != null)
+                {
+                    <p class="auth-verify-note">
+                        Please verify your email —
+                        <a asp-action="VerifyEmailConfirmation"
+                           asp-controller="Account"
+                           asp-route-email="@Model.Email"
+                           class="auth-link">Enter your verification code</a>
+                    </p>
+                }
+
+                <!-- ── Main Login Form ── -->
+                <form asp-action="Login" asp-controller="Account" method="post" class="auth-form" id="loginForm">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Email -->
+                    <div class="auth-input-wrap">
+                        <label asp-for="Email" class="auth-label">Email Address</label>
+                        <div class="auth-input-inner">
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="auth-input"
+                                   placeholder="you@example.com"
+                                   autocomplete="email"
+                                   id="loginEmail" />
+                            <i class="fa-regular fa-envelope auth-input-icon"></i>
+                        </div>
+                        <span asp-validation-for="Email" class="auth-validation"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="auth-input-wrap">
+                        <label asp-for="Password" class="auth-label">Password</label>
+                        <div class="auth-input-inner">
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="auth-input"
+                                   placeholder="••••••••"
+                                   autocomplete="current-password"
+                                   id="loginPassword"
+                                   style="padding-right:48px" />
+                            <button type="button" class="auth-pw-toggle" onclick="togglePw('loginPassword', this)" tabindex="-1">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="auth-validation"></span>
+                    </div>
+
+                    <!-- Remember / Forgot -->
+                    <div class="auth-row auth-row-between">
+                        <label class="auth-check">
+                            <input asp-for="RememberMe" type="checkbox" />
+                            <span>Remember me</span>
+                        </label>
+                        <a asp-action="ForgotPassword" asp-controller="Account" class="auth-link">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="auth-submit" id="loginSubmit" onclick="setLoadingState(this)">
+                        <span class="btn-text">
+                            Sign In &nbsp;
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <div class="auth-divider-line"></div>
+                    <span class="auth-divider-text">or</span>
+                    <div class="auth-divider-line"></div>
+                </div>
+
+                <!-- Google -->
+                <form asp-action="GoogleLogin" asp-controller="Account" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="auth-google-btn">
+                        <i class="fa-brands fa-google"></i>
+                        Continue with Google
+                    </button>
+                </form>
+
+                <!-- Switch to register -->
+                <p class="auth-switch">
+                    Don't have an account?
+                    <a asp-action="Register" asp-controller="Account" class="auth-link">Create one →</a>
+                </p>
+
+            </div><!-- /login-form-wrap -->
+        </div><!-- /login-form-panel -->
+
+    </div><!-- /login-page -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        /* ── Theme toggle ── */
+        let authDark = false;
+        function toggleAuthTheme() {
+            authDark = !authDark;
+            document.documentElement.setAttribute('data-theme', authDark ? 'dark' : 'light');
+            const btn = document.getElementById('authThemeBtn');
+            btn.innerHTML = authDark
+                ? '<i class="fa-solid fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
+        }
+
+        /* ── Password visibility toggle ── */
+        function togglePw(inputId, btn) {
+            const inp  = document.getElementById(inputId);
+            const show = inp.type === 'password';
+            inp.type   = show ? 'text' : 'password';
+            btn.innerHTML = show
+                ? '<i class="fa-regular fa-eye-slash"></i>'
+                : '<i class="fa-regular fa-eye"></i>';
+        }
+
+        /* ── Loading state on submit ── */
+        function setLoadingState(btn) {
+            // Small delay so validation can cancel first
+            setTimeout(() => {
+                const form = document.getElementById('loginForm');
+                if (form.checkValidity()) btn.classList.add('loading');
+            }, 50);
+        }
+
+        /* ── Mist lines (left panel atmosphere) ── */
+        (function buildMist() {
+            const container = document.getElementById('lbMist');
+            if (!container) return;
+            for (let i = 0; i < 14; i++) {
+                const el  = document.createElement('div');
+                el.className = 'lb-mist-line';
+                const left = Math.random() * 100;
+                const h    = 70 + Math.random() * 180;
+                const dur  = 10 + Math.random() * 14;
+                const del  = -(Math.random() * dur);
+                el.style.cssText = `left:${left}%;height:${h}px;animation-duration:${dur}s;animation-delay:${del}s;`;
+                container.appendChild(el);
+            }
+        })();
+
+        /* ── Subtle parallax on bottle ── */
+        const brandPanel = document.querySelector('.login-brand');
+        const bottle     = document.querySelector('.lb-bottle');
+        if (brandPanel && bottle) {
+            brandPanel.addEventListener('mousemove', e => {
+                const r  = brandPanel.getBoundingClientRect();
+                const dx = (e.clientX - r.left - r.width  / 2) / (r.width  / 2);
+                const dy = (e.clientY - r.top  - r.height / 2) / (r.height / 2);
+                bottle.style.transform = `translateY(0) rotate(${dx * 4}deg) rotateX(${-dy * 3}deg)`;
+            });
+            brandPanel.addEventListener('mouseleave', () => {
+                bottle.style.transform = '';
+            });
+        }
+    </script>
 </body>
 </html>

@@ -1,8 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
 using Perfum.Services.Services.Authentication;
+using System.Security.Claims;
 
 namespace Perfum.MVC.Controllers.Auth;
 
@@ -27,22 +26,6 @@ public class AccountController : Controller
         _signInManager = signInManager;
     }
 
-    public IActionResult Login()
-    {
-        var id = Request.Cookies["Id"];
-        var role = Request.Cookies["Role"];
-
-        if (id == null || role == null)
-            return View();
-
-        if (role == "Admin")
-            return RedirectToAction("Index", "Customer");
-
-        if (role == "Customer")
-            return RedirectToAction("Index", "Home");
-
-        return RedirectToAction("Index", "Home");
-    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -144,6 +127,22 @@ public class AccountController : Controller
 
         return Redirect(returnUrl);
     }
+    public IActionResult Login()
+    {
+        var id = Request.Cookies["Id"];
+        var role = Request.Cookies["Role"];
+
+        if (id == null || role == null)
+            return View();
+
+        if (role == "Admin")
+            return RedirectToAction("Index", "Customer");
+
+        if (role == "Customer")
+            return RedirectToAction("Index", "Home");
+
+        return RedirectToAction("Index", "Home");
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -161,7 +160,7 @@ public class AccountController : Controller
             ViewBag.RequiresEmailConfirmation = true;
             return View(model);
         }
-        if (result.Result) 
+        if (result.Result)
         {
             var roles = result.Roles;
 
@@ -170,7 +169,7 @@ public class AccountController : Controller
             // Redirect: Customer -> Home
             //Admin -> Customer controller
             if (roles.Contains("Admin"))
-                return RedirectToAction("Index", "Customer");
+                return RedirectToAction("Index", "Product");
 
             if (roles.Contains("Customer"))
                 return RedirectToAction("Index", "Home");
