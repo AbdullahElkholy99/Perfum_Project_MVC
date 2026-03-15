@@ -1,0 +1,252 @@
+﻿
+
+<style>
+#ramadanOverlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0a0618;transition:opacity .9s ease,visibility .9s ease;}
+#ramadanOverlay.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.rm-sky{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,#1a0e3a 0%,transparent 65%),radial-gradient(ellipse 60% 50% at 20% 100%,#0d1a2e 0%,transparent 55%),linear-gradient(180deg,#06030f 0%,#0d0820 40%,#120a25 70%,#0a0618 100%);pointer-events:none;}
+.rm-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.rm-star{position:absolute;border-radius:50%;background:#fff;animation:rmStarTwinkle ease-in-out infinite;}
+@@keyframes rmStarTwinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+.rm-geo-top,.rm-geo-bottom{position:absolute;left:0;right:0;height:90px;pointer-events:none;overflow:hidden;}
+.rm-geo-top{top:0}.rm-geo-bottom{bottom:0;transform:scaleY(-1);}
+.rm-geo-svg{width:100%;height:100%;opacity:.55;}
+.rm-moon-wrap{position:absolute;top:6%;left:50%;transform:translateX(-50%);animation:rmMoonFloat 5s ease-in-out infinite;filter:drop-shadow(0 0 28px rgba(212,168,68,.55)) drop-shadow(0 0 60px rgba(212,168,68,.25));}
+@@keyframes rmMoonFloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}
+.rm-mosque{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);opacity:.22;pointer-events:none;}
+.rm-mosque svg{width:min(520px,90vw);height:auto;}
+.rm-lantern{position:absolute;bottom:90px;filter:drop-shadow(0 0 16px rgba(212,168,68,.5));}
+.rm-lantern svg{width:52px;height:84px;}
+.rm-l1{left:7%;animation:rmLSway 4.2s ease-in-out infinite 0s;}
+.rm-l2{left:19%;animation:rmLSway 3.8s ease-in-out infinite -.6s;}
+.rm-l3{right:7%;animation:rmLSway 4.5s ease-in-out infinite -.3s;}
+.rm-l4{right:19%;animation:rmLSway 3.6s ease-in-out infinite -.9s;}
+@@keyframes rmLSway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.rm-glow-rings{position:absolute;inset:0;pointer-events:none;}
+.rm-glow-ring{position:absolute;border-radius:50%;border:1px solid rgba(212,168,68,.12);animation:rmRingExpand 3.5s ease-out infinite;top:50%;left:50%;width:300px;height:300px;}
+.rm-glow-ring:nth-child(2){animation-delay:1.1s}.rm-glow-ring:nth-child(3){animation-delay:2.2s}
+@@keyframes rmRingExpand{0%{transform:translate(-50%,-50%) scale(.6);opacity:.6}100%{transform:translate(-50%,-50%) scale(2.8);opacity:0}}
+.rm-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.rm-p{position:absolute;border-radius:50%;animation:rmPartFloat linear infinite;opacity:0;}
+@@keyframes rmPartFloat{0%{opacity:0;transform:translateY(0)}10%{opacity:1}80%{opacity:.4}100%{opacity:0;transform:translateY(-100vh)}}
+.rm-card{position:relative;z-index:5;text-align:center;padding:52px 64px 44px;border-radius:4px;border:1px solid rgba(212,168,68,.22);background:linear-gradient(160deg,rgba(212,168,68,.07) 0%,rgba(255,255,255,.02) 50%,rgba(212,168,68,.05) 100%);backdrop-filter:blur(6px);box-shadow:0 0 0 1px rgba(212,168,68,.1) inset,0 32px 80px rgba(0,0,0,.6);max-width:520px;width:90vw;animation:rmCardReveal 1s cubic-bezier(.16,1,.3,1) .3s both;}
+@@keyframes rmCardReveal{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.rm-card::before,.rm-card::after{content:'';position:absolute;width:22px;height:22px;border-color:rgba(212,168,68,.55);border-style:solid;}
+.rm-card::before{top:10px;left:10px;border-width:1px 0 0 1px}.rm-card::after{bottom:10px;right:10px;border-width:0 1px 1px 0;}
+.rm-ornament{font-size:11px;letter-spacing:.45em;text-transform:uppercase;color:rgba(212,168,68,.6);margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:14px;animation:rmFadeUp .8s ease-out .6s both;}
+.rm-ornament-line{flex:1;height:1px;max-width:60px;background:linear-gradient(to right,transparent,rgba(212,168,68,.5),transparent);}
+.rm-arabic{font-family:'Scheherazade New','Amiri','Traditional Arabic',serif;font-size:clamp(36px,7vw,58px);font-weight:400;line-height:1.3;letter-spacing:.02em;margin-bottom:10px;direction:rtl;animation:rmFadeUp .9s ease-out .7s both;background:linear-gradient(135deg,#e8c87a 0%,#d4a844 40%,#c8954a 80%,#e8c060 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rm-english{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(22px,4vw,32px);font-weight:300;font-style:italic;color:rgba(232,200,122,.85);letter-spacing:.06em;margin-bottom:6px;animation:rmFadeUp .9s ease-out .82s both;}
+.rm-tagline{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(212,168,68,.45);margin-bottom:28px;animation:rmFadeUp .9s ease-out .94s both;}
+.rm-bar-wrap{width:100%;height:2px;background:rgba(212,168,68,.12);border-radius:99px;overflow:hidden;margin-bottom:18px;animation:rmFadeUp .6s ease-out 1.1s both;}
+.rm-bar-fill{height:100%;width:100%;background:linear-gradient(to right,#c8854a,#d4a844,#e8c060);border-radius:99px;transform-origin:left;animation:rmBarDrain 3s linear .5s both;}
+@@keyframes rmBarDrain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.rm-skip{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(212,168,68,.3);cursor:pointer;transition:color .25s;animation:rmFadeUp .6s ease-out 1.3s both;user-select:none;}
+.rm-skip:hover{color:rgba(212,168,68,.7);}
+@@keyframes rmFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@@media(max-width:600px){.rm-card{padding:36px 28px 32px;}.rm-l2,.rm-l4{display:none;}}
+</style>
+
+<!-- ══════════════════════════════════
+     RAMADAN KAREEM OVERLAY
+     ══════════════════════════════════ -->
+<div id="ramadanOverlay">
+
+  <div class="rm-sky"></div>
+
+  <!-- Glow rings -->
+  <div style="position:absolute;inset:0;pointer-events:none">
+    <div class="rm-glow-ring"></div>
+    <div class="rm-glow-ring"></div>
+    <div class="rm-glow-ring"></div>
+  </div>
+
+  <div class="rm-stars" id="rmStars"></div>
+  <div class="rm-particles" id="rmParticles"></div>
+
+  <!-- Geometric top border -->
+  <div class="rm-geo-top">
+    <svg class="rm-geo-svg" viewBox="0 0 1440 90" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="geo" x="0" y="0" width="90" height="90" patternUnits="userSpaceOnUse">
+          <g fill="none" stroke="#d4a844" stroke-width=".8" opacity=".7">
+            <polygon points="45,4 52,32 80,32 58,50 66,78 45,62 24,78 32,50 10,32 38,32"/>
+            <polygon points="45,18 49,32 63,32 52,41 56,55 45,47 34,55 38,41 27,32 41,32" fill="rgba(212,168,68,.06)"/>
+            <line x1="45" y1="0" x2="45" y2="90"/><line x1="0" y1="45" x2="90" y2="45"/>
+            <circle cx="45" cy="45" r="18" opacity=".2"/><circle cx="45" cy="45" r="30" opacity=".1"/>
+          </g>
+        </pattern>
+        <linearGradient id="fadeB" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0a0618" stop-opacity="0"/>
+          <stop offset="100%" stop-color="#0a0618" stop-opacity="1"/>
+        </linearGradient>
+      </defs>
+      <rect width="1440" height="90" fill="url(#geo)"/>
+      <rect width="1440" height="90" fill="url(#fadeB)"/>
+    </svg>
+  </div>
+
+  <!-- Geometric bottom border -->
+  <div class="rm-geo-bottom">
+    <svg class="rm-geo-svg" viewBox="0 0 1440 90" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="geo2" x="0" y="0" width="90" height="90" patternUnits="userSpaceOnUse">
+          <g fill="none" stroke="#d4a844" stroke-width=".8" opacity=".7">
+            <polygon points="45,4 52,32 80,32 58,50 66,78 45,62 24,78 32,50 10,32 38,32"/>
+            <line x1="45" y1="0" x2="45" y2="90"/><line x1="0" y1="45" x2="90" y2="45"/>
+            <circle cx="45" cy="45" r="18" opacity=".2"/>
+          </g>
+        </pattern>
+        <linearGradient id="fadeT" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0a0618" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#0a0618" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <rect width="1440" height="90" fill="url(#geo2)"/>
+      <rect width="1440" height="90" fill="url(#fadeT)"/>
+    </svg>
+  </div>
+
+  <!-- Mosque silhouette -->
+  <div class="rm-mosque">
+    <svg viewBox="0 0 520 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="178" x2="520" y2="178" stroke="#d4a844" stroke-width=".5"/>
+      <path d="M200 178 Q200 80 260 60 Q320 80 320 178Z" fill="#d4a844"/>
+      <ellipse cx="260" cy="60" rx="18" ry="8" fill="#d4a844"/>
+      <path d="M130 178 Q130 128 158 118 Q186 128 186 178Z" fill="#d4a844"/>
+      <ellipse cx="158" cy="118" rx="10" ry="5" fill="#d4a844"/>
+      <path d="M334 178 Q334 128 362 118 Q390 128 390 178Z" fill="#d4a844"/>
+      <ellipse cx="362" cy="118" rx="10" ry="5" fill="#d4a844"/>
+      <rect x="52" y="60" width="18" height="118" fill="#d4a844"/>
+      <path d="M52 60 Q61 40 70 60Z" fill="#d4a844"/>
+      <ellipse cx="61" cy="40" rx="4" ry="6" fill="#d4a844"/>
+      <rect x="450" y="60" width="18" height="118" fill="#d4a844"/>
+      <path d="M450 60 Q459 40 468 60Z" fill="#d4a844"/>
+      <ellipse cx="459" cy="40" rx="4" ry="6" fill="#d4a844"/>
+      <path d="M220 178 Q220 155 240 148 Q260 155 260 178Z" fill="#0a0618"/>
+      <path d="M260 178 Q260 155 280 148 Q300 155 300 178Z" fill="#0a0618"/>
+      <path d="M148 178 Q148 164 158 160 Q168 164 168 178Z" fill="#0a0618"/>
+      <path d="M352 178 Q352 164 362 160 Q372 164 372 178Z" fill="#0a0618"/>
+    </svg>
+  </div>
+
+  <!-- Lanterns -->
+  <div class="rm-lantern" style="left:7%;bottom:90px;animation-duration:4.2s">
+    <svg viewBox="0 0 52 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="26" y1="0" x2="26" y2="8" stroke="#d4a844" stroke-width="1.5"/>
+      <polygon points="26,6 36,6 36,10 16,10 16,6" fill="#d4a844" opacity=".8"/>
+      <path d="M16 10 Q10 28 12 52 Q18 66 26 68 Q34 66 40 52 Q42 28 36 10Z" fill="rgba(212,140,40,.18)" stroke="#d4a844" stroke-width="1.2"/>
+      <path d="M18 22 Q14 34 15 46" stroke="#d4a844" stroke-width=".6" opacity=".5"/>
+      <path d="M34 22 Q38 34 37 46" stroke="#d4a844" stroke-width=".6" opacity=".5"/>
+      <line x1="14" y1="32" x2="38" y2="32" stroke="#d4a844" stroke-width=".5" opacity=".4"/>
+      <line x1="13" y1="44" x2="39" y2="44" stroke="#d4a844" stroke-width=".5" opacity=".4"/>
+      <polygon points="26,68 36,68 34,72 18,72 16,68" fill="#d4a844" opacity=".8"/>
+      <line x1="26" y1="72" x2="26" y2="78" stroke="#d4a844" stroke-width="1.2"/>
+      <polygon points="22,78 30,78 28,84 24,84" fill="#d4a844" opacity=".6"/>
+      <ellipse cx="26" cy="40" rx="10" ry="14" fill="rgba(255,200,60,.12)"/>
+    </svg>
+  </div>
+  <div class="rm-lantern" style="left:19%;bottom:95px;animation-duration:3.8s;animation-delay:-.6s">
+    <svg viewBox="0 0 40 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="20" y1="0" x2="20" y2="6" stroke="#d4a844" stroke-width="1.5"/>
+      <polygon points="20,5 28,5 28,8 12,8 12,5" fill="#d4a844" opacity=".8"/>
+      <path d="M12 8 Q8 22 9 40 Q14 52 20 53 Q26 52 31 40 Q32 22 28 8Z" fill="rgba(212,140,40,.18)" stroke="#d4a844" stroke-width="1.2"/>
+      <line x1="10" y1="24" x2="30" y2="24" stroke="#d4a844" stroke-width=".5" opacity=".4"/>
+      <polygon points="20,53 28,53 27,56 13,56 12,53" fill="#d4a844" opacity=".8"/>
+    </svg>
+  </div>
+  <div class="rm-lantern" style="right:7%;bottom:90px;animation-duration:4.5s;animation-delay:-.3s">
+    <svg viewBox="0 0 52 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="26" y1="0" x2="26" y2="8" stroke="#d4a844" stroke-width="1.5"/>
+      <polygon points="26,6 36,6 36,10 16,10 16,6" fill="#d4a844" opacity=".8"/>
+      <path d="M16 10 Q10 28 12 52 Q18 66 26 68 Q34 66 40 52 Q42 28 36 10Z" fill="rgba(212,140,40,.18)" stroke="#d4a844" stroke-width="1.2"/>
+      <path d="M18 22 Q14 34 15 46" stroke="#d4a844" stroke-width=".6" opacity=".5"/>
+      <path d="M34 22 Q38 34 37 46" stroke="#d4a844" stroke-width=".6" opacity=".5"/>
+      <line x1="14" y1="32" x2="38" y2="32" stroke="#d4a844" stroke-width=".5" opacity=".4"/>
+      <line x1="13" y1="44" x2="39" y2="44" stroke="#d4a844" stroke-width=".5" opacity=".4"/>
+      <polygon points="26,68 36,68 34,72 18,72 16,68" fill="#d4a844" opacity=".8"/>
+      <line x1="26" y1="72" x2="26" y2="78" stroke="#d4a844" stroke-width="1.2"/>
+      <polygon points="22,78 30,78 28,84 24,84" fill="#d4a844" opacity=".6"/>
+      <ellipse cx="26" cy="40" rx="10" ry="14" fill="rgba(255,200,60,.12)"/>
+    </svg>
+  </div>
+  <div class="rm-lantern" style="right:19%;bottom:95px;animation-duration:3.6s;animation-delay:-.9s">
+    <svg viewBox="0 0 40 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="20" y1="0" x2="20" y2="6" stroke="#d4a844" stroke-width="1.5"/>
+      <polygon points="20,5 28,5 28,8 12,8 12,5" fill="#d4a844" opacity=".8"/>
+      <path d="M12 8 Q8 22 9 40 Q14 52 20 53 Q26 52 31 40 Q32 22 28 8Z" fill="rgba(212,140,40,.18)" stroke="#d4a844" stroke-width="1.2"/>
+      <line x1="10" y1="24" x2="30" y2="24" stroke="#d4a844" stroke-width=".5" opacity=".4"/>
+      <polygon points="20,53 28,53 27,56 13,56 12,53" fill="#d4a844" opacity=".8"/>
+    </svg>
+  </div>
+
+  <!-- Crescent moon -->
+  <div class="rm-moon-wrap">
+    <svg class="rm-moon-svg" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="moonGrad" cx="40%" cy="38%" r="62%">
+          <stop offset="0%"  stop-color="#fff6d0"/>
+          <stop offset="45%" stop-color="#e8c060"/>
+          <stop offset="100%" stop-color="#c8854a"/>
+        </radialGradient>
+        <filter id="moonGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <mask id="cMask">
+        <circle cx="55" cy="55" r="42" fill="white"/>
+        <circle cx="74" cy="46" r="34" fill="black"/>
+      </mask>
+      <circle cx="55" cy="55" r="42" fill="url(#moonGrad)" mask="url(#cMask)" filter="url(#moonGlow)"/>
+      <g transform="translate(76,30)" fill="#fff6d0" opacity=".9">
+        <polygon points="8,0 9.5,5.5 15,5.5 10.5,9 12,14.5 8,11 4,14.5 5.5,9 1,5.5 6.5,5.5"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Content card -->
+  <div class="rm-card">
+    <div class="rm-ornament">
+      <div class="rm-ornament-line"></div>
+      ✦ Sillage Studio ✦
+      <div class="rm-ornament-line"></div>
+    </div>
+    <div class="rm-arabic">رمضان كريم</div>
+    <div class="rm-english">Ramadan Kareem</div>
+    <div class="rm-tagline">Wishing you a blessed and joyful month</div>
+    <div class="rm-bar-wrap"><div class="rm-bar-fill"></div></div>
+    <div class="rm-skip" onclick="closeRamadanOverlay()">Skip ›</div>
+  </div>
+
+</div>
+<!-- ══ END OVERLAY ══ -->
+
+<script>
+    (function () {
+
+    var overlay = document.getElementById('ramadanOverlay');
+    if (!overlay) return;
+
+    // check if already shown
+    if (localStorage.getItem("ramadanOverlayShown")) {
+        overlay.style.display = "none";
+        return;
+    }
+
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(function () {
+
+        overlay.classList.add('hide');
+
+        setTimeout(function () {
+
+            document.body.style.overflow = '';
+            overlay.style.display = 'none';
+
+            // save in localStorage
+            localStorage.setItem("ramadanOverlayShown", "true");
+
+        }, 900);
+
+    }, 3000);
+
+})();
+</script>

@@ -11,6 +11,9 @@ public class OrderItemRepository : GenericRepository<OrderItem>, IOrderItemRepos
 
     public IQueryable<OrderItem> GetAllByOrderId(int orderId)
     {
-        return _dbContext.Set<OrderItem>().Where(oi => oi.OrderId == orderId).AsNoTracking().AsQueryable();
+        return _dbContext.Set<OrderItem>()
+            .Include(o => o.Product)
+            .Where(oi => oi.OrderId == orderId)
+            .AsNoTracking().AsQueryable();
     }
 }

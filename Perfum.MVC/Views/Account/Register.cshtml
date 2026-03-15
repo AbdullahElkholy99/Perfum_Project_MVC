@@ -1,4 +1,4 @@
-@model RegisterVM
+@* @model RegisterVM
 @{
     Layout = null;
     ViewData["Title"] = "Sign Up";
@@ -79,13 +79,1329 @@
         </div>
     </section>
 
-   @*  <footer>
-        <div class="footer-logo">Sillage</div>
-        <div class="footer-tagline">Luxury Fragrance Studio · Est. 2018</div>
-    </footer> *@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
 </body>
 </html>
+ *@ 
+ 
+@model RegisterVM
+@{
+    Layout = null;
+    ViewData["Title"] = "Sign Up";
+}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up — Sillage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ── Register-specific overrides ── */
+        /* ===== Layout ===== */
+
+        :root {
+            --bg: #f8f6f3;
+            --bg2: #f1ece6;
+            --text: #1e1a16;
+            --text2: #6d6257;
+            --text3: #9a8f83;
+            --border: #e8e0d8;
+            --border2: #d8cfc7;
+            --accent: #c8854a;
+            --accent2: #b8733e;
+            --gold: #d4a844;
+            --green: #6fa86b;
+            --rose: #d86a6a;
+            --glow: rgba(200,133,74,.25);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Jost',sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        /* main page split */
+        .login-page {
+            display: grid;
+            grid-template-columns: 45% 55%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* left brand */
+        .login-brand {
+            background: linear-gradient(140deg,#1c1611,#2b221b);
+            color: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+        }
+
+        /* right form */
+        .login-form-panel {
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 60px;
+            overflow: hidden;
+        }
+
+        /* form container */
+        .login-form-wrap {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        /* inputs */
+        .auth-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .auth-input-wrap {
+            margin-bottom: 20px;
+        }
+
+        .auth-label {
+            font-size: 12px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        /* icons inside input */
+        .auth-input-inner {
+            position: relative;
+        }
+
+        .auth-input-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3);
+        }
+
+        /* back button */
+        .auth-back {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            text-decoration: none;
+            color: var(--text2);
+            font-size: 13px;
+        }
+
+        /* responsive */
+        @@media (max-width:900px) {
+            .login-page {
+                grid-template-columns: 1fr;
+            }
+
+            .login-brand {
+                display: none;
+            }
+
+            .login-form-panel {
+                padding: 40px 20px;
+            }
+        }
+        /* Progress steps */
+        .reg-steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 36px;
+        }
+
+        .reg-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            position: relative;
+        }
+
+        .reg-step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border2);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--text3);
+            letter-spacing: .04em;
+            transition: all .35s;
+            position: relative;
+            z-index: 2;
+        }
+
+        .reg-step.active .reg-step-circle {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 0 5px var(--glow);
+        }
+
+        .reg-step.done .reg-step-circle {
+            border-color: var(--gold);
+            background: var(--gold);
+            color: #fff;
+        }
+
+        .reg-step-label {
+            font-size: 8px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--text3);
+            transition: color .3s;
+        }
+
+        .reg-step.active .reg-step-label {
+            color: var(--accent);
+        }
+
+        .reg-step.done .reg-step-label {
+            color: var(--gold);
+        }
+
+        /* Connector line */
+        .reg-step-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reg-step-line-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--gold), var(--accent));
+            transition: width .6s ease;
+        }
+
+        /* Step panels */
+        .reg-step-panel {
+            display: none;
+        }
+
+            .reg-step-panel.active {
+                display: block;
+                animation: fadeSlideUp .45s ease-out both;
+            }
+
+        /* Password strength bar */
+        .pw-strength {
+            margin-top: 8px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .pw-strength-bars {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            width: 100%;
+        }
+
+        .pw-bar {
+            flex: 1;
+            height: 3px;
+            border-radius: 10px;
+            background: var(--border);
+        }
+
+            .pw-bar.weak {
+                background: #e07070;
+            }
+
+            .pw-bar.fair {
+                background: #e0b870;
+            }
+
+            .pw-bar.good {
+                background: #a0c870;
+            }
+
+            .pw-bar.strong {
+                background: var(--green);
+            }
+
+        .pw-strength-label {
+            font-size: 10px;
+            letter-spacing: .12em;
+            color: var(--text3);
+            text-transform: uppercase;
+            transition: color .3s;
+        }
+
+        /* Match indicator */
+        .pw-match {
+            font-size: 11px;
+            letter-spacing: .06em;
+            margin-top: 6px;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .pw-match.ok {
+                color: var(--green);
+            }
+
+            .pw-match.err {
+                color: var(--rose);
+            }
+
+        /* Nav buttons */
+        .reg-nav {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .reg-btn-back {
+            flex: 0 0 auto;
+            padding: 14px 20px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text2);
+            font-family: 'Jost', sans-serif;
+            font-size: 11px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all .25s;
+        }
+
+            .reg-btn-back:hover {
+                background: var(--bg2);
+                border-color: var(--border2);
+            }
+
+        .reg-btn-next {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Jost', sans-serif;
+            font-size: 11px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all .32s cubic-bezier(.34,1.2,.64,1);
+            box-shadow: 0 6px 22px rgba(200,133,74,.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .reg-btn-next::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, rgba(255,255,255,.15), transparent);
+                opacity: 0;
+                transition: opacity .2s;
+            }
+
+            .reg-btn-next:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 28px rgba(200,133,74,.38);
+            }
+
+                .reg-btn-next:hover::before {
+                    opacity: 1;
+                }
+
+            .reg-btn-next:active {
+                transform: translateY(0);
+            }
+
+            .reg-btn-next.loading {
+                pointer-events: none;
+                opacity: .8;
+            }
+
+                .reg-btn-next.loading .btn-text {
+                    opacity: 0;
+                }
+
+                .reg-btn-next.loading::after {
+                    content: '';
+                    position: absolute;
+                    width: 18px;
+                    height: 18px;
+                    border: 2px solid rgba(255,255,255,.4);
+                    border-top-color: #fff;
+                    border-radius: 50%;
+                    animation: spinBtn .7s linear infinite;
+                }
+
+        /* Terms checkbox row */
+        .reg-terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text2);
+            letter-spacing: .03em;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+            .reg-terms input[type="checkbox"] {
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                flex-shrink: 0;
+                border: 1.5px solid var(--border2);
+                border-radius: 5px;
+                background: var(--bg);
+                cursor: pointer;
+                transition: all .2s;
+                position: relative;
+                margin-top: 2px;
+            }
+
+            .reg-terms input:checked {
+                background: var(--accent);
+                border-color: var(--accent);
+            }
+
+                .reg-terms input:checked::after {
+                    content: '';
+                    position: absolute;
+                    left: 3px;
+                    top: 1px;
+                    width: 7px;
+                    height: 10px;
+                    border: 2px solid #fff;
+                    border-top: none;
+                    border-left: none;
+                    transform: rotate(42deg);
+                }
+
+        /* Step 2: review card */
+        .reg-review-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 22px;
+        }
+
+        .reg-review-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--border);
+            gap: 12px;
+        }
+
+            .reg-review-row:last-child {
+                border-bottom: none;
+            }
+
+        .reg-review-key {
+            font-size: 9px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--text3);
+            flex-shrink: 0;
+        }
+
+        .reg-review-val {
+            font-size: 13px;
+            color: var(--text);
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Right panel scroll */
+        .login-form-panel {
+            overflow-y: auto;
+        }
+
+        @@keyframes spinBtn {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @@keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* ===== Missing Auth Header ===== */
+
+.auth-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:34px;
+    font-weight:400;
+    margin-bottom:6px;
+}
+
+.auth-title em{
+    font-style:italic;
+    color:var(--accent);
+}
+
+.auth-subtitle{
+    font-size:14px;
+    color:var(--text2);
+    margin-bottom:28px;
+}
+
+/* eyebrow */
+
+.auth-eyebrow{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.auth-eyebrow-line{
+    flex:1;
+    height:1px;
+    background:var(--border);
+}
+
+.auth-eyebrow span{
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--text3);
+}
+
+
+/* ===== Theme Toggle ===== */
+
+.auth-theme-btn{
+    position:absolute;
+    top:28px;
+    right:28px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.auth-theme-btn:hover{
+    background:var(--bg2);
+}
+
+
+/* ===== Password Toggle ===== */
+
+.auth-pw-toggle{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:14px;
+    color:var(--text3);
+}
+
+.auth-pw-toggle:hover{
+    color:var(--accent);
+}
+
+
+/* ===== Divider ===== */
+
+.auth-divider{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.auth-divider-line{
+    flex:1;
+    height:1px;
+    background:var(--border);
+}
+
+.auth-divider-text{
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--text3);
+}
+
+
+/* ===== Google Button ===== */
+
+.auth-google-btn{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-size:13px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.auth-google-btn:hover{
+    background:#faf8f5;
+    border-color:var(--border2);
+}
+
+
+/* ===== Auth Switch ===== */
+
+.auth-switch{
+    text-align:center;
+    margin-top:24px;
+    font-size:13px;
+}
+
+.auth-link{
+    color:var(--accent);
+    text-decoration:none;
+}
+
+.auth-link:hover{
+    text-decoration:underline;
+}
+
+
+/* ===== Brand Panel Elements ===== */
+
+.lb-content{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    margin-top:-150px;
+}
+
+.lb-logo{
+    font-family:'Cormorant Garamond',serif;
+    font-size:36px;
+    letter-spacing:.05em;
+}
+
+.lb-logo em{
+    color:var(--gold);
+}
+
+.lb-logo-sub{
+    display:block;
+    font-size:10px;
+    letter-spacing:.3em;
+    margin-top:4px;
+    opacity:.7;
+}
+
+.lb-tagline{
+    font-family:'Cormorant Garamond',serif;
+    font-size:20px;
+    margin-top:20px;
+    line-height:1.5;
+}
+
+.lb-bottle{
+    margin:40px 0;
+    transition:transform .4s ease;
+}
+
+
+/* ===== Brand Decorations ===== */
+
+.lb-orb{
+    position:absolute;
+    border-radius:50%;
+    background:radial-gradient(circle,var(--gold),transparent);
+    opacity:.08;
+}
+
+.lb-orb-1{
+    width:260px;
+    height:260px;
+    top:-80px;
+    left:-80px;
+}
+
+.lb-orb-2{
+    width:200px;
+    height:200px;
+    bottom:-60px;
+    right:-60px;
+}
+
+.lb-orb-3{
+    width:160px;
+    height:160px;
+    top:40%;
+    right:-60px;
+}
+
+
+/* ===== Mist Lines ===== */
+
+.lb-mist{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+}
+
+.lb-mist-line{
+    position:absolute;
+    bottom:-200px;
+    width:2px;
+    background:linear-gradient(to top,rgba(255,255,255,.6),transparent);
+    opacity:.25;
+    animation:mistUp linear infinite;
+}
+
+@@keyframes mistUp{
+    from{transform:translateY(0)}
+    to{transform:translateY(-500px)}
+}
+
+
+/* ===== Badges ===== */
+
+.lb-badges{
+    position:absolute;
+    bottom:150px;
+    display:flex;
+    gap:12px;
+ }
+
+.lb-badge{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 12px;
+    border-radius:20px;
+    font-size:11px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.2);
+}
+
+.lb-badge-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--gold);
+}
+
+
+/* ===== Shake Animation ===== */
+
+@@keyframes inputShake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-4px)}
+50%{transform:translateX(4px)}
+75%{transform:translateX(-4px)}
+100%{transform:translateX(0)}
+}
+
+/* ===== DARK MODE ===== */
+
+[data-theme="dark"]{
+
+    --bg:#141210;
+    --bg2:#1b1815;
+
+    --text:#f4eee7;
+    --text2:#c8bfb6;
+    --text3:#8f857b;
+
+    --border:#2a241f;
+    --border2:#3a332c;
+
+    --accent:#d79b63;
+    --accent2:#c8854a;
+
+    --gold:#e4b85a;
+
+    --glow:rgba(200,133,74,.35);
+}
+
+/* body background */
+
+[data-theme="dark"] body{
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* inputs */
+
+[data-theme="dark"] .auth-input{
+    background:#1b1815;
+    border-color:var(--border);
+    color:var(--text);
+}
+
+/* google button */
+
+[data-theme="dark"] .auth-google-btn{
+    background:#1b1815;
+    border-color:var(--border);
+    color:var(--text);
+}
+
+[data-theme="dark"] .auth-google-btn:hover{
+    background:#221e1a;
+}
+
+/* theme toggle button */
+
+[data-theme="dark"] .auth-theme-btn{
+    background:#1b1815;
+    border-color:var(--border);
+    color:var(--text);
+}
+
+/* review card */
+
+[data-theme="dark"] .reg-review-card{
+    background:#1b1815;
+    border-color:var(--border);
+}
+
+/* step circles */
+
+[data-theme="dark"] .reg-step-circle{
+    background:#1b1815;
+    border-color:var(--border);
+}
+
+/* back button */
+
+[data-theme="dark"] .reg-btn-back{
+    background:#1b1815;
+    border-color:var(--border);
+}
+
+/* divider */
+
+[data-theme="dark"] .auth-divider-line{
+    background:var(--border);
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="login-page">
+
+        <!-- ══════════════════════════════════
+             LEFT — Brand Panel
+        ══════════════════════════════════ -->
+        <div class="login-brand">
+            <div class="lb-orb lb-orb-1"></div>
+            <div class="lb-orb lb-orb-2"></div>
+            <div class="lb-orb lb-orb-3"></div>
+            <div class="lb-grain"></div>
+            <div class="lb-mist" id="lbMist"></div>
+            <div class="lb-rule"></div>
+
+            <div class="lb-content" >
+                <div class="lb-logo">Sill<em>age</em><span class="lb-logo-sub">Luxury Fragrance Studio</span></div>
+
+                <div class="lb-bottle">
+                    <svg width="130" height="280" viewBox="0 0 160 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="lbBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#c8854a" stop-opacity=".20" />
+                                <stop offset="30%" stop-color="rgba(255,245,235,1)" stop-opacity=".90" />
+                                <stop offset="70%" stop-color="rgba(255,248,240,1)" stop-opacity=".95" />
+                                <stop offset="100%" stop-color="#c8854a" stop-opacity=".30" />
+                            </linearGradient>
+                            <linearGradient id="lbCapGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#9b6b3a" />
+                                <stop offset="50%" stop-color="#d4a844" />
+                                <stop offset="100%" stop-color="#9b6b3a" />
+                            </linearGradient>
+                            <linearGradient id="lbLiquidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#d4a844" stop-opacity=".55" />
+                                <stop offset="100%" stop-color="#c8854a" stop-opacity=".80" />
+                            </linearGradient>
+                            <clipPath id="lbBodyClip"><rect x="24" y="118" width="112" height="200" rx="14" /></clipPath>
+                        </defs>
+                        <rect x="56" y="18" width="48" height="52" rx="6" fill="url(#lbCapGrad)" />
+                        <rect x="60" y="22" width="40" height="44" rx="4" fill="url(#lbCapGrad)" opacity=".55" />
+                        <rect x="54" y="66" width="52" height="4" rx="2" fill="#9b6b3a" opacity=".5" />
+                        <rect x="62" y="70" width="36" height="50" rx="4" fill="rgba(255,235,210,.7)" />
+                        <rect x="58" y="112" width="44" height="8" rx="4" fill="url(#lbCapGrad)" opacity=".65" />
+                        <rect x="24" y="118" width="112" height="200" rx="14" fill="url(#lbBodyGrad)" stroke="rgba(212,168,68,.30)" stroke-width="1" />
+                        <rect x="24" y="200" width="112" height="118" fill="url(#lbLiquidGrad)" clip-path="url(#lbBodyClip)" opacity=".42" />
+                        <ellipse cx="80" cy="200" rx="50" ry="5" fill="rgba(255,220,150,.38)" opacity=".8" />
+                        <rect x="38" y="148" width="84" height="90" rx="8" fill="white" opacity=".68" />
+                        <text x="80" y="176" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="11" fill="#2a1f14" opacity=".75" letter-spacing="1.5">SILLAGE</text>
+                        <line x1="50" y1="181" x2="110" y2="181" stroke="rgba(200,133,74,.45)" stroke-width=".8" />
+                        <text x="80" y="197" text-anchor="middle" font-family="Jost,sans-serif" font-size="7" fill="#6b5040" opacity=".65" letter-spacing="2.5">PARFUM</text>
+                        <text x="80" y="216" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="18" fill="#c8854a" opacity=".88" font-style="italic">Obscura</text>
+                        <text x="80" y="228" text-anchor="middle" font-family="Jost,sans-serif" font-size="6" fill="#a08060" opacity=".55" letter-spacing="3">100 ML · EDP</text>
+                        <rect x="32" y="130" width="6" height="160" rx="3" fill="white" opacity=".22" />
+                        <rect x="42" y="130" width="2" height="140" rx="1" fill="white" opacity=".10" />
+                        <rect x="20" y="314" width="120" height="10" rx="5" fill="url(#lbCapGrad)" opacity=".55" />
+                        <rect x="16" y="320" width="128" height="6" rx="3" fill="#9b6b3a" opacity=".38" />
+                    </svg>
+                </div>
+
+                <p class="lb-tagline">Begin your story<br>with a single spritz.</p>
+
+                <div class="lb-dots">
+                    <div class="lb-dot"></div>
+                    <div class="lb-dot"></div>
+                    <div class="lb-dot"></div>
+                </div>
+            </div>
+
+            <div class="lb-badges">
+                <div class="lb-badge"><div class="lb-badge-dot"></div>Free Welcome Sample</div>
+                <div class="lb-badge"><div class="lb-badge-dot"></div>Members-Only Deals</div>
+                <div class="lb-badge"><div class="lb-badge-dot"></div>Early Access</div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════
+             RIGHT — Form Panel
+        ══════════════════════════════════ -->
+        <div class="login-form-panel">
+
+            <a asp-action="Login" asp-controller="Account" class="auth-back">
+                <i class="fa-solid fa-arrow-left"></i> Sign In
+            </a>
+
+            <div class="auth-theme-btn" onclick="toggleAuthTheme()" id="authThemeBtn" title="Toggle theme">
+                <i class="fa-solid fa-moon"></i>
+            </div>
+
+            <div class="login-form-wrap">
+
+                <!-- Header -->
+                <div class="auth-eyebrow">
+                    <div class="auth-eyebrow-line"></div>
+                    <span>New Member</span>
+                    <div class="auth-eyebrow-line"></div>
+                </div>
+                <h1 class="auth-title">Create <em>Account</em></h1>
+                <p class="auth-subtitle">Join Sillage and discover luxury fragrance tailored to you.</p>
+
+                <!-- Validation summary -->
+                <div asp-validation-summary="ModelOnly" class="auth-msg auth-error"></div>
+
+                <!-- ── Step indicator ── -->
+                <div class="reg-steps" id="regSteps">
+                    <div class="reg-step active" id="step-ind-1">
+                        <div class="reg-step-circle">1</div>
+                        <span class="reg-step-label">Account</span>
+                    </div>
+                    <div class="reg-step-line"><div class="reg-step-line-fill" id="line1"></div></div>
+                    <div class="reg-step" id="step-ind-2">
+                        <div class="reg-step-circle">2</div>
+                        <span class="reg-step-label">Profile</span>
+                    </div>
+                    <div class="reg-step-line"><div class="reg-step-line-fill" id="line2"></div></div>
+                    <div class="reg-step" id="step-ind-3">
+                        <div class="reg-step-circle">3</div>
+                        <span class="reg-step-label">Review</span>
+                    </div>
+                </div>
+
+                <!-- ══ ACTUAL FORM (single POST) ══ -->
+                <form asp-action="Register" asp-controller="Account" method="post" id="regForm">
+                    @Html.AntiForgeryToken()
+
+                    <!-- ── STEP 1: Account ── -->
+                    <div class="reg-step-panel active" id="panel-1">
+
+                        <div class="auth-input-wrap">
+                            <label asp-for="UserName" class="auth-label">Username</label>
+                            <div class="auth-input-inner">
+                                <input asp-for="UserName" type="text" class="auth-input" placeholder="yourname" autocomplete="username" id="regUsername" />
+                                <i class="fa-regular fa-user auth-input-icon"></i>
+                            </div>
+                            <span asp-validation-for="UserName" class="auth-validation"></span>
+                        </div>
+
+                        <div class="auth-input-wrap">
+                            <label asp-for="Email" class="auth-label">Email Address</label>
+                            <div class="auth-input-inner">
+                                <input asp-for="Email" type="email" class="auth-input" placeholder="you@example.com" autocomplete="email" id="regEmail" />
+                                <i class="fa-regular fa-envelope auth-input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Email" class="auth-validation"></span>
+                        </div>
+
+                        <div class="auth-input-wrap">
+                            <label asp-for="Password" class="auth-label">Password</label>
+                            <div class="auth-input-inner">
+                                <input asp-for="Password" type="password" class="auth-input" placeholder="••••••••" autocomplete="new-password" id="regPassword"  oninput="checkStrength(this.value)" />
+                                <button type="button" class="auth-pw-toggle" onclick="togglePw('regPassword',this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <div class="pw-strength">
+                                <div class="pw-strength-bars">
+                                    <div class="pw-bar" id="bar1"></div>
+                                    <div class="pw-bar" id="bar2"></div>
+                                    <div class="pw-bar" id="bar3"></div>
+                                    <div class="pw-bar" id="bar4"></div>
+                                </div>
+                                <span class="pw-strength-label" id="pwLabel">Enter a password</span>
+                            </div>
+                            <span asp-validation-for="Password" class="auth-validation"></span>
+                        </div>
+
+                        <div class="auth-input-wrap">
+                            <label asp-for="ConfirmPassword" class="auth-label">Confirm Password</label>
+                            <div class="auth-input-inner">
+                                <input asp-for="ConfirmPassword" type="password" class="auth-input" placeholder="••••••••" autocomplete="new-password" id="regConfirm"  oninput="checkMatch()" />
+                                <button type="button" class="auth-pw-toggle" onclick="togglePw('regConfirm',this)" tabindex="-1"><i class="fa-regular fa-eye"></i></button>
+                            </div>
+                            <div class="pw-match" id="pwMatch"></div>
+                            <span asp-validation-for="ConfirmPassword" class="auth-validation"></span>
+                        </div>
+
+                        <div class="reg-nav">
+                            <button type="button" class="reg-btn-next" onclick="goStep(2)">
+                                <span class="btn-text">Continue &nbsp;<i class="fa-solid fa-arrow-right" style="font-size:11px"></i></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ── STEP 2: Profile ── -->
+                    <div class="reg-step-panel" id="panel-2">
+
+                        <div class="auth-input-wrap">
+                            <label asp-for="PhoneNumber" class="auth-label">Phone Number</label>
+                            <div class="auth-input-inner">
+                                <input asp-for="PhoneNumber" type="tel" class="auth-input" placeholder="+20 1012345678" autocomplete="tel" id="regPhone" />
+                                <i class="fa-solid fa-phone auth-input-icon"></i>
+                            </div>
+                            <span asp-validation-for="PhoneNumber" class="auth-validation"></span>
+                        </div>
+
+                        <div class="auth-input-wrap">
+                            <label asp-for="Address" class="auth-label">Delivery Address</label>
+                            <div class="auth-input-inner">
+                                <input asp-for="Address" type="text" class="auth-input" placeholder="Street, City, Country" autocomplete="street-address" id="regAddress" />
+                                <i class="fa-solid fa-location-dot auth-input-icon"></i>
+                            </div>
+                            <span asp-validation-for="Address" class="auth-validation"></span>
+                        </div>
+
+                        <div class="reg-terms">
+                            <input type="checkbox" id="regTerms" />
+                            <label for="regTerms">
+                                I agree to the <a href="#" class="auth-link">Terms of Service</a> and
+                                <a href="#" class="auth-link">Privacy Policy</a>
+                            </label>
+                        </div>
+
+                        <div class="reg-nav">
+                            <button type="button" class="reg-btn-back" onclick="goStep(1)">
+                                <i class="fa-solid fa-arrow-left" style="font-size:10px"></i>
+                            </button>
+                            <button type="button" class="reg-btn-next" onclick="goStep(3)">
+                                <span class="btn-text">Review &nbsp;<i class="fa-solid fa-arrow-right" style="font-size:11px"></i></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ── STEP 3: Review & Submit ── -->
+                    <div class="reg-step-panel" id="panel-3">
+
+                        <div class="reg-review-card">
+                            <div class="reg-review-row">
+                                <span class="reg-review-key">Username</span>
+                                <span class="reg-review-val" id="rv-username">—</span>
+                            </div>
+                            <div class="reg-review-row">
+                                <span class="reg-review-key">Email</span>
+                                <span class="reg-review-val" id="rv-email">—</span>
+                            </div>
+                            <div class="reg-review-row">
+                                <span class="reg-review-key">Phone</span>
+                                <span class="reg-review-val" id="rv-phone">—</span>
+                            </div>
+                            <div class="reg-review-row">
+                                <span class="reg-review-key">Address</span>
+                                <span class="reg-review-val" id="rv-address">—</span>
+                            </div>
+                            <div class="reg-review-row">
+                                <span class="reg-review-key">Password</span>
+                                <span class="reg-review-val">••••••••</span>
+                            </div>
+                        </div>
+
+                        <div class="reg-nav">
+                            <button type="button" class="reg-btn-back" onclick="goStep(2)">
+                                <i class="fa-solid fa-arrow-left" style="font-size:10px"></i>
+                            </button>
+                            <button type="submit" class="reg-btn-next" id="regSubmit">
+                                <span class="btn-text">
+                                    Create Account &nbsp;<i class="fa-solid fa-sparkles" style="font-size:11px"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form><!-- /regForm -->
+                <!-- ── Google ── -->
+                <div id="googleSection">
+                    <div class="auth-divider" style="margin-top:20px;">
+                        <div class="auth-divider-line"></div>
+                        <span class="auth-divider-text">or</span>
+                        <div class="auth-divider-line"></div>
+                    </div>
+
+                    <form asp-action="GoogleLogin" asp-controller="Account" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="auth-google-btn">
+                            <i class="fa-brands fa-google"></i>
+                            Continue with Google
+                        </button>
+                    </form>
+                </div>
+
+                <p class="auth-switch">
+                    Already have an account?
+                    <a asp-action="Login" asp-controller="Account" class="auth-link">Sign In →</a>
+                </p>
+
+            </div><!-- /login-form-wrap -->
+        </div><!-- /login-form-panel -->
+
+    </div><!-- /login-page -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        /* ── Theme ── */
+        let authDark = false;
+        function toggleAuthTheme(){
+
+            const current = document.documentElement.getAttribute("data-theme");
+
+            const next = current === "dark" ? "light" : "dark";
+
+            document.documentElement.setAttribute("data-theme", next);
+
+            localStorage.setItem("authTheme", next);
+
+            document.getElementById("authThemeBtn").innerHTML =
+                next === "dark"
+                ? '<i class="fa-solid fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
+        }
+
+        /* load saved theme */
+
+        (function(){
+
+            const saved = localStorage.getItem("authTheme") || "light";
+
+            document.documentElement.setAttribute("data-theme", saved);
+
+            document.getElementById("authThemeBtn").innerHTML =
+                saved === "dark"
+                ? '<i class="fa-solid fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
+
+        })();
+        /* ── Password show/hide ── */
+        function togglePw(id, btn) {
+            const inp = document.getElementById(id);
+            const show = inp.type === 'password';
+            inp.type = show ? 'text' : 'password';
+            btn.innerHTML = show
+                ? '<i class="fa-regular fa-eye-slash"></i>'
+                : '<i class="fa-regular fa-eye"></i>';
+        }
+
+        /* ── Password strength ── */
+        function checkStrength(val) {
+            const bars   = [1,2,3,4].map(n => document.getElementById('bar' + n));
+            const label  = document.getElementById('pwLabel');
+            const levels = ['weak','fair','good','strong'];
+            let score = 0;
+            if (val.length >= 8)          score++;
+            if (/[A-Z]/.test(val))        score++;
+            if (/[0-9]/.test(val))        score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            bars.forEach((b, i) => {
+                b.className = 'pw-bar ' + (i < score ? levels[score - 1] : '');
+            });
+            const names = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+            label.textContent = val.length === 0 ? 'Enter a password' : names[score] + ' password';
+            label.style.color = ['','#e07070','#e0b870','#a0c870','var(--green)'][score] || 'var(--text3)';
+        }
+
+        /* ── Password match ── */
+        function checkMatch() {
+            const pw  = document.getElementById('regPassword').value;
+            const cfm = document.getElementById('regConfirm').value;
+            const el  = document.getElementById('pwMatch');
+            if (!cfm) { el.textContent = ''; return; }
+            if (pw === cfm) {
+                el.className = 'pw-match ok';
+                el.innerHTML = '<i class="fa-solid fa-check" style="font-size:10px"></i> Passwords match';
+            } else {
+                el.className = 'pw-match err';
+                el.innerHTML = '<i class="fa-solid fa-xmark" style="font-size:10px"></i> Passwords do not match';
+            }
+        }
+
+        /* ── Multi-step navigation ── */
+        let currentStep = 1;
+
+        function goStep(n) {
+            // Basic validation before advancing
+            if (n > currentStep) {
+                if (currentStep === 1) {
+                    const u = document.getElementById('regUsername').value.trim();
+                    const e = document.getElementById('regEmail').value.trim();
+                    const p = document.getElementById('regPassword').value;
+                    const c = document.getElementById('regConfirm').value;
+                    if (!u || !e || !p || !c) { shakePanel(1); return; }
+                    if (p !== c) { shakePanel(1); return; }
+                }
+                if (currentStep === 2) {
+                    const terms = document.getElementById('regTerms');
+                    if (!terms.checked) { shakePanel(2); return; }
+                    // Populate review card
+                    document.getElementById('rv-username').textContent = document.getElementById('regUsername').value;
+                    document.getElementById('rv-email').textContent    = document.getElementById('regEmail').value;
+                    document.getElementById('rv-phone').textContent    = document.getElementById('regPhone').value || '—';
+                    document.getElementById('rv-address').textContent  = document.getElementById('regAddress').value || '—';
+                }
+            }
+
+            // Hide current, show target
+            document.getElementById('panel-' + currentStep).classList.remove('active');
+            document.getElementById('panel-' + n).classList.add('active');
+
+            // Update step indicators
+            for (let i = 1; i <= 3; i++) {
+                const ind = document.getElementById('step-ind-' + i);
+                ind.classList.remove('active', 'done');
+                if (i < n)  ind.classList.add('done');
+                if (i === n) ind.classList.add('active');
+                // Update circle icons
+                const circle = ind.querySelector('.reg-step-circle');
+                if (i < n)  circle.innerHTML = '<i class="fa-solid fa-check" style="font-size:9px"></i>';
+                if (i >= n) circle.textContent = i;
+            }
+            // Fill connector lines
+            document.getElementById('line1').style.width = n >= 2 ? '100%' : '0%';
+            document.getElementById('line2').style.width = n >= 3 ? '100%' : '0%';
+
+            // Show/hide google section (only on step 1)
+            document.getElementById('googleSection').style.display = n === 1 ? 'block' : 'none';
+
+            currentStep = n;
+            // Scroll form panel back to top
+            document.querySelector('.login-form-panel').scrollTop = 0;
+        }
+
+        function shakePanel(step) {
+            const panel = document.getElementById('panel-' + step);
+            panel.style.animation = 'none';
+            panel.offsetHeight; // reflow
+            panel.style.animation = 'inputShake .38s ease-out';
+            setTimeout(() => panel.style.animation = '', 400);
+        }
+
+        /* ── Submit loading state ── */
+        document.getElementById('regForm').addEventListener('submit', () => {
+            document.getElementById('regSubmit').classList.add('loading');
+        });
+
+        /* ── Mist lines ── */
+        (function () {
+            const c = document.getElementById('lbMist');
+            if (!c) return;
+            for (let i = 0; i < 14; i++) {
+                const el = document.createElement('div');
+                el.className = 'lb-mist-line';
+                const l = Math.random() * 100, h = 70 + Math.random() * 180;
+                const d = 10 + Math.random() * 14, dl = -(Math.random() * d);
+                el.style.cssText = `left:${l}%;height:${h}px;animation-duration:${d}s;animation-delay:${dl}s;`;
+                c.appendChild(el);
+            }
+        })();
+
+        /* ── Bottle parallax ── */
+        const bp = document.querySelector('.login-brand');
+        const bt = document.querySelector('.lb-bottle');
+        if (bp && bt) {
+            bp.addEventListener('mousemove', e => {
+                const r  = bp.getBoundingClientRect();
+                const dx = (e.clientX - r.left - r.width  / 2) / (r.width  / 2);
+                const dy = (e.clientY - r.top  - r.height / 2) / (r.height / 2);
+                bt.style.transform = `translateY(0) rotate(${dx * 4}deg) rotateX(${-dy * 3}deg)`;
+            });
+            bp.addEventListener('mouseleave', () => { bt.style.transform = ''; });
+        }
+    </script>
+</body>
+</html>
+

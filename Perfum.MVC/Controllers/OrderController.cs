@@ -98,6 +98,28 @@ public class OrderController : Controller
         return View(order);
     }
 
+    // GET: /Order/Details/5
+    public async Task<IActionResult> GetByCustomerId(int customerId)
+    {
+        if (customerId <= 0)
+            return BadRequest();
+
+        var order = await _serviceManager.OrderService.GetByCustomerIdAsync(customerId);
+
+        if (order == null || order.Id == 0)
+        {
+            TempData["Error"] = "Order not found.";
+            return BadRequest();
+        }
+
+        var orderItems =
+            await _serviceManager.OrderItemService.GetAllByOrderIdAsync(order.Id);
+
+        ViewBag.OrderItems = orderItems ?? new List<OrderItemVM>();
+
+        return Json(order);
+    }
+
     #endregion
 
 

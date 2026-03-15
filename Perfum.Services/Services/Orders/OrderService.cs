@@ -58,15 +58,30 @@ public class OrderService : IOrderService
     public async Task<string> AddAsync(AddOrderVM model)
     {
         using var transaction = _repositoryManager.OrderRepository.BeginTransaction();
+
         try
         {
             if (model == null) return "Fail";
 
-            var order = _mapper.Map<Order>(model);
-            if (order == null) return "Fail";
+            var order = new Order
+            {
+                ShippingAddress = model.ShippingAddress,
+                Date = model.Date ?? DateTime.Now,
+                Status = model.Status,
+                CustomerId = model.CustomerId,
+                TotalPrice = 0
+            };
 
-            // Always start at 0 — items will drive the total
-            order.TotalPrice = 0;
+            // Map OrderItems
+            order.OrderItems = model.OrderItems.Select(i => new OrderItem
+            {
+                ProductId = i.ProductId,
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice
+            }).ToList();
+
+            // Calculate total
+            order.TotalPrice = order.OrderItems.Sum(i => i.UnitPrice * i.Quantity);
 
             await _repositoryManager.OrderRepository.AddAsync(order);
 
@@ -79,7 +94,6 @@ public class OrderService : IOrderService
             return "Fail";
         }
     }
-
     // by abdullah ali
     public async Task<Order> CreateOrdersAsync(CreateOrderPaymentVM orderDTO, string BuyerEmail)
     {
@@ -179,6 +193,25 @@ public class OrderService : IOrderService
             return new OrderVM();
         }
     }
+    public async Task<OrderVM> GetByCustomerIdAsync(int customerId)
+    {
+        try
+        {
+            var order = await _repositoryManager.OrderRepository
+                               .GetTableNoTracking()
+                               .FirstOrDefaultAsync(o => o.CustomerId == customerId);
+
+
+            if (order == null) return new OrderVM();
+
+            var orderVM = _mapper.Map<OrderVM>(order);
+            return orderVM ?? new OrderVM();
+        }
+        catch
+        {
+            return new OrderVM();
+        }
+    }
 
 
     // --------------------- Update ---------------------
@@ -186,10 +219,8 @@ public class OrderService : IOrderService
     {
         try
         {
-            var oldOrder = await _repositoryManager.OrderRepository.GetByIdAsync(id);
+            Order? oldOrder = await _repositoryManager.OrderRepository.GetByIdAsync(id);
             if (oldOrder == null) return "Fail";
-
-            _mapper.Map(model, oldOrder);
 
             // Recalculate from items — ignore whatever value came from the form
             var items = await _repositoryManager.OrderItemRepository
@@ -197,8 +228,13 @@ public class OrderService : IOrderService
                               .ToListAsync();
 
             oldOrder.TotalPrice = items.Sum(i => i.UnitPrice * i.Quantity);
+            oldOrder.Id = id;
+            oldOrder.ShippingAddress = model.ShippingAddress;
+            oldOrder.Date = model.Date;
+            oldOrder.Status = model.Status;
 
-            await _repositoryManager.OrderRepository.SaveChangesAsync();
+            await _repositoryManager.OrderRepository.UpdateAsync(oldOrder);
+
             return "Success";
         }
         catch

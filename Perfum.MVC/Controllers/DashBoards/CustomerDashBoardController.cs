@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Perfum.MVC.Controllers.DashBoards;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin,Customer")]
 
 public class CustomerDashBoardController : Controller
 {

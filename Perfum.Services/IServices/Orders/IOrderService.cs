@@ -11,6 +11,7 @@ public interface IOrderService
     // --------------------- Read ---------------------
     Task<PagedResult<OrderVM, OrderFilter, DashBoardOrder>> GetAllAsync();
     Task<OrderVM> GetByIdAsync(int id);
+    Task<OrderVM> GetByCustomerIdAsync(int customerId);
 
     // --------------------- Update ---------------------
     Task<string> UpdateAsync(int id, EditOrderVM model);

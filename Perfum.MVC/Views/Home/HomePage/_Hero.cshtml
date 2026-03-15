@@ -1,0 +1,194 @@
+﻿<section class="hero" id="hero">
+
+    <!-- Atmospheric background -->
+    <div class="hero-canvas">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="mist-lines" id="mistLines"></div>
+        <div class="hero-grain"></div>
+    </div>
+
+    <!-- Vertical golden divider -->
+    <div class="hero-divider"></div>
+
+    <!-- ── LEFT: Text Content ── -->
+    <div class="hero-left">
+
+        <div class="hero-eyebrow">
+            <div class="eyebrow-line"></div>
+            <span class="eyebrow-text">Spring · Summer 2026</span>
+            <div class="eyebrow-line"></div>
+        </div>
+
+        <h1 class="hero-headline">
+            <span>The Art of</span>
+            <span class="line-italic">Invisible</span>
+            <span class="line-outline">Presence</span>
+        </h1>
+
+        <div class="hero-season-badge">
+            <div class="badge-dot"></div>
+            New Collection · 12 Signatures
+        </div>
+
+        <p class="hero-desc">
+            Each fragrance is a story told in air — a trail of memory
+            woven into every room you grace. Crafted by master perfumers
+            with rare botanicals from four continents.
+        </p>
+
+        <div class="hero-actions">
+            <button class="btn-primary" onclick="document.getElementById('shopSection')?.scrollIntoView({behavior:'smooth'})">
+                Explore Collection
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+            <button class="btn-ghost">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4" />
+                    <path d="M6 8l4-2.5v5L6 8z" fill="currentColor" />
+                </svg>
+                Our Story
+            </button>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hs-num">47<sup>+</sup></div>
+                <div class="hs-label">Fragrances</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat">
+                <div class="hs-num">12<sup>k</sup></div>
+                <div class="hs-label">Clients</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat">
+                <div class="hs-num">8<sup>yr</sup></div>
+                <div class="hs-label">Est. 2018</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── RIGHT: Bottle Visual ── -->
+    <div class="hero-right">
+        <div class="bottle-stage" id="bottleStage">
+
+            <!-- Glow -->
+            <div class="bottle-halo"></div>
+
+            <!-- Orbit rings -->
+            <div class="orbit-ring"></div>
+            <div class="orbit-ring orbit-ring-2"></div>
+
+            <!-- Floating note cards -->
+            <div class="float-note float-note-1">
+                <div class="fn-label">Top Note</div>
+                <div class="fn-val"><span class="fn-dot" style="background:#e8c060"></span>Bergamot</div>
+            </div>
+            <div class="float-note float-note-2">
+                <div class="fn-label">Base Note</div>
+                <div class="fn-val"><span class="fn-dot" style="background:#c8854a"></span>Oud & Amber</div>
+            </div>
+            <div class="float-note float-note-3">
+                <div class="fn-label">Heart Note</div>
+                <div class="fn-val"><span class="fn-dot" style="background:#c97a7a"></span>Rose Absolute</div>
+            </div>
+
+            <!-- Bottle SVG -->
+            <div class="bottle-wrap" id="bottleWrap">
+                <svg class="bottle-svg" viewBox="0 0 160 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#c8854a" stop-opacity=".18" />
+                            <stop offset="30%" stop-color="#ede7e0" stop-opacity=".95" />
+                            <stop offset="70%" stop-color="#f7f3ef" stop-opacity="1" />
+                            <stop offset="100%" stop-color="#c8854a" stop-opacity=".28" />
+                        </linearGradient>
+                        <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#9b6b3a" />
+                            <stop offset="50%" stop-color="#d4a844" />
+                            <stop offset="100%" stop-color="#9b6b3a" />
+                        </linearGradient>
+                        <linearGradient id="neckGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#c8854a" stop-opacity=".4" />
+                            <stop offset="50%" stop-color="#ede7e0" stop-opacity=".9" />
+                            <stop offset="100%" stop-color="#c8854a" stop-opacity=".4" />
+                        </linearGradient>
+                        <linearGradient id="liquidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#d4a844" stop-opacity=".6" />
+                            <stop offset="100%" stop-color="#c8854a" stop-opacity=".85" />
+                        </linearGradient>
+                        <filter id="bottleBlur" x="-10%" y="-10%" width="120%" height="120%">
+                            <feGaussianBlur stdDeviation="1.5" />
+                        </filter>
+                        <clipPath id="bodyClip">
+                            <rect x="24" y="118" width="112" height="200" rx="14" />
+                        </clipPath>
+                    </defs>
+
+                    <!-- Cap -->
+                    <rect x="56" y="18" width="48" height="52" rx="6" fill="url(#capGrad)" />
+                    <rect x="60" y="22" width="40" height="44" rx="4" fill="url(#capGrad)" opacity=".6" />
+                    <!-- Cap rim line -->
+                    <rect x="54" y="66" width="52" height="4" rx="2" fill="#9b6b3a" opacity=".5" />
+
+                    <!-- Neck -->
+                    <rect x="62" y="70" width="36" height="50" rx="4" fill="url(#neckGrad)" />
+                    <!-- Neck ring -->
+                    <rect x="58" y="112" width="44" height="8" rx="4" fill="url(#capGrad)" opacity=".7" />
+
+                    <!-- Bottle body shadow (behind) -->
+                    <rect x="26" y="120" width="108" height="196" rx="13" fill="rgba(100,60,20,.1)" filter="url(#bottleBlur)" transform="translate(4,6)" />
+
+                    <!-- Bottle body -->
+                    <rect x="24" y="118" width="112" height="200" rx="14" fill="url(#bodyGrad)" stroke="rgba(200,133,74,.3)" stroke-width="1" />
+
+                    <!-- Liquid fill -->
+                    <rect x="24" y="200" width="112" height="118" rx="0" fill="url(#liquidGrad)" clip-path="url(#bodyClip)" opacity=".45" />
+
+                    <!-- Liquid surface shimmer -->
+                    <ellipse cx="80" cy="200" rx="50" ry="5" fill="rgba(255,220,150,.4)" opacity=".7" />
+
+                    <!-- Label area -->
+                    <rect x="38" y="148" width="84" height="90" rx="8" fill="white" opacity=".72" />
+                    <rect x="40" y="150" width="80" height="86" rx="7" fill="white" opacity=".5" stroke="rgba(200,133,74,.25)" stroke-width=".8" />
+
+                    <!-- Label text lines (stylized) -->
+                    <text x="80" y="176" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="11" fill="#2a1f14" opacity=".8" letter-spacing="1.5">SILLAGE</text>
+                    <line x1="50" y1="180" x2="110" y2="180" stroke="rgba(200,133,74,.5)" stroke-width=".8" />
+                    <text x="80" y="196" text-anchor="middle" font-family="Jost, sans-serif" font-size="7" fill="#6b5040" opacity=".7" letter-spacing="2.5">PARFUM</text>
+                    <text x="80" y="215" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="18" fill="#c8854a" opacity=".9" letter-spacing=".5" font-style="italic">Obscura</text>
+                    <text x="80" y="228" text-anchor="middle" font-family="Jost, sans-serif" font-size="6" fill="#a08060" opacity=".6" letter-spacing="3">100 ML · EDP</text>
+
+                    <!-- Glass reflections -->
+                    <rect x="32" y="130" width="6" height="160" rx="3" fill="white" opacity=".25" />
+                    <rect x="42" y="130" width="2" height="140" rx="1" fill="white" opacity=".12" />
+
+                    <!-- Base foot -->
+                    <rect x="20" y="314" width="120" height="10" rx="5" fill="url(#capGrad)" opacity=".6" />
+                    <rect x="16" y="320" width="128" height="6" rx="3" fill="#9b6b3a" opacity=".4" />
+                </svg>
+            </div>
+
+            <!-- Scent particles -->
+            <div class="scent-particle" style="top:22%;left:45%;animation-delay:0s;--drift:20px;background:var(--gold)"></div>
+            <div class="scent-particle" style="top:20%;left:52%;animation-delay:-1.2s;--drift:-15px;background:var(--accent);width:3px;height:3px"></div>
+            <div class="scent-particle" style="top:24%;left:48%;animation-delay:-2.6s;--drift:30px;background:var(--rose);width:5px;height:5px"></div>
+            <div class="scent-particle" style="top:22%;left:43%;animation-delay:-3.8s;--drift:-25px;width:3px;height:3px"></div>
+
+            <!-- New season tag -->
+            <div class="collection-tag">✦ New Season</div>
+        </div>
+    </div>
+
+
+</section>
+
+<!-- ── MARQUEE BAND ── -->
+<div class="marquee-band" style="margin-top:-60px">
+    <div class="marquee-track" id="marqueeTrack"></div>
+</div>

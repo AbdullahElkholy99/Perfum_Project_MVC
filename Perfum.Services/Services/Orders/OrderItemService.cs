@@ -90,6 +90,39 @@ public class OrderItemService : IOrderItemService
             return null;
         }
     }
+    public async Task<List<OrderItemWithProductDetailsVM>> GetAllOrderItemsByOrderIdAsync(int orderId)
+    {
+        try
+        {
+            var items = await _repositoryManager
+                              .OrderItemRepository
+                              .GetAllByOrderId(orderId)
+                              .ToListAsync();
+
+            if (items == null) return null;
+            var orderItems = new List<OrderItemWithProductDetailsVM>();
+
+            foreach (var item in items)
+            {
+                var orderItem = new OrderItemWithProductDetailsVM
+                {
+                    Id = item.Id,
+                    ProductId = item.ProductId,
+                    ProductImage = item.Product.ImageUrl,
+                    ProductName = item.ProductName,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    SizeML = item.SizeMl ?? 0
+                };
+                orderItems.Add(orderItem);
+            }
+            return orderItems;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
 
     public async Task<OrderItemVM> GetByIdAsync(int id)

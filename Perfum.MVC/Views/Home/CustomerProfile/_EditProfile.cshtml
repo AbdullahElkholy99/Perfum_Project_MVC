@@ -1,0 +1,323 @@
+﻿@using System.Security.Claims
+@model EditCustomerVM
+
+@{
+    var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+    var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+}
+
+<style>
+
+   
+
+    /* ===============================
+   FORM CARD
+================================*/
+.form-card{
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:32px;
+    max-width:720px;
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+}
+
+/* ===============================
+   SECTION TITLES
+================================*/
+.form-section-title{
+    font-size:12px;
+    font-weight:700;
+    color:var(--text3);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin:28px 0 14px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+}
+
+/* ===============================
+   GRID LAYOUT
+================================*/
+.form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+@@media (max-width:600px){
+    .form-row{
+        grid-template-columns:1fr;
+    }
+}
+
+/* ===============================
+   FORM GROUP
+================================*/
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.form-group label{
+    font-size:13px;
+    font-weight:600;
+    color:var(--text2);
+}
+
+/* ===============================
+   INPUTS
+================================*/
+.form-control,
+.form-input{
+    width:100%;
+    padding:11px 13px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--surface1);
+    font-size:14px;
+    transition:.25s;
+}
+
+.form-control::placeholder,
+.form-input::placeholder{
+    color:var(--text3);
+}
+
+.form-control:focus,
+.form-input:focus{
+    border-color:var(--accent);
+    outline:none;
+    box-shadow:0 0 0 3px rgba(99,102,241,.15);
+}
+
+/* ===============================
+   ERROR
+================================*/
+.field-error{
+    font-size:12px;
+    color:var(--rose);
+}
+
+/* ===============================
+   FILE UPLOAD
+================================*/
+.file-upload-area{
+    border:2px dashed var(--border);
+    border-radius:12px;
+    padding:30px;
+    background:var(--surface3);
+    text-align:center;
+    cursor:pointer;
+    transition:.25s;
+    position:relative;
+}
+
+.file-upload-area:hover{
+    border-color:var(--accent);
+    background:var(--surface2);
+    transform:translateY(-2px);
+}
+
+.file-upload-area img{
+    max-height:140px;
+    border-radius:10px;
+}
+
+/* ===============================
+   PASSWORD INPUT
+================================*/
+.pw-wrap{
+    position:relative;
+}
+
+.pw-toggle{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    color:var(--text3);
+    font-size:14px;
+}
+
+.pw-toggle:hover{
+    color:var(--accent);
+}
+
+/* ===============================
+   FORM ACTIONS
+================================*/
+.form-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:24px;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+}
+
+/* ===============================
+   BUTTONS
+================================*/
+.btn{
+    padding:10px 18px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    border:none;
+    transition:.25s;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+}
+
+.btn-primary{
+    background:var(--accent);
+    color:#fff;
+}
+
+.btn-primary:hover{
+    background:var(--accent-dark);
+    transform:translateY(-1px);
+}
+
+.btn-ghost{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text2);
+}
+
+.btn-ghost:hover{
+    background:var(--surface3);
+}
+
+/* ===============================
+   SAVE STATUS
+================================*/
+.save-status{
+    font-size:13px;
+    color:#22c55e;
+    display:none;
+    align-items:center;
+    gap:6px;
+
+}
+</style>
+
+<div class="section-card tab-panel" id="tab-profile" style="display:none">
+   
+    <div class="card-head">
+        <div class="card-title">Edit <span>Profile</span></div>
+    </div>
+
+    <div class="card-body" style="padding-bottom:0">
+        <form asp-action="Edit" asp-route-id="@UserId" asp-controller="Home" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="alert-error" style="display:@(ViewData.ModelState.IsValid ? "none" : "block")"></div>
+
+            <div class="form-section-title">Account Info</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="UserName">Username</label>
+                    <input asp-for="UserName" class="form-control" placeholder="e.g. john_doe" />
+                    <span asp-validation-for="UserName" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="john@example.com" />
+                    <span asp-validation-for="Email" class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+               
+                <div class="form-group">
+                    <label asp-for="PhoneNumber">Phone Number</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="+1 555 000 0000" />
+                    <span asp-validation-for="PhoneNumber" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address">Address</label>
+                    <input asp-for="Address" class="form-control" placeholder="123 Main St, City, Country" />
+                    <span asp-validation-for="Address" class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImageUrl">Profile Image</label>
+                <div class="file-upload-area" id="fileArea" onclick="document.getElementById('imgInput').click()">
+                    <div id="filePrompt">
+                        <div style="font-size:28px"><i class="fa-solid fa-camera"></i></div>
+                        <div style="color:var(--text2);font-size:14px;margin-top:6px">Click to upload image</div>
+                        <div style="color:var(--text3);font-size:12px">PNG, JPG, WEBP</div>
+                    </div>
+                    <img id="imgPreview" style="display:none;max-height:140px;border-radius:8px;object-fit:contain" />
+                </div>
+                <input asp-for="ImageUrl" type="file" id="imgInput" accept="image/*" style="display:none" onchange="previewImg(this)" />
+                <span asp-validation-for="ImageUrl" class="field-error"></span>
+            </div>
+            <div class="form-section-divider"></div>
+            <div class="form-section-label" style="grid-column:1/-1">Security</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Password">Password</label>
+                    <input asp-for="Password" class="form-control" placeholder="*********" />
+                    <span asp-validation-for="Password" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword">ConfirmPassword</label>
+                    <input asp-for="ConfirmPassword" class="form-control" placeholder="ConfirmPassword" />
+                    <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-ghost">Cancel</a>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-user-pen"></i> Edit Customer</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+<script>
+    console.log("INside edit profile tab")
+    const userId = "@UserId";
+
+    async function loadCustomer() {
+
+        try {
+
+            const response = await fetch(`/Home/GetCustomer/${userId}`);
+
+            if (!response.ok) {
+                throw new Error("Failed to load customer");
+            }
+
+            const data = await response.json();
+
+            document.querySelector('[name="UserName"]').value = data.userName;
+            document.querySelector('[name="Email"]').value = data.email;
+            document.querySelector('[name="Address"]').value = data.address;
+            document.querySelector('[name="PhoneNumber"]').value = data.phoneNumber;
+            document.querySelector('[name="Password"]').value = '';
+            document.querySelector('[name="ConfirmPassword"]').value = '';
+
+        }
+        catch(err){
+            console.error(err);
+        }
+
+    }
+
+    loadCustomer();
+
+</script>

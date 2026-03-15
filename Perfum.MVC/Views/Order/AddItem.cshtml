@@ -17,14 +17,16 @@
             <div class="page-subtitle">Add a product to Order #@Model.OrderId</div>
         </div>
         <div class="topbar-actions">
-            <a asp-action="OrderItems" asp-route-id="@Model.OrderId" class="btn btn-ghost">← Back to Items</a>
+            <a asp-action="OrderItems" asp-route-id="@Model.OrderId" class="btn btn-ghost"><i class="fa-solid fa-arrow-left"></i> Back to Items</a>
         </div>
     </div>
 
     @* ── Form Card ── *@
     <div class="form-card" style="max-width:520px;">
         <div class="detail-card-header" style="margin-bottom:24px;">
-            <span class="detail-card-title">🧴 Item Details</span>
+            <span class="detail-card-title">
+                <i class="fa-solid fa-box-open"></i> Item Details
+            </span>
         </div>
 
         <form asp-action="AddItem" method="post">
@@ -33,61 +35,100 @@
 
             <div class="form-grid" style="grid-template-columns:1fr;">
 
-                @* ── Product dropdown ── *@
+                <!-- Product dropdown -->
                 <div class="form-group">
-                    <label class="form-label">🔖 Product</label>
+                    <label class="form-label">
+                        <i class="fa-solid fa-tag"></i> Product
+                    </label>
+
                     <select asp-for="ProductId" id="productSelect"
                             class="form-control sort-select"
                             style="width:100%;padding:9px 13px;"
                             onchange="fillUnitPrice(this)">
+
                         <option value="">— Select a product —</option>
+
                         @foreach (var item in productList)
                         {
                             <option value="@item.Value">@item.Text</option>
                         }
+
                     </select>
+
                     <span asp-validation-for="ProductId" class="field-error"></span>
                 </div>
 
-                @* ── Quantity ── *@
+                <!-- Quantity -->
                 <div class="form-group">
-                    <label asp-for="Quantity" class="form-label">🔢 Quantity</label>
-                    <input asp-for="Quantity" id="quantityInput" type="number" min="1"
-                           class="form-control" placeholder="1" oninput="calcSubtotal()" />
+                    <label asp-for="Quantity" class="form-label">
+                        <i class="fa-solid fa-hashtag"></i> Quantity
+                    </label>
+
+                    <input asp-for="Quantity"
+                           id="quantityInput"
+                           type="number"
+                           min="1"
+                           class="form-control"
+                           placeholder="1"
+                           oninput="calcSubtotal()" />
+
                     <span asp-validation-for="Quantity" class="field-error"></span>
                 </div>
 
-                @* ── Unit Price (auto-filled, editable) ── *@
+                <!-- Unit Price -->
                 <div class="form-group">
-                    <label asp-for="UnitPrice" class="form-label">💰 Unit Price</label>
-                    <input asp-for="UnitPrice" id="unitPriceInput" type="number"
-                           step="0.01" min="0" class="form-control"
-                           placeholder="0.00" oninput="calcSubtotal()" />
+                    <label asp-for="UnitPrice" class="form-label">
+                        <i class="fa-solid fa-dollar-sign"></i> Unit Price
+                    </label>
+
+                    <input asp-for="UnitPrice"
+                           id="unitPriceInput"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           class="form-control"
+                           placeholder="0.00"
+                           oninput="calcSubtotal()" />
+
                     <span style="font-size:11px;color:var(--text3);">
                         Auto-filled from product — you can override it
                     </span>
+
                     <span asp-validation-for="UnitPrice" class="field-error"></span>
                 </div>
 
-                @* ── Subtotal preview ── *@
+                <!-- Subtotal -->
                 <div class="form-group">
-                    <label class="form-label">🧾 Subtotal Preview</label>
-                    <div id="subtotalPreview" class="form-control"
-                         style="background:var(--surface3);cursor:default;
-                                font-weight:700;color:var(--accent2);">
+                    <label class="form-label">
+                        <i class="fa-solid fa-receipt"></i> Subtotal Preview
+                    </label>
+
+                    <div id="subtotalPreview"
+                         class="form-control"
+                         style="background:var(--surface3);cursor:default;font-weight:700;color:var(--accent2);">
+
                         $0.00
+
                     </div>
                 </div>
 
             </div>
 
             <div class="form-actions">
-                <a asp-action="OrderItems" asp-route-id="@Model.OrderId" class="btn btn-ghost">Cancel</a>
-                <button type="submit" class="btn btn-primary">✦ Add Item</button>
+                <a asp-action="OrderItems"
+                       asp-route-id="@Model.OrderId"
+                       class="btn btn-ghost">
+
+                    <i class="fa-solid fa-arrow-left"></i> Cancel
+
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Add Item
+                </button>
             </div>
         </form>
     </div>
-
 </div>
 
 @section Scripts {

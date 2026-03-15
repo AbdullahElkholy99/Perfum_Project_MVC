@@ -15,6 +15,7 @@ public class Order
 
     public decimal TotalPrice { get; set; }
 
+    public string ShippingAddress { get; set; }
 
     // Relationships
     public virtual List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
@@ -24,6 +25,7 @@ public class Order
     public int CustomerId { get; set; }
     public virtual Customer Customer { get; set; }
 
+
     // By Abdullah Ali
     public DeliveryMethod? DdeliveryMethod { get; set; }
     public string? ClientSecret { get; set; }
@@ -32,11 +34,9 @@ public class Order
     {
         return TotalPrice + DdeliveryMethod.Price;
     }
-    public ShippingAddress ShippingAddress { get; set; }
-    public Order()
-    {
+    public ShippingAddress? ShippingAddressDetails { get; set; } = null;
+    public Order() { }
 
-    }
     public Order(int customerId, string buyerEmail, decimal subTotal,
         ShippingAddress shippingAddress, DeliveryMethod deliveryMethod,
         List<OrderItem> orderItems)
@@ -44,7 +44,7 @@ public class Order
         CustomerId = customerId;
         BuyerEmail = buyerEmail;
         TotalPrice = subTotal;
-        ShippingAddress = shippingAddress;
+        ShippingAddressDetails = shippingAddress;
         DdeliveryMethod = deliveryMethod;
         OrderItems = orderItems;
     }

@@ -1260,17 +1260,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-function toggleUserMenu() {
-    const menu = document.getElementById("userMenu");
-    menu.classList.toggle("show");
-}
-
-document.addEventListener("click", (e) => {
-    const menu = document.getElementById("userMenu");
-    if (!e.target.closest(".nav-user")) {
-        menu.classList.remove("show");
-    }
-});
 
 
 /***-*******************************start contuct us */

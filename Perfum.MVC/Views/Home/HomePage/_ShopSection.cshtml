@@ -1,0 +1,94 @@
+﻿@model PagedResult<ProductVM, ProductFilter, DashBoardProduct>
+
+
+
+<section class="shop" id="shopSection">
+    <div class="section-header">
+        <div class="section-title">Our <span>Products</span></div>
+        @* <div class="filter-row" id="filterRow"></div> *@
+    </div>
+    <div class="shop-toolbar">
+        <div class="shop-search">
+            <span style="color:var(--text3);font-size:16px">⌕</span>
+            <input id="shopSearch" asp-for="Filter.SearchByName" placeholder="Search fragrances, notes…" oninput="applyFilters()" />
+        </div>
+        <select class="sort-sel" id="sortSel" onchange="sortProducts()">
+            <option value="default">Featured</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="name">Name A–Z</option>
+        </select>
+        <div class="count-label">@(Model?.TotalCount) Products</div>
+    </div>
+
+    @* Start Display All Products *@
+    <div class="prod-grid">
+        @foreach (var item in Model?.Items ?? new List<ProductVM>())
+        {
+            var outOfStock = item.Stock == 0;
+            var lowStock = item.Stock < 10;
+            var imgSrc = string.IsNullOrEmpty(item.ImageUrl)
+            ? Url.Content("~/Images/product/default.png")
+            : Url.Content("~/" + item.ImageUrl.TrimStart('~', '/'));
+
+            <div class="prod-card"
+                 data-name="@item.Name"
+                 data-price="@item.Price"
+                 onclick="openProductModal(@item.Id)">
+
+                @if (outOfStock)
+                {
+                    <div class="stock-ribbon sr-out">Out of Stock</div>
+                }
+                else if (lowStock)
+                {
+                    <div class="stock-ribbon sr-low">Low Stock</div>
+                }
+
+                <div class="card-wishlist"
+                     onclick="event.stopPropagation();toggleWishlistItem(@item.Id)"
+                     title="Wishlist">
+                    <i class="fa-regular fa-heart"></i>
+                </div>
+
+                <div class="card-banner">
+                    <img src="@imgSrc" alt="@item.Name" />
+                </div>
+
+                <div class="card-body">
+                    <div class="card-cat">@item.CategoryName · @item.Size_Ml ML</div>
+                    <div class="card-name">@item.Name</div>
+                    <div class="card-tagline">@item.Descreption</div>
+                    <div class="card-footer">
+                        <div>
+                            <div class="card-price">$@item.Price</div>
+                            <div class="card-size">@item.Size_Ml ML</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <button class="add-btn"
+                                    onclick="event.stopPropagation(); quickAdd(@item.Id,`@item.Name`,`@item.Price`,'@Url.Content(item.ImageUrl)',`@item.Stock`,`@item.Size_Ml`)"
+                                    @(outOfStock ? "disabled" : "")
+                                    title="@(outOfStock ? "Out of stock" : "Add to cart")">
+                                <i class="fa-solid fa-circle-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @* End Display All Products *@
+
+
+    @* Start pagination *@
+    <div class="pagination">
+        <div class="page-info" id="pageInfo"></div>
+
+        <div class="page-btns" id="pageBtns">
+            <div class="page-btn" id="prevPage">‹</div>
+            <div id="pagesContainer"></div>
+            <div class="page-btn" id="nextPage">›</div>
+        </div>
+    </div>
+    @* End pagination *@
+</section>

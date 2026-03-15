@@ -6,44 +6,6 @@
 
     Layout = null;
 }
-@*
-<div class="row justify-content-center mt-4">
-    <div class="col-md-8 col-lg-6">
-        <h2 class="mb-4">My Profile</h2>
-        <div class="card shadow-sm">
-            <div class="card-body text-center p-4">
-                <div class="mb-3">
-                    @if (!string.IsNullOrEmpty(imagePath))
-                    {
-                        <img src="@imagePath" alt="Profile" class="rounded-circle profile-page-avatar" />
-                    }
-                    else
-                    {
-                        <div class="rounded-circle profile-page-avatar profile-avatar-placeholder d-inline-flex align-items-center justify-content-center text-white fs-4">
-                            @(userName.Length > 0 ? userName[0].ToString().ToUpperInvariant() : "?")
-                        </div>
-                    }
-                </div>
-                <h5 class="card-title">@userName</h5>
-                <p class="card-text text-muted">@email</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    .profile-page-avatar {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-    }
-    .profile-avatar-placeholder {
-        width: 120px;
-        height: 120px;
-        background: var(--bs-primary);
-    }
-</style>
- *@
 
 
                         <!DOCTYPE html>

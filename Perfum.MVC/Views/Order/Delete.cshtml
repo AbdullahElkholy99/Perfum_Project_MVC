@@ -16,63 +16,113 @@
 
 <div class="order-page">
 
-    @* ── Header ── *@
+    <!-- Header -->
     <div class="topbar">
         <div>
-            <div class="page-title">Delete <span>Order</span></div>
+            <div class="page-title">
+                <i class="fa-solid fa-trash"></i>
+                Delete <span>Order</span>
+            </div>
+
             <div class="page-subtitle">This action cannot be undone</div>
         </div>
+
         <div class="topbar-actions">
-            <a asp-action="Index" class="btn btn-ghost">← Back to Orders</a>
+            <a asp-action="Index" class="btn btn-ghost">
+                <i class="fa-solid fa-arrow-left"></i> Back to Orders
+            </a>
         </div>
     </div>
 
-    @* ── Confirm Card ── *@
+    <!-- Confirm Card -->
     <div class="form-card" style="max-width:560px;margin:0 auto;">
 
         <div style="text-align:center;padding:12px 0 24px;">
-            <div style="font-size:52px;margin-bottom:12px;">⚠️</div>
+            <div style="font-size:52px;margin-bottom:12px;color:#ef4444;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
             <div style="font-size:20px;font-weight:700;color:var(--text1);margin-bottom:6px;">
                 Delete Order #@Model.Id?
             </div>
+
             <div style="color:var(--text3);font-size:14px;">
                 All order items will also be permanently removed.
             </div>
         </div>
 
-        @* Order snapshot *@
+        <!-- Order snapshot -->
         <div class="delete-snapshot">
+
             <div class="detail-field">
-                <div class="detail-label">Order ID</div>
+                <div class="detail-label">
+                    <i class="fa-solid fa-hashtag"></i> Order ID
+                </div>
                 <div class="detail-value">#@Model.Id</div>
             </div>
+
             <div class="detail-field">
-                <div class="detail-label">Shipping Address</div>
+                <div class="detail-label">
+                    <i class="fa-solid fa-location-dot"></i> Shipping Address
+                </div>
                 <div class="detail-value">@(Model.ShippingAddress ?? "—")</div>
             </div>
+
             <div class="detail-field">
-                <div class="detail-label">Date</div>
-                <div class="detail-value">@(Model.Date?.ToString("MMM dd, yyyy") ?? "—")</div>
-            </div>
-            <div class="detail-field">
-                <div class="detail-label">Status</div>
+                <div class="detail-label">
+                    <i class="fa-solid fa-calendar"></i> Date
+                </div>
                 <div class="detail-value">
-                    <span class="stock-badge @statusClass" style="position:static;font-size:12px;">@Model.Status</span>
+                    @(Model.Date?.ToString("MMM dd, yyyy") ?? "—")
                 </div>
             </div>
+
             <div class="detail-field">
-                <div class="detail-label">Total Price</div>
-                <div class="detail-value" style="font-weight:700;color:var(--accent);">$@Model.TotalPrice.ToString("N2")</div>
+                <div class="detail-label">
+                    <i class="fa-solid fa-tag"></i> Status
+                </div>
+                <div class="detail-value">
+                    <span class="stock-badge @statusClass"
+                          style="position:static;font-size:12px;">
+                        @Model.Status
+                    </span>
+                </div>
             </div>
+
+            <div class="detail-field">
+                <div class="detail-label">
+                    <i class="fa-solid fa-dollar-sign"></i> Total Price
+                </div>
+
+                <div class="detail-value"
+                     style="font-weight:700;color:var(--accent);">
+                    $@Model.TotalPrice.ToString("N2")
+                </div>
+            </div>
+
         </div>
 
         <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
             @Html.AntiForgeryToken()
-            <div class="form-actions" style="justify-content:center;margin-top:28px;">
-                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-ghost">Cancel</a>
-                <button type="submit" class="btn btn-danger">✕ Yes, Delete Order</button>
+
+            <div class="form-actions"
+                 style="justify-content:center;margin-top:28px;">
+
+                <a asp-action="Details"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-ghost">
+
+                    <i class="fa-solid fa-xmark"></i> Cancel
+                </a>
+
+                <button type="submit" class="btn btn-danger">
+                    <i class="fa-solid fa-trash"></i>
+                    Yes, Delete Order
+                </button>
+
             </div>
         </form>
 
     </div>
+
 </div>

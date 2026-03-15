@@ -2,7 +2,14 @@
 /*
    order.css  –  Dashboard Orders & Items styles
 */
-
+.form-label i,
+.detail-card-title i,
+.page-title i,
+.btn i,
+.alert-error i {
+    margin-right: 6px;
+    color: var(--accent2);
+}
 /* ── Variables — Light mode (default) ── */
 :root {
     --accent: #a08060;

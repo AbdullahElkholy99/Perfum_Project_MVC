@@ -3,6 +3,7 @@
     ViewData["Title"] = "Order Details";
     Layout = "~/Views/Shared/_DashboardAdminLayOut.cshtml";
     var items = ViewBag.OrderItems as List<OrderItemVM> ?? new();
+
     var statusClass = Model.Status switch {
         Status.Active   => "sb-in",
         Status.Pending  => "sb-low",
@@ -42,7 +43,7 @@
     <div class="detail-grid">
         <div class="detail-card">
             <div class="detail-card-header">
-                <span class="detail-card-title">📋 Order Information</span>
+                <span class="detail-card-title"><i class="fa-solid fa-chart-bar"></i> Order Information</span>
                 <span class="stock-badge @statusClass" style="position:static;">@Model.Status</span>
             </div>
             <div class="detail-fields">
@@ -76,7 +77,7 @@
         @* ── Summary Card ── *@
         <div class="detail-card">
             <div class="detail-card-header">
-                <span class="detail-card-title">📊 Summary</span>
+                <span class="detail-card-title"><i class="fa-solid fa-list-check"></i> Summary</span>
             </div>
             <div class="detail-fields">
                 <div class="detail-field">
@@ -95,15 +96,15 @@
                 </div>
             </div>
             <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
-                <a asp-action="OrderItems" asp-route-id="@Model.Id" class="btn btn-ghost btn-sm">📦 Manage Items</a>
-                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm">✕ Delete Order</a>
+                <a asp-action="OrderItems" asp-route-id="@Model.Id" class="btn btn-ghost btn-sm"><i class="fa-solid fa-arrow-down-z-a"></i> Manage Items</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-sm"><i class="fa-regular fa-calendar-xmark"></i> Delete Order</a>
             </div>
         </div>
     </div>
 
     @* ── Order Items Table ── *@
     <div class="section-title" style="margin:28px 0 14px;font-size:16px;font-weight:600;color:var(--text1);">
-        📦 Order Items <span style="color:var(--text3);font-size:13px;font-weight:400;">(@items.Count)</span>
+        <i class="fa-solid fa-list-ul"></i> Order Items <span style="color:var(--text3);font-size:13px;font-weight:400;">(@items.Count)</span>
     </div>
 
     <div class="table-wrap" style="display:block;">
@@ -128,7 +129,9 @@
                             <td style="color:var(--text3);font-size:13px;">@i</td>
                             <td>
                                 <div class="prod-identity">
-                                    <div class="prod-thumb" style="background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;">🧴</div>
+                                    <div class="prod-thumb">
+                                        <img src="/@item.ImageUrl" alt="🧴" style="object-fit:cover" />
+                                    </div>
                                     <div>
                                         <div class="pid-name">@(item.ProductName ?? "Product #" + item.ProductId)</div>
                                         <div class="pid-sku">ID: @item.ProductId</div>

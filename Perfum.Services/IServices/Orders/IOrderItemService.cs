@@ -9,6 +9,7 @@ public interface IOrderItemService
     // --------------------- Read ---------------------
     Task<List<OrderItemVM>> GetAllByOrderIdAsync(int orderId);
     Task<OrderItemVM> GetByIdAsync(int id);
+    Task<List<OrderItemWithProductDetailsVM>> GetAllOrderItemsByOrderIdAsync(int orderId);
 
     // --------------------- Update ---------------------
     Task<string> UpdateAsync(int id, EditOrderItemVM model);

@@ -8,78 +8,179 @@
 
 <link href="~/css/Dashbord/order.css" rel="stylesheet" />
 <link href="~/css/Dashbord/customer.css" rel="stylesheet" />
-
+ 
 <div class="order-page">
 
     <div class="topbar">
         <div>
-            <div class="page-title">Edit <span>Customer</span></div>
-            <div class="page-subtitle"><a asp-action="Index" style="color:var(--accent)">Customers</a> / Edit #@customerId</div>
+            <div class="page-title">
+                <i class="fa-solid fa-user-pen"></i>
+                Edit <span>Customer</span>
+            </div>
+
+            <div class="page-subtitle">
+                <a asp-action="Index" style="color:var(--accent)">
+                    <i class="fa-solid fa-users"></i> Customers
+                </a>
+                / Edit #@customerId
+            </div>
         </div>
-        <a asp-action="Details" asp-route-id="@customerId" class="btn btn-ghost">← Back to Details</a>
+
+        <a asp-action="Details" asp-route-id="@customerId" class="btn btn-ghost">
+            <i class="fa-solid fa-arrow-left"></i> Back to Details
+        </a>
     </div>
 
     <div class="form-card">
+
         <form asp-action="Edit" asp-route-id="@customerId" method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
 
-            <div asp-validation-summary="ModelOnly" class="alert-error" style="display:@(ViewData.ModelState.IsValid ? "none" : "block")"></div>
+            <div asp-validation-summary="ModelOnly"
+                 class="alert-error"
+                 style="display:@(ViewData.ModelState.IsValid ? "none" : "block")">
 
-            <div class="form-section-title">Account Info</div>
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+
+            <div class="form-section-title">
+                <i class="fa-solid fa-user"></i> Account Info
+            </div>
+
             <div class="form-row">
+
                 <div class="form-group">
-                    <label asp-for="UserName">Username</label>
+                    <label asp-for="UserName">
+                        <i class="fa-solid fa-user"></i> Username
+                    </label>
+
                     <input asp-for="UserName" class="form-control" />
+
                     <span asp-validation-for="UserName" class="field-error"></span>
                 </div>
+
                 <div class="form-group">
-                    <label asp-for="Email">Email</label>
+                    <label asp-for="Email">
+                        <i class="fa-solid fa-envelope"></i> Email
+                    </label>
+
                     <input asp-for="Email" type="email" class="form-control" />
+
                     <span asp-validation-for="Email" class="field-error"></span>
                 </div>
+
             </div>
 
             <div class="form-row">
+
                 <div class="form-group">
-                    <label asp-for="Password">New Password <span style="color:var(--text3);font-size:12px">(leave blank to keep current)</span></label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
+                    <label asp-for="Password">
+                        <i class="fa-solid fa-lock"></i>
+                        New Password
+                        <span style="color:var(--text3);font-size:12px">
+                            (leave blank to keep current)
+                        </span>
+                    </label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control"
+                           placeholder="••••••••" />
+
                     <span asp-validation-for="Password" class="field-error"></span>
                 </div>
+
                 <div class="form-group">
-                    <label asp-for="PhoneNumber">Phone Number</label>
+                    <label asp-for="PhoneNumber">
+                        <i class="fa-solid fa-phone"></i> Phone Number
+                    </label>
+
                     <input asp-for="PhoneNumber" class="form-control" />
+
                     <span asp-validation-for="PhoneNumber" class="field-error"></span>
                 </div>
+
             </div>
 
-            <div class="form-section-title" style="margin-top:10px">Profile</div>
+            <div class="form-section-title" style="margin-top:10px">
+                <i class="fa-solid fa-id-card"></i> Profile
+            </div>
+
             <div class="form-group">
-                <label asp-for="Address">Address</label>
+
+                <label asp-for="Address">
+                    <i class="fa-solid fa-location-dot"></i> Address
+                </label>
+
                 <input asp-for="Address" class="form-control" />
+
                 <span asp-validation-for="Address" class="field-error"></span>
+
             </div>
 
             <div class="form-group">
-                <label asp-for="ImageUrl">Profile Image <span style="color:var(--text3);font-size:12px">(optional — replaces current)</span></label>
-                <div class="file-upload-area" id="fileArea" onclick="document.getElementById('imgInput').click()">
+
+                <label asp-for="ImageUrl">
+                    <i class="fa-solid fa-image"></i>
+                    Profile Image
+                    <span style="color:var(--text3);font-size:12px">
+                        (optional — replaces current)
+                    </span>
+                </label>
+
+                <div class="file-upload-area"
+                     id="fileArea"
+                     onclick="document.getElementById('imgInput').click()">
+
                     <div id="filePrompt">
-                        <div style="font-size:28px">🖼</div>
-                        <div style="color:var(--text2);font-size:14px;margin-top:6px">Click to upload new image</div>
-                        <div style="color:var(--text3);font-size:12px">PNG, JPG, WEBP</div>
+
+                        <div style="font-size:28px">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+
+                        <div style="color:var(--text2);font-size:14px;margin-top:6px">
+                            Click to upload new image
+                        </div>
+
+                        <div style="color:var(--text3);font-size:12px">
+                            PNG, JPG, WEBP
+                        </div>
+
                     </div>
-                    <img id="imgPreview" style="display:none;max-height:140px;border-radius:8px;object-fit:contain" />
+
+                    <img id="imgPreview"
+                         style="display:none;max-height:140px;border-radius:8px;object-fit:contain" />
+
                 </div>
-                <input asp-for="ImageUrl" type="file" id="imgInput" accept="image/*" style="display:none" onchange="previewImg(this)" />
+
+                <input asp-for="ImageUrl"
+                       type="file"
+                       id="imgInput"
+                       accept="image/*"
+                       style="display:none"
+                       onchange="previewImg(this)" />
+
                 <span asp-validation-for="ImageUrl" class="field-error"></span>
+
             </div>
 
             <div class="form-actions">
-                <a asp-action="Index" class="btn btn-ghost">Cancel</a>
-                <button type="submit" class="btn btn-primary">✦ Save Changes</button>
+
+                <a asp-action="Index" class="btn btn-ghost">
+                    <i class="fa-solid fa-xmark"></i> Cancel
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                </button>
+
             </div>
+
         </form>
+
     </div>
 </div>
+
 
 @section Scripts {
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

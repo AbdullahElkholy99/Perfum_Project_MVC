@@ -19,9 +19,9 @@
             <div class="page-subtitle">@items.Count item@(items.Count == 1 ? "" : "s") in this order</div>
         </div>
         <div class="topbar-actions">
-            <a asp-action="AddItem" asp-route-orderId="@orderId" class="btn btn-primary">✦ Add Item</a>
+            <a asp-action="AddItem" asp-route-orderId="@orderId" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Item</a>
             <a asp-action="Details" asp-route-id="@orderId" class="btn btn-ghost">Order Details</a>
-            <a asp-action="Index" class="btn btn-ghost">← Orders</a>
+            <a asp-action="Index" class="btn btn-ghost"><i class="fa-solid fa-arrow-left"></i> Orders</a>
         </div>
     </div>
 
@@ -37,9 +37,40 @@
 
     @* ── Stats ── *@
     <div class="stat-strip">
-        <div class="mini-stat"><div class="mini-icon ic-amber">📦</div><div><div class="mini-val">@items.Count</div><div class="mini-label">Items</div></div></div>
-        <div class="mini-stat"><div class="mini-icon ic-sage">🔢</div><div><div class="mini-val">@items.Sum(i => i.Quantity)</div><div class="mini-label">Total Qty</div></div></div>
-        <div class="mini-stat"><div class="mini-icon ic-gold">💰</div><div><div class="mini-val">$@grandTotal.ToString("N2")</div><div class="mini-label">Grand Total</div></div></div>
+
+        <div class="mini-stat">
+            <div class="mini-icon ic-amber">
+                <i class="fa-solid fa-box"></i>
+            </div>
+
+            <div>
+                <div class="mini-val">@items.Count</div>
+                <div class="mini-label">Items</div>
+            </div>
+        </div>
+
+        <div class="mini-stat">
+            <div class="mini-icon ic-sage">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+
+            <div>
+                <div class="mini-val">@items.Sum(i => i.Quantity)</div>
+                <div class="mini-label">Total Qty</div>
+            </div>
+        </div>
+
+        <div class="mini-stat">
+            <div class="mini-icon ic-gold">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </div>
+
+            <div>
+                <div class="mini-val">$@grandTotal.ToString("N2")</div>
+                <div class="mini-label">Grand Total</div>
+            </div>
+        </div>
+
     </div>
 
     @* ── Search ── *@
@@ -74,7 +105,9 @@
                             <td style="color:var(--text3);font-size:13px;">@idx</td>
                             <td>
                                 <div class="prod-identity">
-                                    <div class="prod-thumb" style="background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;">🧴</div>
+                                    <div class="prod-thumb" >
+                                        <img src="/@item.ImageUrl" alt="🧴" style="object-fit:cover" />
+                                    </div>
                                     <div>
                                         <div class="pid-name">@(item.ProductName ?? "Product #" + item.ProductId)</div>
                                         <div class="pid-sku">Item ID: @item.Id</div>

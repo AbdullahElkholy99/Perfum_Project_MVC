@@ -74,7 +74,7 @@ public class StripePaymentService : IStripePaymentService
             {
                 ProductId = product.Id,
                 ProductName = product.Name,
-                UnitPrice = product.Price, // always from database
+                UnitPrice = product.Price,
                 Quantity = item.Quantity
             };
 
@@ -100,6 +100,7 @@ public class StripePaymentService : IStripePaymentService
             deliveryMethod,
             orderItems
         );
+        order.ShippingAddress = $"{shipAddress.City} - {shipAddress.Street} - {shipAddress.State}";
 
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();
@@ -107,30 +108,5 @@ public class StripePaymentService : IStripePaymentService
         return order;
     }
 
-    //public async Task<Order> UpdateOrderFaild(string PaymentInten)
-    //{
-    //    var order = await _context.Orders.FirstOrDefaultAsync(m => m.PaymentIntentId == PaymentInten);
-    //    if (order is null)
-    //    {
-    //        return null;
-    //    }
-    //    order.Status = Status.PaymentFaild;
-    //    _context.Orders.Update(order);
-    //    await _context.SaveChangesAsync();
-    //    return order;
 
-    //}
-
-    //public async Task<Order> UpdateOrderSuccess(string PaymentInten)
-    //{
-    //    var order = await _context.Orders.FirstOrDefaultAsync(m => m.PaymentIntentId == PaymentInten);
-    //    if (order is null)
-    //    {
-    //        return null;
-    //    }
-    //    order.Status = Status.PaymentReceived;
-    //    _context.Orders.Update(order);
-    //    await _context.SaveChangesAsync();
-    //    return order;
-    //}
 }

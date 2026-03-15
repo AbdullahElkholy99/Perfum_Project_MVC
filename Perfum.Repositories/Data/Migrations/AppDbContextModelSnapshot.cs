@@ -314,7 +314,11 @@ namespace Perfum.Repositories.Data.Migrations
                     b.Property<int?>("DdeliveryMethodId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShippingAddressId")
+                    b.Property<string>("ShippingAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ShippingAddressDetailsId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -329,7 +333,7 @@ namespace Perfum.Repositories.Data.Migrations
 
                     b.HasIndex("DdeliveryMethodId");
 
-                    b.HasIndex("ShippingAddressId");
+                    b.HasIndex("ShippingAddressDetailsId");
 
                     b.ToTable("Orders");
                 });
@@ -702,17 +706,15 @@ namespace Perfum.Repositories.Data.Migrations
                         .WithMany()
                         .HasForeignKey("DdeliveryMethodId");
 
-                    b.HasOne("Perfum.Domain.Models.Orders.ShippingAddress", "ShippingAddress")
+                    b.HasOne("Perfum.Domain.Models.Orders.ShippingAddress", "ShippingAddressDetails")
                         .WithMany()
-                        .HasForeignKey("ShippingAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShippingAddressDetailsId");
 
                     b.Navigation("Customer");
 
                     b.Navigation("DdeliveryMethod");
 
-                    b.Navigation("ShippingAddress");
+                    b.Navigation("ShippingAddressDetails");
                 });
 
             modelBuilder.Entity("Perfum.Domain.Models.Orders.OrderItem", b =>

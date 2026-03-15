@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Perfum.Services.Services.Authentication;
 using System.Security.Claims;
@@ -158,7 +159,23 @@ public class AccountController : Controller
         {
             ModelState.AddModelError("", "Please verify your email first. Check your inbox for the verification code.");
             ViewBag.RequiresEmailConfirmation = true;
-            return View(model);
+
+            var code = PasswordResetService.GenerateNumericCode();
+            var codeHash = PasswordResetService.HashCode(code);
+
+            var subject = "Verify your email - Sillage";
+            var message = $"<p>Hello,</p><p>Thank you for registering. Your verification code is: <strong>{code}</strong>.</p><p>It expires in 10 minutes. Enter this code to confirm your email and complete registration.</p><p>If you did not create an account, please ignore this email.</p><p>— Sillage</p>";
+
+            try
+            {
+                await _emailSender.SendEmailAsync(model.Email, subject, message);
+                return RedirectToAction(nameof(VerifyEmailConfirmation), new { email = model.Email });
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "We could not send the verification code to your email. Please try again later.");
+                return View(model);
+            }
         }
         if (result.Result)
         {
@@ -167,7 +184,6 @@ public class AccountController : Controller
             SetAuthCookies(result.Id, result.Email, result.UserName, result.ImagePath, roles);
 
             // Redirect: Customer -> Home
-            //Admin -> Customer controller
             if (roles.Contains("Admin"))
                 return RedirectToAction("Index", "Product");
 
@@ -356,6 +372,7 @@ public class AccountController : Controller
 
     // --------------------------- UpdateProfileImage
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> UpdateProfileImage(int id, IFormFile ProfileImage)
     {
         if (ProfileImage == null)
@@ -386,6 +403,8 @@ public class AccountController : Controller
     {
         try
         {
+            await _signInManager.SignOutAsync();
+
             Response.Cookies.Delete("Id");
             Response.Cookies.Delete("Role");
             Response.Cookies.Delete("Name");
