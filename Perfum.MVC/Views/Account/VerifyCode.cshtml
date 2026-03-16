@@ -11,11 +11,105 @@
     <title>Verify Code — Sillage</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="~/css/users/customerpage.css" rel="stylesheet" />
-    <link href="~/css/auth/auth.css" rel="stylesheet" />
+    @* <link href="~/css/users/customerpage.css" rel="stylesheet" /> *@
+    @* <link href="~/css/auth/auth.css" rel="stylesheet" /> *@
+
+    <style>
+        .verify-section{
+    min-height:70vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px;
+}
+
+.verify-card{
+    width:420px;
+    background:#fff;
+    padding:40px;
+    border-radius:14px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.08);
+    text-align:center;
+
+    animation:fadeUp 0.6s ease;
+}
+
+.verify-card h2{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.verify-card p{
+    color:#777;
+    font-size:14px;
+    margin-bottom:30px;
+}
+
+.code-inputs{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:30px;
+}
+
+.code-box{
+    width:50px;
+    height:55px;
+    text-align:center;
+    font-size:22px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    outline:none;
+    transition:0.3s;
+}
+
+.code-box:focus{
+    border-color:#7a9e7e;
+    box-shadow:0 0 0 3px rgba(122,158,126,0.15);
+    transform:translateY(-2px);
+}
+
+.verify-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#7a9e7e;
+    color:white;
+    font-size:15px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.verify-btn:hover{
+    background:#5f8463;
+}
+
+.resend{
+    margin-top:18px;
+    font-size:14px;
+}
+
+.resend a{
+    color:#7a9e7e;
+    text-decoration:none;
+    font-weight:600;
+}
+
+@@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+    </style>
 </head>
 <body>
-    <section class="hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+   @*  <section class="hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
         <div style="width:100%;max-width:420px;padding:0 24px;">
             <p style="text-align:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;">Step 1 of 2</p>
             <h1 class="hero-title" style="font-size:28px;text-align:center;margin-bottom:8px;">Verify <em>Code</em></h1>
@@ -39,10 +133,86 @@
                 <a asp-action="ForgotPassword" asp-controller="Account" class="auth-link" style="display:block;text-align:center;">Request a new code</a>
             </form>
         </div>
-    </section>
+    </section> *@
 
+    <section class="verify-section">
+
+        <div class="verify-card">
+
+            <h2>Verify Code</h2>
+            <p>Enter the 6-digit code sent to your email</p>
+
+            <form asp-action="VerifyCode" asp-controller="Account" method="post">
+
+                <input type="hidden" asp-for="Code" id="finalCode">
+                <input type="hidden" asp-for="Email">
+
+                    <div class="code-inputs">
+                        <input type="text" maxlength="1" class="code-box">
+                        <input type="text" maxlength="1" class="code-box">
+                        <input type="text" maxlength="1" class="code-box">
+                        <input type="text" maxlength="1" class="code-box">
+                        <input type="text" maxlength="1" class="code-box">
+                        <input type="text" maxlength="1" class="code-box">
+                    </div>
+
+                    <button type="submit" class="verify-btn">Verify Code</button>
+
+                    <div class="resend">
+                        Didn’t receive the code?
+                        <a asp-action="ForgotPassword" asp-controller="Account">Resend</a>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+
+const inputs = document.querySelectorAll(".code-box");
+const hiddenInput = document.getElementById("finalCode");
+
+inputs.forEach((input, index) => {
+
+    input.addEventListener("input", () => {
+
+        if(input.value.length === 1 && index < inputs.length - 1){
+            inputs[index + 1].focus();
+        }
+
+        updateCode();
+
+    });
+
+    input.addEventListener("keydown", (e) => {
+
+        if(e.key === "Backspace" && input.value === "" && index > 0){
+            inputs[index - 1].focus();
+        }
+
+    });
+
+});
+
+function updateCode(){
+
+    let code = "";
+
+    inputs.forEach(i=>{
+        code += i.value;
+    });
+
+    hiddenInput.value = code;
+
+}
+
+</script>
+
+
 </body>
 </html>

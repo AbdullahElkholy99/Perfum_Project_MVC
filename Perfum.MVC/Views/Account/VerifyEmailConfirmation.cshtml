@@ -11,20 +11,70 @@
     <title>Verify Email — Sillage</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="~/css/users/customerpage.css" rel="stylesheet" />
-    <link href="~/css/auth/auth.css" rel="stylesheet" />
+@*     <link href="~/css/users/customerpage.css" rel="stylesheet" />
+    <link href="~/css/auth/auth.css" rel="stylesheet" /> *@
+
+    <style>
+.verify-email-hero{
+    min-height:60vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.verify-box{
+    width:100%;
+    max-width:420px;
+    padding:0 24px;
+    animation:fadeUp .5s ease;
+}
+
+.verify-title{
+    font-size:28px;
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.verify-sub{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.verify-code-input{
+    letter-spacing:10px;
+    text-align:center;
+    font-size:20px;
+}
+
+.verify-btn{
+    width:100%;
+    justify-content:center;
+    margin-bottom:16px;
+}
+
+.verify-back{
+    display:block;
+    text-align:center;
+}
+
+/* animation */
+
+@@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+    </style>
 </head>
 <body>
-    @* <nav class="mb-5">
-        <div class="nav-inner">
-            <a asp-controller="Home" asp-action="Index" class="nav-logo">Sill<span>age</span></a>
-            <div class="nav-links" style="margin-left:auto;">
-                <a asp-action="Login" asp-controller="Account" class="nav-link">Sign In</a>
-            </div>
-        </div>
-    </nav> *@
 
-    <section class="hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+
+  @*   <section class="hero" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
         <div style="width:100%;max-width:420px;padding:0 24px;">
             <h1 class="hero-title" style="font-size:28px;text-align:center;margin-bottom:8px;">Verify <em>Email</em></h1>
             <p class="hero-sub" style="text-align:center;margin-bottom:16px;">We sent a 6-digit code to <strong>@Model.Email</strong> to confirm your account. Check your inbox (and spam folder).</p>
@@ -51,9 +101,99 @@
             </form>
         </div>
     </section>
+ *@
+
+    <section class="hero verify-email-hero">
+
+        <div class="verify-box">
+
+            <h1 class="hero-title verify-title">
+                Verify <em>Email</em>
+            </h1>
+
+            <p class="hero-sub verify-sub">
+                We sent a 6-digit code to
+                <strong>@Model.Email</strong>.
+                Check your inbox (and spam folder).
+            </p>
+
+            @if (TempData["VerifyEmailMessage"] != null)
+            {
+                <div class="auth-msg auth-error">
+                    @TempData["VerifyEmailMessage"]
+                </div>
+            }
+
+            <div asp-validation-summary="ModelOnly" class="auth-msg auth-error"></div>
+
+            <form asp-action="VerifyEmailConfirmation"
+                  asp-controller="Account"
+                  method="post"
+                  class="auth-form verify-form">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="Email" />
+
+                <div class="auth-input-wrap">
+
+                    <label asp-for="Code" class="auth-label">
+                        Verification Code
+                    </label>
+
+                    <input asp-for="Code"
+                           id="verifyCode"
+                           type="text"
+                           class="auth-input verify-code-input"
+                           placeholder="000000"
+                           maxlength="6"
+                           autocomplete="one-time-code" />
+
+                    <span asp-validation-for="Code" class="auth-validation"></span>
+
+                </div>
+
+                <button type="submit" class="hero-cta verify-btn">
+                    Verify Email
+                </button>
+
+                <a asp-action="Login"
+                       asp-controller="Account"
+                       class="auth-link verify-back">
+                    Back to Sign In
+                </a>
+
+            </form>
+
+        </div>
+
+    </section>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+
+<script>
+
+const codeInput = document.getElementById("verifyCode");
+
+codeInput.addEventListener("input", function () {
+
+    this.value = this.value.replace(/[^0-9]/g, '');
+
+});
+
+codeInput.addEventListener("paste", function (e) {
+
+    let paste = (e.clipboardData || window.clipboardData).getData('text');
+
+    if(paste.length === 6){
+        this.value = paste;
+    }
+
+});
+
+</script>
 </body>
 </html>
