@@ -31,8 +31,8 @@ public record AddOrderVM
     public decimal TotalPrice { get; set; }
 
     public int CustomerId { get; set; }
-
-    public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    
+    public List<OrderItemInputVM> OrderItems { get; set; } = new List<OrderItemInputVM>();
 
 }
 
@@ -75,4 +75,13 @@ public class BasketItemDTO
 {
     public int Id { get; set; } // product id 
     public int Quantity { get; set; }
+}
+
+
+// To handle list of orderItems when creating an order
+public record OrderItemInputVM
+{
+    public int ProductId { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
 }

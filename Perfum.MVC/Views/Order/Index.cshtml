@@ -121,240 +121,305 @@
     </div>
 
     @* ── Bulk bar ── *@
-    <div class="bulk-bar" id="bulkBar">
+    <div class="bulk-bar" id="bulkBar" style="display:none">
         <div class="bulk-text">Selected: <strong id="bulkCount">0</strong></div>
         <button class="btn btn-ghost btn-sm" onclick="clearSelection()">Clear</button>
-        <button class="btn btn-ghost btn-sm" onclick="showToast('Status updated')">Change Status</button>
         <button class="btn btn-danger btn-sm" onclick="bulkDelete()">✕ Delete</button>
     </div>
 
-    @* ── Grid ── *@
-    <div class="prod-grid" id="prodGrid">
-        @foreach (var o in orders)
-        {
-            var statusClass = o.Status switch
+    @* ════════════════════════════
+       GRID VIEW
+    ════════════════════════════ *@
+    <div id="gridView">
+        <div class="prod-grid" id="prodGrid">
+            @foreach (var o in orders)
             {
-                Status.Active => "sb-in",
-                Status.Pending => "sb-low",
-                Status.Inactive => "sb-out",
-                Status.Expired => "sb-out",
-                _ => ""
-            };
-            <div class="prod-card"
-                 data-id="@o.Id"
-                 data-search="@((o.Id.ToString() + " " + (o.ShippingAddress ?? "") + " " + o.Status.ToString()).ToLowerInvariant())"
-                 data-date="@(o.Date?.Ticks ?? 0)"
-                 data-total="@o.TotalPrice">
+                string statusClass = "sb-out";
+                if (o.Status == Status.Active) { statusClass = "sb-in"; }
+                if (o.Status == Status.Pending) { statusClass = "sb-low"; }
 
-                <div class="stock-badge @statusClass">@o.Status</div>
+                string addrText = o.ShippingAddress != null ? (o.ShippingAddress) : "No address";
 
-                <div class="prod-banner order-banner">
-                    <span class="order-icon">🧾</span>
-                </div>
+                string searchText = (o.Id.ToString() + " " + addrText + " " + o.Status.ToString()).ToLowerInvariant();
+                string dateTicks = o.Date != null ? o.Date.Value.Ticks.ToString() : "0";
 
-                <div class="prod-body">
-                    <div class="prod-category">Order · @(o.Date?.ToString("MMM dd, yyyy") ?? "—")</div>
-                    <div class="prod-name">#@o.Id</div>
-                    <div style="font-size:12px;color:var(--text3);margin-top:-2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                        @(o.ShippingAddress ?? "No address")
+                <div class="prod-card"
+                     data-id="@o.Id"
+                     data-status="@o.Status.ToString()"
+                     data-search="@searchText"
+                     data-date="@dateTicks"
+                     data-total="@o.TotalPrice">
+
+                    <div class="stock-badge @statusClass">@o.Status</div>
+
+                    <div class="prod-banner order-banner">
+                        <span class="order-icon">🧾</span>
                     </div>
-                    <div class="prod-footer">
-                        <div class="prod-price">$@o.TotalPrice.ToString("N2")</div>
-                        <div>
-                            <a asp-action="Details" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Details</a>
-                            <a asp-action="Edit" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@o.Id" class="btn btn-danger btn-sm">Delete</a>
+
+                    <div class="prod-body">
+                        <div class="prod-category">Order · @(o.Date != null ? o.Date.Value.ToString("MMM dd, yyyy") : "—")</div>
+                        <div class="prod-name">#@o.Id</div>
+                        <div style="font-size:12px;color:var(--text3);margin-top:-2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            @addrText
+                        </div>
+                        <div class="prod-footer">
+                            <div class="prod-price">$@o.TotalPrice.ToString("N2")</div>
+                            <div>
+                                <a asp-action="Details" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Details</a>
+                                <a asp-action="Edit" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@o.Id" class="btn btn-danger btn-sm">Delete</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
-        @if (!orders.Any())
-        {
-            <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text3);">No orders found.</div>
-        }
-    </div>
-
-    @* ── Table ── *@
-    <div class="table-wrap hidden" id="tableWrap">
-        <table class="prod-table">
-            <thead>
-                <tr>
-                    <th style="width:32px">
-                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"
-                               style="accent-color:var(--accent);cursor:pointer;width:15px;height:15px;" />
-                    </th>
-                    <th>Order ID</th>
-                    <th>Shipping Address</th>
-                    <th>Date</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                @foreach (var o in orders)
-                {
-                    var statusClass = o.Status switch
-                    {
-                        Status.Active => "sb-in",
-                        Status.Pending => "sb-low",
-                        Status.Inactive => "sb-out",
-                        Status.Expired => "sb-out",
-                        _ => ""
-                    };
-                    <tr data-search="@((o.Id.ToString() + " " + (o.ShippingAddress ?? "") + " " + o.Status.ToString()).ToLowerInvariant())"
-                        data-date="@(o.Date?.Ticks ?? 0)"
-                        data-total="@o.TotalPrice"
-                        data-id="@o.Id">
-                        <td>
-                            <input type="checkbox" class="row-check"
-                                   style="accent-color:var(--accent);cursor:pointer;width:15px;height:15px;" />
-                        </td>
-                        <td>
-                            <div class="prod-identity">
-                                <div class="prod-thumb" style="background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;">🧾</div>
-                                <div>
-                                    <div class="pid-name">Order #@o.Id</div>
-                                    <div class="pid-sku">@(o.Date?.ToString("MMM dd, yyyy HH:mm") ?? "—")</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                            @(o.ShippingAddress ?? "—")
-                        </td>
-                        <td>@(o.Date?.ToString("yyyy-MM-dd") ?? "—")</td>
-                        <td><span class="price-val">$@o.TotalPrice.ToString("N2")</span></td>
-                        <td>
-                            <span class="stock-badge @statusClass" style="position:static;font-size:11px;">@o.Status</span>
-                        </td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Details</a>
-                            <a asp-action="Edit" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@o.Id" class="btn btn-danger btn-sm">✕</a>
-                        </td>
-                    </tr>
-                }
-                @if (!orders.Any())
-                {
-                    <tr>
-                        <td colspan="7" style="text-align:center;padding:48px;color:var(--text3);">No orders found.</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    @* ── Pagination ── *@
-    <div class="pagination">
-        <div class="page-info" id="pageInfo">Showing 1–@Math.Min(12, totalCount) of @totalCount</div>
-        <div class="page-btns">
-            <div class="page-btn">‹</div>
-            <div class="page-btn active">1</div>
-            <div class="page-btn">›</div>
+            }
         </div>
+        <div id="gridEmpty" style="display:none;grid-column:1/-1;text-align:center;padding:60px;color:var(--text3)">
+            No orders match your search.
+        </div>
+        <div class="pagination" id="gridPagination"></div>
+    </div>
+
+    @* ════════════════════════════
+       TABLE VIEW
+    ════════════════════════════ *@
+    <div id="listView" style="display:none">
+        <div class="table-wrap">
+            <table class="prod-table">
+                <thead>
+                    <tr>
+                        <th style="width:32px">
+                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"
+                                   style="accent-color:var(--accent);cursor:pointer;width:15px;height:15px;" />
+                        </th>
+                        <th>Order ID</th>
+                        <th>Shipping Address</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    @foreach (var o in orders)
+                    {
+                        string statusClass = "sb-out";
+                        if (o.Status == Status.Active) { statusClass = "sb-in"; }
+                        if (o.Status == Status.Pending) { statusClass = "sb-low"; }
+
+                        string addrText = o.ShippingAddress != null
+                        ? (o.ShippingAddress)
+                        : "—";
+                        string searchText = (o.Id.ToString() + " " + addrText + " " + o.Status.ToString()).ToLowerInvariant();
+                        string dateTicks = o.Date != null ? o.Date.Value.Ticks.ToString() : "0";
+
+                        <tr class="order-row"
+                            data-id="@o.Id"
+                            data-status="@o.Status.ToString()"
+                            data-search="@searchText"
+                            data-date="@dateTicks"
+                            data-total="@o.TotalPrice">
+                            <td>
+                                <input type="checkbox" class="row-check"
+                                       style="accent-color:var(--accent);cursor:pointer;width:15px;height:15px;" />
+                            </td>
+                            <td>
+                                <div class="prod-identity">
+                                    <div class="prod-thumb" style="background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;">🧾</div>
+                                    <div>
+                                        <div class="pid-name">Order #@o.Id</div>
+                                        <div class="pid-sku">@(o.Date != null ? o.Date.Value.ToString("MMM dd, yyyy HH:mm") : "—")</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@addrText</td>
+                            <td>@(o.Date != null ? o.Date.Value.ToString("yyyy-MM-dd") : "—")</td>
+                            <td><span class="price-val">$@o.TotalPrice.ToString("N2")</span></td>
+                            <td><span class="stock-badge @statusClass" style="position:static;font-size:11px;">@o.Status</span></td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Details</a>
+                                <a asp-action="Edit" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@o.Id" class="btn btn-danger btn-sm">✕</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div id="tableEmpty" style="display:none;text-align:center;padding:48px;color:var(--text3)">
+                No orders match your search.
+            </div>
+        </div>
+        <div class="pagination" id="listPagination"></div>
     </div>
 
 </div>
 
 @section Scripts {
     <script>
-        (function () {
+        var PAGE_SIZE   = 10;
+        var allCards    = [];
+        var allRows     = [];
+        var filteredC   = [];
+        var filteredR   = [];
+        var gridPage    = 1;
+        var listPage    = 1;
 
-            /* ── View toggle ── */
-            window.switchView = function (v) {
-                var grid  = document.getElementById('prodGrid');
-                var table = document.getElementById('tableWrap');
-                var gBtn  = document.getElementById('gridViewBtn');
-                var lBtn  = document.getElementById('listViewBtn');
-                if (v === 'grid') {
-                    grid.classList.remove('hidden'); table.classList.add('hidden');
-                    gBtn.classList.add('active');    lBtn.classList.remove('active');
-                } else {
-                    grid.classList.add('hidden');    table.classList.remove('hidden');
-                    lBtn.classList.add('active');    gBtn.classList.remove('active');
-                }
-            };
+        window.addEventListener('DOMContentLoaded', function () {
+            allCards  = Array.from(document.querySelectorAll('#prodGrid .prod-card'));
+            allRows   = Array.from(document.querySelectorAll('#tableBody .order-row'));
+            filteredC = allCards.slice();
+            filteredR = allRows.slice();
+            renderGrid();
+            renderList();
+        });
 
-            /* ── Sort ── */
-            function getSortFn(val) {
-                switch (val) {
-                    case 'id':         return function (a, b) { return +a.dataset.id    - +b.dataset.id; };
-                    case 'date-asc':   return function (a, b) { return +a.dataset.date  - +b.dataset.date; };
-                    case 'date-desc':  return function (a, b) { return +b.dataset.date  - +a.dataset.date; };
-                    case 'total-asc':  return function (a, b) { return +a.dataset.total - +b.dataset.total; };
-                    case 'total-desc': return function (a, b) { return +b.dataset.total - +a.dataset.total; };
-                    default:           return function () { return 0; };
-                }
+        /* ── View toggle ── */
+        window.switchView = function (v) {
+            document.getElementById('gridView').style.display = v === 'grid' ? '' : 'none';
+            document.getElementById('listView').style.display = v === 'list' ? '' : 'none';
+            document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
+            document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
+        };
+
+        /* ── Filter + Sort ── */
+        window.applyFilters = function () {
+            var q      = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            var status = document.getElementById('statusSel').value;
+            var sort   = document.getElementById('sortSel').value;
+
+            function matches(el) {
+                if (q && (el.dataset.search || '').indexOf(q) === -1) return false;
+                if (status !== 'all' && el.dataset.status !== status)  return false;
+                return true;
             }
 
-            /* ── Apply ── */
-            function applyFilters() {
-                var q      = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-                var sortFn = getSortFn(document.getElementById('sortSel').value);
-
-                var grid  = document.getElementById('prodGrid');
-                var cards = Array.from(grid.querySelectorAll('.prod-card'));
-                var show  = cards.filter(function (el) { return !q || el.dataset.search.includes(q); });
-                var hide  = cards.filter(function (el) { return  q && !el.dataset.search.includes(q); });
-                show.sort(sortFn);
-                show.forEach(function (el) { el.style.display = ''; grid.appendChild(el); });
-                hide.forEach(function (el) { el.style.display = 'none'; });
-
-                var tbody    = document.getElementById('tableBody');
-                var rows     = Array.from(tbody.querySelectorAll('tr[data-search]'));
-                var showRows = rows.filter(function (el) { return !q || el.dataset.search.includes(q); });
-                var hideRows = rows.filter(function (el) { return  q && !el.dataset.search.includes(q); });
-                showRows.sort(sortFn);
-                showRows.forEach(function (el) { el.style.display = ''; tbody.appendChild(el); });
-                hideRows.forEach(function (el) { el.style.display = 'none'; });
-
-                var pi = document.getElementById('pageInfo');
-                if (pi) {
-                    pi.textContent = q
-                        ? 'Showing ' + show.length + ' of ' + cards.length + ' matching'
-                        : 'Showing 1\u2013' + Math.min(12, cards.length) + ' of ' + cards.length;
+            function sortFn(a, b) {
+                switch (sort) {
+                    case 'id':         return parseInt(a.dataset.id)      - parseInt(b.dataset.id);
+                    case 'date-asc':   return parseInt(a.dataset.date)    - parseInt(b.dataset.date);
+                    case 'date-desc':  return parseInt(b.dataset.date)    - parseInt(a.dataset.date);
+                    case 'total-asc':  return parseFloat(a.dataset.total) - parseFloat(b.dataset.total);
+                    case 'total-desc': return parseFloat(b.dataset.total) - parseFloat(a.dataset.total);
+                    default:           return 0;
                 }
             }
 
-            document.getElementById('searchInput').addEventListener('input', applyFilters);
-            document.getElementById('sortSel').addEventListener('change', applyFilters);
+            filteredC = allCards.filter(matches).sort(sortFn);
+            filteredR = allRows.filter(matches).sort(sortFn);
+            gridPage  = 1;
+            listPage  = 1;
+            renderGrid();
+            renderList();
+        };
 
-            /* ── Bulk ── */
-            window.toggleSelectAll = function (cb) {
-                document.querySelectorAll('.row-check').forEach(function (c) { c.checked = cb.checked; });
-                updateBulkBar();
-            };
-
-            function updateBulkBar() {
-                var count = document.querySelectorAll('.row-check:checked').length;
-                document.getElementById('bulkCount').textContent = count;
-                document.getElementById('bulkBar').style.display = count > 0 ? 'flex' : 'none';
+        /* ── Render Grid ── */
+        function renderGrid() {
+            var body  = document.getElementById('prodGrid');
+            var empty = document.getElementById('gridEmpty');
+            allCards.forEach(function (c) { c.style.display = 'none'; });
+            if (filteredC.length === 0) {
+                empty.style.display = '';
+                document.getElementById('gridPagination').innerHTML = '';
+                return;
             }
-
-            window.clearSelection = function () {
-                document.querySelectorAll('input[type=checkbox]').forEach(function (c) { c.checked = false; });
-                updateBulkBar();
-            };
-
-            window.bulkDelete = function () {
-                if (confirm('Delete selected orders?')) { showToast('Selected orders deleted'); clearSelection(); }
-            };
-
-            document.addEventListener('change', function (e) {
-                if (e.target.classList.contains('row-check')) updateBulkBar();
+            empty.style.display = 'none';
+            var start = (gridPage - 1) * PAGE_SIZE;
+            filteredC.forEach(function (c, i) {
+                body.appendChild(c);
+                c.style.display = (i >= start && i < start + PAGE_SIZE) ? '' : 'none';
             });
+            renderPagination('gridPagination', filteredC.length, gridPage, 'grid');
+        }
 
-            /* ── Toast ── */
-            window.showToast = function (msg) {
-                var t = document.createElement('div');
-                t.textContent = msg;
-                t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--accent);color:#fff;padding:10px 20px;border-radius:8px;z-index:9999;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.2);';
-                document.body.appendChild(t);
-                setTimeout(function () { t.remove(); }, 2500);
-            };
+        /* ── Render List ── */
+        function renderList() {
+            var body  = document.getElementById('tableBody');
+            var empty = document.getElementById('tableEmpty');
+            allRows.forEach(function (r) { r.style.display = 'none'; });
+            if (filteredR.length === 0) {
+                empty.style.display = '';
+                document.getElementById('listPagination').innerHTML = '';
+                return;
+            }
+            empty.style.display = 'none';
+            var start = (listPage - 1) * PAGE_SIZE;
+            filteredR.forEach(function (r, i) {
+                body.appendChild(r);
+                r.style.display = (i >= start && i < start + PAGE_SIZE) ? '' : 'none';
+            });
+            renderPagination('listPagination', filteredR.length, listPage, 'list');
+        }
 
-        })();
+        /* ── Pagination renderer ── */
+        function renderPagination(containerId, total, page, view) {
+            var tp = Math.ceil(total / PAGE_SIZE);
+            var el = document.getElementById(containerId);
+            if (tp <= 1) { el.innerHTML = ''; return; }
+            var from = Math.min((page - 1) * PAGE_SIZE + 1, total);
+            var to   = Math.min(page * PAGE_SIZE, total);
+            var html = '<div class="pag-info">Showing ' + from + '&ndash;' + to + ' of ' + total + '</div>';
+            html += '<div class="pag-btns">';
+            html += '<button class="pag-btn" ' + (page === 1 ? 'disabled' : '') + ' onclick="pagGo(\'' + view + '\',' + (page - 1) + ')">&#8249;</button>';
+            for (var i = 1; i <= tp; i++) {
+                if (i === 1 || i === tp || Math.abs(i - page) <= 1) {
+                    html += '<button class="pag-btn ' + (i === page ? 'pag-active' : '') + '" onclick="pagGo(\'' + view + '\',' + i + ')">' + i + '</button>';
+                } else if (Math.abs(i - page) === 2) {
+                    html += '<span class="pag-ellipsis">&hellip;</span>';
+                }
+            }
+            html += '<button class="pag-btn" ' + (page === tp ? 'disabled' : '') + ' onclick="pagGo(\'' + view + '\',' + (page + 1) + ')">&#8250;</button>';
+            html += '</div>';
+            el.innerHTML = html;
+        }
+
+        window.pagGo = function (view, p) {
+            if (view === 'grid') { gridPage = p; renderGrid(); }
+            else                 { listPage = p; renderList(); }
+            document.querySelector('.order-page').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        /* ── Bulk select ── */
+        window.toggleSelectAll = function (cb) {
+            document.querySelectorAll('.row-check').forEach(function (c) { c.checked = cb.checked; });
+            updateBulkBar();
+        };
+
+        function updateBulkBar() {
+            var count = document.querySelectorAll('.row-check:checked').length;
+            document.getElementById('bulkCount').textContent = count;
+            document.getElementById('bulkBar').style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        window.clearSelection = function () {
+            document.querySelectorAll('input[type=checkbox]').forEach(function (c) { c.checked = false; });
+            updateBulkBar();
+        };
+
+        window.bulkDelete = function () {
+            if (confirm('Delete selected orders?')) { showToast('Done'); clearSelection(); }
+        };
+
+        document.addEventListener('change', function (e) {
+            if (e.target.classList.contains('row-check')) updateBulkBar();
+        });
+
+        /* ── CSV Export ── */
+        window.exportCSV = function () {
+            var rows = [['ID', 'Address', 'Date', 'Total', 'Status']];
+            filteredR.forEach(function (r) {
+                var tds = r.querySelectorAll('td');
+                rows.push([r.dataset.id, tds[2] ? tds[2].innerText : '', tds[3] ? tds[3].innerText : '', r.dataset.total, r.dataset.status]);
+            });
+            var csv  = rows.map(function (r) { return r.map(function (v) { return '"' + String(v || '').replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var a    = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = 'orders.csv'; a.click();
+        };
+
+        /* ── Toast ── */
+        window.showToast = function (msg) {
+            var t = document.getElementById('toast');
+            if (t) { document.getElementById('toastMsg').textContent = msg; t.classList.add('show'); setTimeout(function () { t.classList.remove('show'); }, 2500); }
+        };
     </script>
 }
-

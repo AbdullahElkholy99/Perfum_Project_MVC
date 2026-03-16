@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="form-card">
+    <div class="form-card" style="max-width:75%;margin:0 auto;">
 
         <div class="detail-card-header" style="margin-bottom:24px;">
             <span class="detail-card-title">
@@ -43,52 +43,122 @@
         <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
 
-            <div class="form-grid">
+            <div class="form-grid ">
 
-                <!-- Customer -->
-                <div class="form-group">
-                    <label asp-for="CustomerId" class="form-label">
-                        <i class="fa-solid fa-user"></i> Customer
-                    </label>
+                <!-- Customer + Address + Date stacked in left column -->
+                <div style="display:flex;flex-direction:column;gap:16px">
 
-                    <select asp-for="CustomerId"
-                            class="form-control sort-select"
-                            asp-items="ViewBag.Customers as List<SelectListItem>">
+                    <!-- Customer -->
+                    <div class="form-group">
+                        <label asp-for="CustomerId" class="form-label">
+                            <i class="fa-solid fa-user"></i> Customer
+                        </label>
 
-                        <option value="">— Select a customer —</option>
+                        <select asp-for="CustomerId"
+                                class="form-control sort-select"
+                                asp-items="ViewBag.Customers as List<SelectListItem>">
 
-                    </select>
+                            <option value="">— Select a customer —</option>
 
-                    <span asp-validation-for="CustomerId" class="field-error"></span>
+                        </select>
+
+                        <span asp-validation-for="CustomerId" class="field-error"></span>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="form-group">
+                        <label asp-for="ShippingAddress" class="form-label">
+                            <i class="fa-solid fa-location-dot"></i> Shipping Address
+                        </label>
+
+                        <textarea asp-for="ShippingAddress"
+                                  class="form-control form-textarea"
+                                  placeholder="Enter full shipping address…"
+                                  rows="3"></textarea>
+
+                        <span asp-validation-for="ShippingAddress" class="field-error"></span>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="form-group">
+                        <label asp-for="Date" class="form-label">
+                            <i class="fa-solid fa-calendar"></i> Order Date
+                        </label>
+
+                        <input asp-for="Date"
+                               type="datetime-local"
+                               class="form-control"
+                               value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+
+                        <span asp-validation-for="Date" class="field-error"></span>
+                    </div>
+
                 </div>
 
-                <!-- Address -->
-                <div class="form-group">
-                    <label asp-for="ShippingAddress" class="form-label">
-                        <i class="fa-solid fa-location-dot"></i> Shipping Address
-                    </label>
 
-                    <textarea asp-for="ShippingAddress"
-                              class="form-control form-textarea"
-                              placeholder="Enter full shipping address…"
-                              rows="3"></textarea>
+                @* ── Order Items ── *@
+                <div class="form-card" style="max-width:100%">
+                    <div class="detail-card-header" style="margin-bottom:20px">
+                        <span class="detail-card-title">🛍 Order Items</span>
+                        <span style="font-size:12px;color:var(--text3)" id="itemCountLabel">0 items</span>
+                    </div>
 
-                    <span asp-validation-for="ShippingAddress" class="field-error"></span>
+                    @* Add item row *@
+                    <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:18px;flex-wrap:wrap">
+                        <div class="form-group" style="flex:2;min-width:160px;margin:0">
+                            <label class="form-label">Product</label>
+                            <select id="productSel" class="form-control sort-select">
+                                <option value="">— Select product —</option>
+                                @foreach (SelectListItem item in ViewBag.Products as IEnumerable<SelectListItem> ?? new List<SelectListItem>())
+                                {
+                                    <option value="@item.Value" data-text="@item.Text">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:0 0 80px;margin:0">
+                            <label class="form-label">Qty</label>
+                            <input type="number" id="qtyInput" class="form-control" value="1" min="1" />
+                        </div>
+                        <div class="form-group" style="flex:0 0 110px;margin:0">
+                            <label class="form-label">Unit Price</label>
+                            <input type="number" id="priceInput" class="form-control" readonly step="0.01" placeholder="0.00" />
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="addItem()" style="flex-shrink:0">
+                            + Add
+                        </button>
+                    </div>
+
+                    @* Items table *@
+                    <div class="table-wrap" id="itemsTableWrap" style="display:none">
+                        <table class="prod-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th style="text-align:center">Qty</th>
+                                    <th style="text-align:right">Unit Price</th>
+                                    <th style="text-align:right">Subtotal</th>
+                                    <th style="text-align:center">✕</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsBody"></tbody>
+                            <tfoot>
+                                <tr style="background:var(--surface3)">
+                                    <td colspan="3" style="text-align:right;font-weight:600;color:var(--text1);padding:12px 16px">Total</td>
+                                    <td style="text-align:right;font-weight:700;color:var(--accent2);font-size:15px;padding:12px 16px" id="totalCell">$0.00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div id="noItemsMsg" style="text-align:center;padding:32px;color:var(--text3);font-size:13px">
+                        No items yet. Select a product above and click Add.
+                    </div>
+
+                    @* Hidden inputs submitted with form *@
+                    <div id="hiddenInputs"></div>
                 </div>
 
-                <!-- Date -->
-                <div class="form-group">
-                    <label asp-for="Date" class="form-label">
-                        <i class="fa-solid fa-calendar"></i> Order Date
-                    </label>
-
-                    <input asp-for="Date"
-                           type="datetime-local"
-                           class="form-control"
-                           value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
-
-                    <span asp-validation-for="Date" class="field-error"></span>
-                </div>
 
                 <!-- Status -->
                 <div class="form-group">
@@ -143,4 +213,66 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        var items = [];
+    
+        document.getElementById('productSel').addEventListener('change', function () {
+            var opt   = this.options[this.selectedIndex];
+            var text  = opt.getAttribute('data-text') || '';
+            var match = text.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+            document.getElementById('priceInput').value = match ? match[1] : '';
+        });
+    
+        function addItem() {
+            var sel   = document.getElementById('productSel');
+            var qty   = parseInt(document.getElementById('qtyInput').value)    || 0;
+            var price = parseFloat(document.getElementById('priceInput').value) || 0;
+            if (!sel.value) { alert('Select a product.');        return; }
+            if (qty < 1)    { alert('Qty must be at least 1.'); return; }
+            if (price <= 0) { alert('Enter a valid price.');    return; }
+            var name = (sel.options[sel.selectedIndex].getAttribute('data-text') || '').split('—')[0].trim();
+            items.push({ productId: parseInt(sel.value), productName: name, qty: qty, unitPrice: price });
+            sel.value = ''; document.getElementById('qtyInput').value = '1'; document.getElementById('priceInput').value = '';
+            renderItems();
+        }
+    
+        function removeItem(i) { items.splice(i, 1); renderItems(); }
+    
+        function renderItems() {
+            var body   = document.getElementById('itemsBody');
+            var wrap   = document.getElementById('itemsTableWrap');
+            var noMsg  = document.getElementById('noItemsMsg');
+            var hidden = document.getElementById('hiddenInputs');
+            var label  = document.getElementById('itemCountLabel');
+            body.innerHTML = ''; hidden.innerHTML = '';
+            if (items.length === 0) {
+                wrap.style.display = 'none'; noMsg.style.display = '';
+                label.textContent = '0 items'; setTotal(0); return;
+            }
+            wrap.style.display = ''; noMsg.style.display = 'none';
+            label.textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
+            var total = 0;
+            for (var i = 0; i < items.length; i++) {
+                var it = items[i]; var sub = it.qty * it.unitPrice; total += sub;
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td>' + it.productName + '</td>' +
+                    '<td style="text-align:center">' + it.qty + '</td>' +
+                    '<td style="text-align:right">$' + it.unitPrice.toFixed(2) + '</td>' +
+                    '<td style="text-align:right;font-weight:600;color:var(--accent2)">$' + sub.toFixed(2) + '</td>' +
+                    '<td style="text-align:center"><button type="button" class="btn btn-danger btn-sm" onclick="removeItem(' + i + ')">✕</button></td>';
+                body.appendChild(tr);
+                hidden.innerHTML +=
+                    '<input type="hidden" name="OrderItems[' + i + '].ProductId"  value="' + it.productId  + '" />' +
+                    '<input type="hidden" name="OrderItems[' + i + '].Quantity"   value="' + it.qty        + '" />' +
+                    '<input type="hidden" name="OrderItems[' + i + '].UnitPrice"  value="' + it.unitPrice  + '" />';
+            }
+            setTotal(total);
+        }
+    
+        function setTotal(val) {
+            document.getElementById('totalCell').textContent = '$' + val.toFixed(2);
+            document.getElementById('TotalPrice').value = val.toFixed(2);
+        }
+    </script>
 }

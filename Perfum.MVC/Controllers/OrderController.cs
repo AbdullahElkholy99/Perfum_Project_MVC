@@ -25,7 +25,6 @@ public class OrderController : Controller
 
 
     #region Helpers
-
     private async Task LoadCustomersDropdownAsync()
     {
         var customers = await _serviceManager.CustomerService.GetAllAsync(null);
@@ -129,6 +128,7 @@ public class OrderController : Controller
     public async Task<IActionResult> Create()
     {
         await LoadCustomersDropdownAsync();
+        await LoadProductsDropdownAsync();
         return View(new AddOrderVM());
     }
 
@@ -140,6 +140,7 @@ public class OrderController : Controller
         if (!ModelState.IsValid)
         {
             await LoadCustomersDropdownAsync();
+            await LoadProductsDropdownAsync();
             return View(model);
         }
 
@@ -149,6 +150,7 @@ public class OrderController : Controller
         {
             TempData["Error"] = result; // show real error message
             await LoadCustomersDropdownAsync();
+            await LoadProductsDropdownAsync();
             return View(model);
         }
 

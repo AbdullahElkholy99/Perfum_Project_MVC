@@ -72,18 +72,26 @@ public class OrderService : IOrderService
                 TotalPrice = 0
             };
 
-            // Map OrderItems
-            order.OrderItems = model.OrderItems.Select(i => new OrderItem
-            {
-                ProductId = i.ProductId,
-                Quantity = i.Quantity,
-                UnitPrice = i.UnitPrice
-            }).ToList();
-
-            // Calculate total
-            order.TotalPrice = order.OrderItems.Sum(i => i.UnitPrice * i.Quantity);
-
+            
             await _repositoryManager.OrderRepository.AddAsync(order);
+
+
+            // To handle list of orderItems when create an order
+            if (model.OrderItems != null && model.OrderItems.Count > 0)
+            {
+                foreach (var i in model.OrderItems)
+                {
+                    await _repositoryManager.OrderItemRepository.AddAsync(new OrderItem
+                    {
+                        OrderId = order.Id,
+                        ProductId = i.ProductId,
+                        Quantity = i.Quantity,
+                        UnitPrice = i.UnitPrice
+                    });
+                }
+                order.TotalPrice = model.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
+                await _repositoryManager.OrderRepository.SaveChangesAsync();
+            }
 
             transaction.Commit();
             return "Success";
@@ -94,6 +102,9 @@ public class OrderService : IOrderService
             return "Fail";
         }
     }
+
+
+
     // by abdullah ali
     public async Task<Order> CreateOrdersAsync(CreateOrderPaymentVM orderDTO, string BuyerEmail)
     {

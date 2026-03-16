@@ -502,41 +502,71 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 16px 4px 4px;
     flex-wrap: wrap;
-    gap: 12px;
-    padding: 4px 0;
+    gap: 10px;
 }
 
-.page-info {
-    font-size: 13px;
+.pag-info {
+    font-size: 12px;
     color: var(--text3);
+    letter-spacing: .06em;
 }
 
-.page-btns {
-    display: flex;
-    gap: 6px;
-}
-
-.page-btn {
-    width: 34px;
-    height: 34px;
+.pag-btns {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    background: var(--surface2);
+    gap: 4px;
+}
+
+.pag-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 7px;
     border: 1px solid var(--border);
+    background: var(--surface2);
     color: var(--text2);
     font-size: 13px;
     cursor: pointer;
-    transition: background .15s, color .15s;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-    .page-btn:hover, .page-btn.active {
-        background: var(--accent);
-        color: #fff;
+    .pag-btn:hover:not(:disabled) {
         border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(160,128,96,.08);
     }
+
+    .pag-btn:disabled {
+        opacity: .35;
+        cursor: not-allowed;
+    }
+
+    .pag-btn.pag-active, .page-btn:hover, .page-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        font-weight: 600;
+    }
+
+
+.pag-ellipsis {
+    color: var(--text3);
+    font-size: 13px;
+    padding: 0 4px;
+}
+
+.sort-select-styled {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23a08060' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+}
 
 /* ── Alerts ── */
 .alert-success, .alert-error {
